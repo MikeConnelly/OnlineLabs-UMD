@@ -1,8 +1,0 @@
-{
-  "appService.zipIgnorePattern": [
-    "node_modules{,/**}",
-    ".vscode{,/**}"
-  ],
-  "appService.defaultWebAppToDeploy": "/subscriptions/9f4e0560-6cf2-42d2-8022-130a6ca0256a/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/enee101online",
-  "appService.deploySubpath": "."
-}

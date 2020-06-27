@@ -1,41 +1,60 @@
-var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var exphbs = require('express-handlebars');
+var axios = require('axios');
+var bodyParser = require('body-parser');
+var dotenv = require('dotenv');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+dotenv.config();
+const sr = process.env.SR;
+const sig = process.env.SIG;
+const se = process.env.SE;
+const skn = process.env.SKN;
+const hub = process.env.HUB;
+const device = process.env.DEVICE;
+const PORT = process.env.PORT || 3000;
+
+const iotHubURL = `https://${hub}.azure-devices.net/twins/${device}/methods?api-version=2018-06-30`;
+
+const iotHubConfig = {
+  'headers': {
+    'Content-Type': 'Application/json',
+    'Authorization': `SharedAccessSignature sr=${sr}&sig=${sig}&se=${se}&skn=${skn}`  
+  }
+}
 
 var app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
+app.use('/public', express.static('public'));
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.get('/', (req, res) => {
+  res.render('home');
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.post('/api/submit', (req, res) => {
+  const color = req.body.colors;
+  let method;
+  switch (color) {
+    case 'red':
+      method = 'ledRed';
+      break;
+    case 'green':
+      method = 'ledGreen';
+      break;
+    default:
+      method = 'ledBlue';
+      break;
+  }
+  const data = {
+    "methodName": method,
+    "responseTimeoutInSeconds": 60,
+    "payload": {}
+  };
+  axios.post(iotHubURL, data, iotHubConfig)
+    .then(response => res.status(200).send('color updated'))
+    .catch(err => console.log(err));
 });
 
-module.exports = app;
+app.listen(PORT);
