@@ -6,6 +6,18 @@
       <option value="green">Green</option>
       <option value="blue">Blue</option>
     </select>
-    <input type="submit">
+    <button id="submit" type="submit">Submit</button>
   </form>
+
+  <div>
+    <p>Current LED color:</p>
+    <p id="current-color">{{color}}</p>
+  </div>
 </div>
+
+<script>
+  $('#submit').click(() => {
+    var clr = $('#colors').val();
+    socket.emit('color update', { color: clr });
+  })
+</script>

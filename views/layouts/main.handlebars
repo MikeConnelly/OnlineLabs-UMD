@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/public/css/main.css">
     <title>ENEE101 ONLINE</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
   </head>
 
   <body class="container">
     {{{body}}}
+    <script>
+      var socket = io();
+
+      socket.on('color update', update => {
+        console.log(update);
+        $('#current-color').text(update.color);
+      });
+    </script>
   </body>
 </html>
