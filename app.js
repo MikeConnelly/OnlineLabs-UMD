@@ -32,46 +32,86 @@ app.set('view engine', 'handlebars');
 app.use('/public', express.static('public'));
 
 app.get('/', (req, res) => {
-  const data = {
-    "methodName": "getColor",
-    "responseTimeoutInSeconds": 60,
-    "payload": {}
-  };
-  axios.post(iotHubURL, data, iotHubConfig)
-    .catch(err => console.log(err))
-    .then(colorData => {
-      const data = colorData.data.replace('\u0000', '');
-      const color = JSON.parse(data).payload;
-      res.render('home', {
-        color: color
-      });
-    })
+  // const data = {
+  //   "methodName": "getColor",
+  //   "responseTimeoutInSeconds": 60,
+  //   "payload": {}
+  // };
+  // axios.post(iotHubURL, data, iotHubConfig)
+  //   .catch(err => console.log(err))
+  //   .then(colorData => {
+  //     const data = colorData.data.replace('\u0000', '');
+  //     const color = JSON.parse(data).payload;
+  //     res.render('home', {
+  //       color: color
+  //     });
+  //   })
+  res.render('movement');
 });
 
-app.post('/api/submit', (req, res) => {
-  const color = req.body.colors;
-  let method;
-  switch (color) {
-    case 'red':
-      method = 'ledRed';
-      break;
-    case 'green':
-      method = 'ledGreen';
-      break;
-    default:
-      method = 'ledBlue';
-      break;
+// app.post('/api/submit', (req, res) => {
+//   const color = req.body.colors;
+//   let method;
+//   switch (color) {
+//     case 'red':
+//       method = 'ledRed';
+//       break;
+//     case 'green':
+//       method = 'ledGreen';
+//       break;
+//     default:
+//       method = 'ledBlue';
+//       break;
+//   }
+//   const data = {
+//     "methodName": method,
+//     "responseTimeoutInSeconds": 60,
+//     "payload": {}
+//   };
+//   axios.post(iotHubURL, data, iotHubConfig)
+//     .catch(err => console.log(err))
+//     .then(response => res.render('home', {
+//       color: color
+//     }))
+// });
+
+app.post('/api/movement', (req, res) => {
+  // motor input scheme is 0000,0000 to 9999,9999
+  const xDelta = parseInt(req.body.x);
+  const yDelta = parseInt(req.body.y);
+  if (isNaN(xDelta) || isNaN(yDelta)) {
+    res.send('error');
   }
   const data = {
-    "methodName": method,
+    "methodName": "move",
     "responseTimeoutInSeconds": 60,
-    "payload": {}
+    "payload": {
+      'x': xDelta,
+      'y': yDelta
+    }
   };
   axios.post(iotHubURL, data, iotHubConfig)
     .catch(err => console.log(err))
-    .then(response => res.render('home', {
-      color: color
-    }))
+    .then(response => res.status(200).send('ok'))
+});
+
+app.get('/api/distance', (req, res) => {
+  // fetch ultrasonic sensor data
+
+  // const data = {
+  //   "methodName": "getDistance",
+  //   "responseTimeoutInSeconds": 60,
+  //   "payload": {}
+  // };
+  // axios.post(iotHubURL, data, iotHubConfig)
+  //   .catch(err => console.log(err))
+  //   .then(distData => {
+  //     const data = JSON.parse(distData.data.replace('\u0000', ''));
+  //     res.render('home', {
+  //       xPos: data.x,
+  //       yPos: data.y
+  //     });
+  //   })
 });
 
 http.listen(port, () => {
@@ -81,9 +121,9 @@ http.listen(port, () => {
 io.on('connection', socket => {
   console.log('new connection');
 
-  socket.on('color update', update => {
-    io.emit('color update', update);
-  });
+  // socket.on('color update', update => {
+  //   io.emit('color update', update);
+  // });
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
