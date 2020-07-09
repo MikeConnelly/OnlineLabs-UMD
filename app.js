@@ -6,8 +6,17 @@ var bodyParser = require('body-parser');
 var dotenv = require('dotenv');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var mongoose = require('mongoose');
+var passport = require('passport');
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var cookieSession = require('cookie-session');
+var User = require('./models/User');
 
 dotenv.config();
+const mongo_connection = process.env.DBCONN;
+const auth_client_id = process.env.AUTHID;
+const auth_client_secret = process.env.AUTHSECRET;
+const cookieKey = process.env.COOKIEKEY;
 const sr = process.env.SR;
 const sig = process.env.SIG;
 const se = process.env.SE;
@@ -25,11 +34,77 @@ const iotHubConfig = {
   }
 }
 
+mongoose.connect(mongo_connection, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+mongoose.connection.once('open', () => {
+  console.log('Mongo Connected');
+}).on('error', () => {
+  console.log('MongoDB connection error');
+  process.exit(1);
+});
+
+passport.use(
+  new GoogleStrategy({
+      clientID: auth_client_id,
+      clientSecret: auth_client_secret,
+      callbackURL: '/auth/google/redirect'
+    }, (accessToken, refreshToken, profile, done) => {
+      User.findOne({googleId: profile.id}).then(currentUser => {
+        if (currentUser) {
+          done(null, currentUser);
+        } else {
+          new User({
+            googleId: profile.id
+          }).save().then(newUser => {
+            done(null, newUser);
+          })
+        }
+      })
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id).then(user => {
+    done(null, user);
+  });
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.use('/public', express.static('public'));
+
+app.use(cookieSession({
+  maxAge: 24*60*60*1000,
+  keys: [cookieKey]
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+app.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile', 'email']
+}));
+
+app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
+  res.send(req.user);
+  res.send('you reached the redirect URI');
+});
+
+app.get('/auth/logout', (req, res) => {
+  req.logout();
+  res.send(req.user);
+});
 
 app.get('/', (req, res) => {
   // const data = {
@@ -93,25 +168,6 @@ app.post('/api/movement', (req, res) => {
   axios.post(iotHubURL, data, iotHubConfig)
     .catch(err => console.log(err))
     .then(response => res.status(200).send('ok'))
-});
-
-app.get('/api/distance', (req, res) => {
-  // fetch ultrasonic sensor data
-
-  // const data = {
-  //   "methodName": "getDistance",
-  //   "responseTimeoutInSeconds": 60,
-  //   "payload": {}
-  // };
-  // axios.post(iotHubURL, data, iotHubConfig)
-  //   .catch(err => console.log(err))
-  //   .then(distData => {
-  //     const data = JSON.parse(distData.data.replace('\u0000', ''));
-  //     res.render('home', {
-  //       xPos: data.x,
-  //       yPos: data.y
-  //     });
-  //   })
 });
 
 http.listen(port, () => {
