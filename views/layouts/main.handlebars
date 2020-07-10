@@ -13,9 +13,8 @@
     <script>
       var socket = io();
 
-      socket.on('color update', update => {
-        console.log(update);
-        $('#current-color').text(update.color);
+      socket.on('QueueState', state => {
+        console.log(state);
       });
     </script>
   </body>

@@ -5,12 +5,17 @@ var axios = require('axios');
 var bodyParser = require('body-parser');
 var dotenv = require('dotenv');
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var session = require('express-session');
 var mongoose = require('mongoose');
+var MongoStore = require('connect-mongo')(session);
+var io = require('socket.io')(http);
 var passport = require('passport');
+var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-var cookieSession = require('cookie-session');
+var cookieParser = require('cookie-parser');
 var User = require('./models/User');
+var Queue = require('./utils/Queue');
+var queue = new Queue();
 
 dotenv.config();
 const mongo_connection = process.env.DBCONN;
@@ -34,6 +39,7 @@ const iotHubConfig = {
   }
 }
 
+// setup mongo connection
 mongoose.connect(mongo_connection, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -45,6 +51,7 @@ mongoose.connection.once('open', () => {
   process.exit(1);
 });
 
+// setup passport to use Google Strategy
 passport.use(
   new GoogleStrategy({
       clientID: auth_client_id,
@@ -56,7 +63,8 @@ passport.use(
           done(null, currentUser);
         } else {
           new User({
-            googleId: profile.id
+            googleId: profile.id,
+            name: profile.displayName
           }).save().then(newUser => {
             done(null, newUser);
           })
@@ -76,15 +84,26 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.use('/public', express.static('public'));
+app.use(cookieParser(cookieKey));
 
-app.use(cookieSession({
-  maxAge: 24*60*60*1000,
-  keys: [cookieKey]
+// autoremove fields are used to run in compatibility mode so it works with CosmosDB because Azure hates my existance
+var sessionStore = new MongoStore({
+  mongooseConnection: mongoose.connection,
+  autoRemove: 'interval',
+  autoRemoveInterval: 10 // in minutes
+});
+app.use(session({
+  store: sessionStore,
+  secret: cookieKey,
+  resave: false,
+  saveUninitialized: false
 }));
 
 app.use(passport.initialize());
@@ -92,63 +111,42 @@ app.use(passport.session());
 
 
 
+
+// auth routes
 app.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']
 }));
 
 app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
-  res.send(req.user);
-  res.send('you reached the redirect URI');
+  res.redirect('/');
 });
 
 app.get('/auth/logout', (req, res) => {
-  req.logout();
-  res.send(req.user);
+  req.logout(); // destroys cookie
 });
+
+
+
+
 
 app.get('/', (req, res) => {
-  // const data = {
-  //   "methodName": "getColor",
-  //   "responseTimeoutInSeconds": 60,
-  //   "payload": {}
-  // };
-  // axios.post(iotHubURL, data, iotHubConfig)
-  //   .catch(err => console.log(err))
-  //   .then(colorData => {
-  //     const data = colorData.data.replace('\u0000', '');
-  //     const color = JSON.parse(data).payload;
-  //     res.render('home', {
-  //       color: color
-  //     });
-  //   })
-  res.render('movement');
+  if (!req.user) {
+    res.redirect('/auth/google');
+  } else {
+    res.render('home');
+  }
 });
 
-// app.post('/api/submit', (req, res) => {
-//   const color = req.body.colors;
-//   let method;
-//   switch (color) {
-//     case 'red':
-//       method = 'ledRed';
-//       break;
-//     case 'green':
-//       method = 'ledGreen';
-//       break;
-//     default:
-//       method = 'ledBlue';
-//       break;
-//   }
-//   const data = {
-//     "methodName": method,
-//     "responseTimeoutInSeconds": 60,
-//     "payload": {}
-//   };
-//   axios.post(iotHubURL, data, iotHubConfig)
-//     .catch(err => console.log(err))
-//     .then(response => res.render('home', {
-//       color: color
-//     }))
-// });
+app.post('/api/enqueue', (req, res) => {
+  if (!req.user) {
+    res.redirect('/auth/google');
+  } else {
+    const user = req.user;
+    queue.addUserToQueue(user); // need to check if they should be made current user
+  }
+});
+
+// movement controls need to be authenticated with req.user and queue.currentUser
 
 app.post('/api/movement', (req, res) => {
   // motor input scheme is 0000,0000 to 9999,9999
@@ -170,18 +168,76 @@ app.post('/api/movement', (req, res) => {
     .then(response => res.status(200).send('ok'))
 });
 
-http.listen(port, () => {
-  console.log(`listening on port ${port}`);
-});
 
+
+
+/**
+ * send queue state to clients
+ * @param {SocketIO.Socket} socket socket the information is being sent to
+ */
+function updateState(socket) {
+  const user = socket.request.user;
+  const currentUser = queue.getCurrentUser();
+
+  const placeInQueue = queue.getPlaceInQueue(user); // 0 if user not there
+  const queueLength = queue.getLength();
+  const currentUserName = currentUser ? currentUser.name : 'None'
+  const isCurrentUser = queue.isCurrentUser(user);
+  const inQueue = (placeInQueue > 0) ? true : false;
+
+  socket.emit('QueueState', {
+    'inQueue': inQueue,
+    'isCurrentUser': isCurrentUser,
+    'placeInQueue': placeInQueue,
+    'queueLength': queueLength,
+    'currentUserName': currentUserName
+  });
+}
+
+/**
+ * handle user disconnect
+ * @param {SocketIO.Socket} socket socket of the user that disconnected
+ */
+function handleDisconnect(socket) {
+  const user = socket.request.user;
+  queue.userDisconnected(user);
+}
+
+function onAuthorizeSuccess(data, accept) {
+  console.log('successful connection to socket.io');
+  accept(null, true);
+}
+
+function onAuthorizeFail(data, message, error, accept) {
+  console.log('failed connection to socket.io: ', message);
+  accept(null, false);
+}
+
+io.use(passportSocketIo.authorize({
+  cookieParser: cookieParser,
+  secret: cookieKey,
+  store: sessionStore,
+  success: onAuthorizeSuccess,
+  fail: onAuthorizeFail
+}));
+
+let interval; // interval to update state for each socket
 io.on('connection', socket => {
   console.log('new connection');
 
-  // socket.on('color update', update => {
-  //   io.emit('color update', update);
-  // });
+  if (interval) { clearInterval(interval); }
+  interval = setInterval(() => updateState(socket), 10000); // update every 10 seconds
 
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    if (socket.request.user) {
+      console.log('user disconnected ' + socket.request.user.name);
+      clearInterval(interval);
+      // use socket to dequeue user
+      handleDisconnect(socket);
+    }
   });
+});
+
+http.listen(port, () => {
+  console.log(`listening on port ${port}`);
 });

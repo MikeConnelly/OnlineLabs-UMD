@@ -1,23 +1,11 @@
 <div class="home">
-  <form method="POST" action="/api/submit">
-    <label for="colors">Color:</label>
-    <select id="colors" name="colors">
-      <option value="red">Red</option>
-      <option value="green">Green</option>
-      <option value="blue">Blue</option>
-    </select>
-    <button id="submit" type="submit">Submit</button>
-  </form>
-
-  <div>
-    <p>Current LED color:</p>
-    <p id="current-color">{{color}}</p>
+  <div class="movement">
+    <form method="POST" action="/api/movement">
+      <label for="x">x position:</label>
+      <input type="text" id="x" name="x" value="9999">
+      <label for="y">y position:</label>
+      <input type="text" id="y" name="y" value="9999">
+      <input type="submit" value="submit">
+    </form>
   </div>
 </div>
-
-<script>
-  $('#submit').click(() => {
-    var clr = $('#colors').val();
-    socket.emit('color update', { color: clr });
-  })
-</script>
