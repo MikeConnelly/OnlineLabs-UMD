@@ -15,10 +15,12 @@ class Queue {
 
   /**
    * Checks if user is already in the queue and adds them if they are not.
+   * If they are the only user they skip the queue and are made the current user
    * @param {object} user The user to enqueue
    */
-  addUserToQueue(user) {
-    if (!userInQueue(user)) { this.queue.push(user); }
+  addUser(user) {
+    if (this.queue.length === 0 && !this.currentUser) { this.currentUser = user; }
+    else if (!userInQueue(user)) { this.queue.push(user); }
   }
 
   /**

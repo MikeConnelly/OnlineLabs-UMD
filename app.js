@@ -1,18 +1,18 @@
 var express = require('express');
 var app = express();
-var exphbs = require('express-handlebars');
-var axios = require('axios');
-var bodyParser = require('body-parser');
-var dotenv = require('dotenv');
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var exphbs = require('express-handlebars');
+var dotenv = require('dotenv');
+var bodyParser = require('body-parser');
+var axios = require('axios');
 var session = require('express-session');
+var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
-var io = require('socket.io')(http);
 var passport = require('passport');
 var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-var cookieParser = require('cookie-parser');
 var User = require('./models/User');
 var Queue = require('./utils/Queue');
 var queue = new Queue();
@@ -58,7 +58,7 @@ passport.use(
       clientSecret: auth_client_secret,
       callbackURL: '/auth/google/redirect'
     }, (accessToken, refreshToken, profile, done) => {
-      User.findOne({googleId: profile.id}).then(currentUser => {
+      User.findOne({ googleId: profile.id }).then(currentUser => {
         if (currentUser) {
           done(null, currentUser);
         } else {
@@ -93,7 +93,7 @@ app.set('view engine', 'handlebars');
 app.use('/public', express.static('public'));
 app.use(cookieParser(cookieKey));
 
-// autoremove fields are used to run in compatibility mode so it works with CosmosDB because Azure hates my existance
+// autoRemove fields are used to run in compatibility mode so it works with CosmosDB because Azure hates my existance
 var sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection,
   autoRemove: 'interval',
@@ -142,30 +142,32 @@ app.post('/api/enqueue', (req, res) => {
     res.redirect('/auth/google');
   } else {
     const user = req.user;
-    queue.addUserToQueue(user); // need to check if they should be made current user
+    queue.addUser(user); // need to check if they should be made current user
   }
 });
 
-// movement controls need to be authenticated with req.user and queue.currentUser
-
 app.post('/api/movement', (req, res) => {
-  // motor input scheme is 0000,0000 to 9999,9999
-  const xDelta = parseInt(req.body.x);
-  const yDelta = parseInt(req.body.y);
-  if (isNaN(xDelta) || isNaN(yDelta)) {
-    res.send('error');
-  }
-  const data = {
-    "methodName": "move",
-    "responseTimeoutInSeconds": 60,
-    "payload": {
-      'x': xDelta,
-      'y': yDelta
+  if (!req.user || !queue.isCurrentUser(req.user)) {
+    res.status(403).send('Not authorized');
+  } else {
+    // motor input scheme is 0000,0000 to 9999,9999
+    const xDelta = parseInt(req.body.x);
+    const yDelta = parseInt(req.body.y);
+    if (isNaN(xDelta) || isNaN(yDelta)) {
+      res.send('error');
     }
-  };
-  axios.post(iotHubURL, data, iotHubConfig)
-    .catch(err => console.log(err))
-    .then(response => res.status(200).send('ok'))
+    const data = {
+      "methodName": "move",
+      "responseTimeoutInSeconds": 60,
+      "payload": {
+        'x': xDelta,
+        'y': yDelta
+      }
+    };
+    axios.post(iotHubURL, data, iotHubConfig)
+      .catch(err => console.log(err))
+      .then(response => res.status(200).send('ok'))
+  }
 });
 
 
@@ -226,7 +228,7 @@ io.on('connection', socket => {
   console.log('new connection');
 
   if (interval) { clearInterval(interval); }
-  interval = setInterval(() => updateState(socket), 10000); // update every 10 seconds
+  interval = setInterval(() => updateState(socket), 3000); // update every 3 seconds
 
   socket.on('disconnect', () => {
     if (socket.request.user) {
