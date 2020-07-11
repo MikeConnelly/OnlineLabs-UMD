@@ -1,5 +1,5 @@
 <div class="home">
-  <div class="header" style="background-color:#720012; padding: 1%; margin-bottom: 10px; color: white">
+  <div class="header" style="background-color:#720012; padding: 1%; margin-bottom: 5px; color: white">
     <img src="img/logo.png" alt="logo" />
   </div>
   
@@ -8,6 +8,7 @@
   frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" 
   allowfullscreen="Yes">
   </iframe>
+  
  <!DOCTYPE html>
   <html>
   <head>
@@ -21,20 +22,19 @@
   .column {
     border-radius: 15px;
     float: left;
-    width: 49%;
+    width: 49.75%;
     height: 300px; /* Should be removed. Only for demonstration */
   }
 
   .columnGap {
     float: left;
-    width: 0.10%;
-    padding: 10px;
+    width: 0.5%;
     height: 300px; /* Should be removed. Only for demonstration */
   }
 
   /* Clear floats after the columns */
   .row:after {
-    
+    float: left
     content: "";
     display: table;
     clear: both;
@@ -45,8 +45,15 @@
 
   <div class="row">
     <div class="column" style="background-color:#aaa;">
-      <h2>Column 1</h2>
-      <p>Some text..</p>
+      <div class="movement" style= "margin-top:10px">
+        <form method="POST" action="/api/movement">
+          <label for="x">x position:</label>
+          <input type="text" id="x" name="x" value="999">
+          <label for="y">y position:</label>
+          <input type="text" id="y" name="y" value="9999">
+          <input type="submit" value="submit">
+       </form>
+     </div>
     </div>
     <div class="columnGap" style="background-color:#fff	;">
     </div>
@@ -58,15 +65,4 @@
 
   </body>
   </html>
-
-
-  <div class="movement" style= "margin-top:10px">
-    <form method="POST" action="/api/movement">
-      <label for="x">x position:</label>
-      <input type="text" id="x" name="x" value="999">
-      <label for="y">y position:</label>
-      <input type="text" id="y" name="y" value="9999">
-      <input type="submit" value="submit">
-      </form>
-  </div>
 </div>
