@@ -15,7 +15,7 @@ class Queue {
 
   /**
    * Checks if user is in the queue
-   * @param {object} user the user to check
+   * @param {User} user the user to check
    * @returns {boolean} true if user is in the queue
    */
   userInQueue(user) {
@@ -25,7 +25,7 @@ class Queue {
   /**
    * Checks if user is already in the queue and adds them if they are not.
    * If they are the only user they skip the queue and are made the current user
-   * @param {object} user The user to enqueue
+   * @param {User} user The user to enqueue
    */
   addUser(user) {
     if (this.queue.length === 0 && !this.currentUser) { this.currentUser = user; }
@@ -34,7 +34,7 @@ class Queue {
 
   /**
    * Removes next user from the queue and replaces the current user with them
-   * @returns {object} the user that was removed
+   * @returns {Object} the user that was removed
    */
   replaceCurrentUser() {
     const shifted = this.queue.shift();
@@ -70,7 +70,7 @@ class Queue {
 
   /**
    * Remove the disconnected user from the queue or current user position
-   * @param {User} user 
+   * @param {User} user the user that disconnected
    */
   userDisconnected(user) {
     if (this.userInQueue(user)) {
@@ -78,6 +78,29 @@ class Queue {
     } else if (this.isCurrentUser(user)) {
       this.replaceCurrentUser();
     }
+  }
+
+  /**
+   * Get info about a about the queue and a user's place in it
+   * @param {User} user the user to get information about
+   * @returns {Object} queue info
+   */
+  getQueueState(user) {
+    const currentUser = this.getCurrentUser();
+
+    const placeInQueue = user ? this.getPlaceInQueue(user) : 0; // 0 if user not there
+    const queueLength = this.getLength();
+    const currentUserName = currentUser ? currentUser.name : 'None'
+    const isCurrentUser = user ? this.isCurrentUser(user) : false;
+    const inQueue = (placeInQueue > 0) ? true : false;
+
+    return {
+      'inQueue': inQueue,
+      'isCurrentUser': isCurrentUser,
+      'placeInQueue': placeInQueue,
+      'queueLength': queueLength,
+      'currentUserName': currentUserName
+    };
   }
 }
 

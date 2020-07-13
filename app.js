@@ -20,24 +20,19 @@ var Queue = require('./utils/Queue');
 var queue = new Queue();
 
 dotenv.config();
+const mode = process.env.MODE;
 const mongo_connection = process.env.DBCONN;
 const auth_client_id = process.env.AUTHID;
 const auth_client_secret = process.env.AUTHSECRET;
 const cookieKey = process.env.COOKIEKEY;
-const sr = process.env.SR;
-const sig = process.env.SIG;
-const se = process.env.SE;
-const skn = process.env.SKN;
-const hub = process.env.HUB;
-const device = process.env.DEVICE;
+const sas = process.env.SAS;
+const iotHubURL = process.env.URL;
 const port = process.env.PORT || 3000;
-
-const iotHubURL = `https://${hub}.azure-devices.net/twins/${device}/methods?api-version=2018-06-30`;
 
 const iotHubConfig = {
   'headers': {
     'Content-Type': 'Application/json',
-    'Authorization': `SharedAccessSignature sr=${sr}&sig=${sig}&se=${se}&skn=${skn}`
+    'Authorization': sas
   }
 }
 
@@ -94,7 +89,7 @@ app.use(cors());
 // app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 // app.set('view engine', 'handlebars');
 // app.use('/public', express.static('public'));
-app.use(express.static(path.join(__dirname, 'dist/')));
+app.use(express.static(path.join(__dirname, 'build/')));
 app.use(cookieParser(cookieKey));
 
 // autoRemove fields are used to run in compatibility mode so it works with CosmosDB because Azure hates my existance
@@ -117,28 +112,35 @@ app.use(passport.session());
 
 
 // auth routes
-app.get('/auth/google', passport.authenticate('google', {
-  scope: ['profile']
-}));
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
   res.redirect('/');
 });
 
 app.get('/auth/logout', (req, res) => {
-  req.logout(); // destroys cookie
+  if (!req.user) { res.status(400).send('not logged in'); }
+  else {
+    console.log('logout');
+    queue.userDisconnected(req.user);
+    req.logout();
+    res.status(200).json(queue.getQueueState(undefined));
+  }
 });
 
 
 
 
-
-app.get('/', (req, res) => {
-  if (!req.user) {
-    res.redirect('/auth/google');
-  } else {
-    res.render('home');
-  }
+app.get('/api/info', (req, res) => {
+  const user = req.user;
+  const loggedIn = Boolean(user);
+  const queueState = queue.getQueueState(user);
+  res.status(200).json({
+    'mode:': mode,
+    'port': port,
+    'loggedIn': loggedIn,
+    'queueState': queueState
+  });
 });
 
 app.post('/api/enqueue', (req, res) => {
@@ -146,7 +148,10 @@ app.post('/api/enqueue', (req, res) => {
     res.redirect('/auth/google');
   } else {
     const user = req.user;
-    queue.addUser(user); // need to check if they should be made current user
+    queue.addUser(user);
+    
+    const queueState = queue.getQueueState(user);
+    res.status(200).json(queueState);
   }
 });
 
@@ -182,24 +187,15 @@ app.post('/api/movement', (req, res) => {
  * @param {SocketIO.Socket} socket socket the information is being sent to
  */
 function updateState(socket) {
-  if (!socket.request.user.logged_in) { return; }
+  let user;
+  if (!socket.request.user.logged_in) { 
+    user = undefined;
+  } else {
+    user = socket.request.user;
+  }
 
-  const user = socket.request.user;
-  const currentUser = queue.getCurrentUser();
-
-  const placeInQueue = queue.getPlaceInQueue(user); // 0 if user not there
-  const queueLength = queue.getLength();
-  const currentUserName = currentUser ? currentUser.name : 'None'
-  const isCurrentUser = queue.isCurrentUser(user);
-  const inQueue = (placeInQueue > 0) ? true : false;
-
-  socket.emit('QueueState', {
-    'inQueue': inQueue,
-    'isCurrentUser': isCurrentUser,
-    'placeInQueue': placeInQueue,
-    'queueLength': queueLength,
-    'currentUserName': currentUserName
-  });
+  const queueState = queue.getQueueState(user);
+  socket.emit('QueueState', queueState);
 }
 
 /**
@@ -211,11 +207,17 @@ function handleDisconnect(socket) {
   queue.userDisconnected(user);
 }
 
+/**
+ * Optional success callback for passport-socket.io
+ */
 function onAuthorizeSuccess(data, accept) {
   console.log('successful connection to socket.io');
   accept(null, true);
 }
 
+/**
+ * Optional failure callback for passport-socket.io
+ */
 function onAuthorizeFail(data, message, error, accept) {
   console.log('failed connection to socket.io: ', message);
   accept(null, false);

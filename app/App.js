@@ -1,22 +1,37 @@
-import React, { useState } from 'react';
-import path from 'path';
-import TestComp from './TestComp';
+import React, { Component } from 'react';
+import axios from 'axios';
+import DashboardContainer from './DashboardContainer';
+// import TestComp from './TestComp';
 
-function handleLogin() {
-  window.location.pathname = path.join(window.location.pathname, '/auth/google');
-}
+class App extends Component {
 
-function App() {
-  const [loadClient, setLoadClient] = useState(true);
-  return (
-    <div>
-      <button onClick={event => handleLogin()}>login</button>
-      <button onClick={() => setLoadClient(prevState => !prevState)}>
-        stop client
-      </button>
-      {loadClient ? <TestComp /> : null}
-    </div>
-  );
+  constructor(props) {
+    super(props);
+    this.state = {
+      loggedIn: false
+    };
+    this.setLoggedIn = this.setLoggedIn.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  setLoggedIn(b) {
+    this.setState({ loggedIn: b })
+  }
+
+  handleLogout() {
+    axios.get('/auth/logout').then(res => this.setLoggedIn(false));
+  }
+
+  render() {
+    const { loggedIn } = this.state;
+
+    return (
+      <div id="app-container">
+        <button onClick={this.handleLogout}>logout</button>
+        <DashboardContainer loggedIn={loggedIn} setLoggedIn={this.setLoggedIn} />
+      </div>
+    );
+  }
 }
 
 export default App;
