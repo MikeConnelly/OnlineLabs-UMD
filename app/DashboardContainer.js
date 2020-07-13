@@ -43,7 +43,7 @@ class DashboardContainer extends Component {
   }
 
   setSocketEndpoint(mode, port) {
-    const url = (mode === 'dev') ? `http://localhost:${port}` : `http://enee101online-webapp.herokuapp.com:${port}`;
+    const url = (mode === 'dev') ? `http://localhost:${port}` : `https://enee101online-webapp.herokuapp.com:${port}`;
     this.setState({ endpoint: url });
   }
 
