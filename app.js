@@ -16,8 +16,8 @@ var passport = require('passport');
 var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('./models/User');
-var Queue = require('./utils/Queue');
-var queue = new Queue();
+var UserManager = require('./utils/UserManager');
+var manager = new UserManager();
 
 dotenv.config();
 const mode = process.env.MODE;
@@ -122,9 +122,9 @@ app.get('/auth/logout', (req, res) => {
   if (!req.user) { res.status(400).send('not logged in'); }
   else {
     console.log('logout');
-    queue.userDisconnected(req.user);
+    manager.userDisconnected(req.user);
     req.logout();
-    res.status(200).json(queue.getQueueState(undefined));
+    res.status(200).json(manager.getQueueState(undefined));
   }
 });
 
@@ -134,7 +134,7 @@ app.get('/auth/logout', (req, res) => {
 app.get('/api/info', (req, res) => {
   const user = req.user;
   const loggedIn = Boolean(user);
-  const queueState = queue.getQueueState(user);
+  const queueState = manager.getQueueState(user);
   res.status(200).json({
     'mode:': mode,
     'port': port,
@@ -148,15 +148,15 @@ app.post('/api/enqueue', (req, res) => {
     res.redirect('/auth/google');
   } else {
     const user = req.user;
-    queue.addUser(user);
+    manager.addUser(user);
     
-    const queueState = queue.getQueueState(user);
+    const queueState = manager.getQueueState(user);
     res.status(200).json(queueState);
   }
 });
 
 app.post('/api/movement', (req, res) => {
-  if (!req.user || !queue.isCurrentUser(req.user)) {
+  if (!req.user || !manager.isCurrentUser(req.user)) {
     res.status(403).send('Not authorized');
   } else {
     // motor input scheme is 0000,0000 to 9999,9999
@@ -194,7 +194,7 @@ function updateState(socket) {
     user = socket.request.user;
   }
 
-  const queueState = queue.getQueueState(user);
+  const queueState = manager.getQueueState(user);
   socket.emit('QueueState', queueState);
 }
 
@@ -204,7 +204,7 @@ function updateState(socket) {
  */
 function handleDisconnect(socket) {
   const user = socket.request.user;
-  queue.userDisconnected(user);
+  manager.userDisconnected(user);
 }
 
 /**
