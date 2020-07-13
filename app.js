@@ -2,9 +2,11 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var exphbs = require('express-handlebars');
+// var exphbs = require('express-handlebars');
+var path = require('path');
 var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
+var cors = require('cors');
 var axios = require('axios');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -88,9 +90,11 @@ passport.deserializeUser((id, done) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars');
-app.use('/public', express.static('public'));
+app.use(cors());
+// app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+// app.set('view engine', 'handlebars');
+// app.use('/public', express.static('public'));
+app.use(express.static(path.join(__dirname, 'dist/')));
 app.use(cookieParser(cookieKey));
 
 // autoRemove fields are used to run in compatibility mode so it works with CosmosDB because Azure hates my existance
@@ -114,7 +118,7 @@ app.use(passport.session());
 
 // auth routes
 app.get('/auth/google', passport.authenticate('google', {
-  scope: ['profile', 'email']
+  scope: ['profile']
 }));
 
 app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
@@ -178,6 +182,8 @@ app.post('/api/movement', (req, res) => {
  * @param {SocketIO.Socket} socket socket the information is being sent to
  */
 function updateState(socket) {
+  if (!socket.request.user.logged_in) { return; }
+
   const user = socket.request.user;
   const currentUser = queue.getCurrentUser();
 

@@ -14,22 +14,22 @@ class Queue {
   }
 
   /**
+   * Checks if user is in the queue
+   * @param {object} user the user to check
+   * @returns {boolean} true if user is in the queue
+   */
+  userInQueue(user) {
+    return this.queue.some(u => u.googleId === user.googleId);
+  }
+
+  /**
    * Checks if user is already in the queue and adds them if they are not.
    * If they are the only user they skip the queue and are made the current user
    * @param {object} user The user to enqueue
    */
   addUser(user) {
     if (this.queue.length === 0 && !this.currentUser) { this.currentUser = user; }
-    else if (!userInQueue(user)) { this.queue.push(user); }
-  }
-
-  /**
-   * Checks if user is in the queue
-   * @param {object} user the user to check
-   * @returns {boolean} true if user is in the queue
-   */
-  userInQueue(user) {
-    return this.queue.some(u => u.googleId === user.googleId)
+    else if (!this.userInQueue(user)) { this.queue.push(user); }
   }
 
   /**
