@@ -28,17 +28,23 @@ class DashboardContainer extends Component {
   componentDidMount() {
     axios.get('/api/info').then(res => {
       this.setSocketEndpoint(res.data.mode, res.data.port);
-      this.setState(res.data.queueState);
+      this.setState({ queueState: res.data.queueState });
       this.props.setLoggedIn(res.data.loggedIn);
     });
   }
 
+  componentDidUpdate() {
+    if (this.state.endpoint) {
+      var socket = socketIOClient(endpoint);
+      socket.on('QueueState', data => {
+        this.setState({ queueState: data });
+      });
+    }
+  }
+
   setSocketEndpoint(mode, port) {
-    const endpoint = (mode === 'dev') ? `http://localhost${port}` : `https://enee101online-webapp.herokuapp.com:${port}`;
-    const socket = socketIOClient(endpoint);
-    socket.on('QueueState', data => {
-      this.setState({ queueState: data });
-    });
+    const url = (mode === 'dev') ? `http://localhost:${port}` : `http://enee101online-webapp.herokuapp.com:${port}`;
+    this.setState({ endpoint: url });
   }
 
   handleEnqueue() {
@@ -61,6 +67,7 @@ class DashboardContainer extends Component {
 
   render() {
     const { inQueue, isCurrentUser, placeInQueue, queueLength, currentUserName } = this.state.queueState;
+    console.log('socket info update');
 
     return (
       <div className="dashboard-container">
