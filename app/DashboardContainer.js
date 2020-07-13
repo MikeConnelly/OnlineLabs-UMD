@@ -35,7 +35,7 @@ class DashboardContainer extends Component {
 
   componentDidUpdate() {
     if (this.state.endpoint) {
-      var socket = socketIOClient(endpoint);
+      var socket = socketIOClient(this.state.endpoint);
       socket.on('QueueState', data => {
         this.setState({ queueState: data });
       });
