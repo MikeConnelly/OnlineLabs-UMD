@@ -1,4 +1,4 @@
-class Queue {
+class UserManager {
 
   constructor() {
     this.queue = [];
@@ -104,4 +104,4 @@ class Queue {
   }
 }
 
-module.exports = Queue;
+module.exports = UserManager;

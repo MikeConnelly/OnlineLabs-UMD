@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import socketIOClient from 'socket.io-client';
+import io from 'socket.io-client';
 import LoginPanel from './panels/LoginPanel';
 import NotQueuedPanel from './panels/NotQueuedPanel';
 import QueuedPanel from './panels/QueuedPanel';
@@ -31,16 +31,21 @@ class DashboardContainer extends Component {
       this.setState({ queueState: res.data.queueState });
       this.props.setLoggedIn(res.data.loggedIn);
     });
+
+    const socket = io();
+    socket.on('QueueState', data => {
+      this.setState({ queueState: data });
+    });
   }
 
-  componentDidUpdate() {
-    if (this.state.endpoint) {
-      var socket = socketIOClient(this.state.endpoint);
-      socket.on('QueueState', data => {
-        this.setState({ queueState: data });
-      });
-    }
-  }
+  // componentDidUpdate() {
+  //   if (this.state.endpoint) {
+  //     var socket = io(this.state.endpoint);
+  //     socket.on('QueueState', data => {
+  //       this.setState({ queueState: data });
+  //     });
+  //   }
+  // }
 
   setSocketEndpoint(mode, port) {
     const url = (mode === 'dev') ? `http://localhost:${port}` : `https://enee101online-webapp.herokuapp.com:${port}`;
