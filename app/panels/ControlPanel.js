@@ -6,6 +6,7 @@ class ControlPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      validInput: true,
       x: 0,
       y: 0
     };
@@ -14,21 +15,28 @@ class ControlPanel extends Component {
   }
 
   handleSubmit(event) {
-    axios.post('/api/movement', {
-      'x': this.state.x,
-      'y': this.state.y
-    });
     event.preventDefault();
+    const deltaX = parseInt(this.state.x);
+    const deltaY = parseInt(this.state.y);
+    if (isNaN(deltaX) || isNaN(deltaY)) {
+      this.setState({ validInput: false });
+    } else {
+      if (!this.state.validInput) { this.setState({ validInput: true }); }
+      axios.post('/api/movement', {
+        'x': this.state.x,
+        'y': this.state.y
+      });
+    }
   }
 
   handleUpdate(event, dimension) {
     if (dimension === 'x') {
       this.setState({
-        x: parseInt(event.target.value)
+        x: event.target.value
       });
     } else {
       this.setState({
-        y: parseInt(event.target.value)
+        y: event.target.value
       });
     }
   }
@@ -40,23 +48,20 @@ class ControlPanel extends Component {
           <label>
             x position:
             <input
-              type="text"
-              pattern="[0-9]*"
-              value={this.state.x}
+              type="number"
               onChange={event => this.handleUpdate(event, 'x')}
             />
           </label>
           <label>
             y position:
             <input
-              type="text"
-              pattern="[0-9]*"
-              value={this.state.y}
+              type="number"
               onChange={event => this.handleUpdate(event, 'y')}
             />
           </label>
           <input type="submit" value="submit" />
         </form>
+        {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
       </div>
     );
   }

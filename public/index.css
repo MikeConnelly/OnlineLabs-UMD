@@ -48,3 +48,7 @@ button {
 .queued-panel {
   font-size: large;
 }
+
+#invalid-input {
+  color: red;
+}
