@@ -18,17 +18,18 @@ class ControlPanel extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    const points = this.state.points;
     if (points.length === 0) { this.setState({ validInput: false }); }
     else if (points.length === 1) {
       if (!this.state.validInput) { this.setState({ validInput: true }); }
       axios.post('/api/movement', {
-        'x': this.state.points[0].x,
-        'y': this.state.points[0].y
+        'x': points[0].x,
+        'y': points[0].y
       });
     } else {
       if (!this.state.validInput) { this.setState({ validInput: true }); }
-      const xArr = this.state.points.map(p => p.x);
-      const yArr = this.state.points.map(p => p.y);
+      const xArr = points.map(p => p.x);
+      const yArr = points.map(p => p.y);
       axios.post('/api/moveArray', {
         'x': xArr,
         'y': yArr
