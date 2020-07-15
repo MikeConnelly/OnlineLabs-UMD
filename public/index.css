@@ -52,3 +52,15 @@ button {
 #invalid-input {
   color: red;
 }
+
+#add-point, #remove-point, #submit-form {
+  width: 75px;
+  height: 40px;
+  margin: 5px;
+}
+
+#remove-point {
+  width: 60px;
+  height: 25px;
+  margin-left: 10px;
+}

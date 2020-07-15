@@ -10,7 +10,7 @@ class LoginPanel extends Component {
   render() {
     return (
       <div className="login-panel">
-        <button onClick={this.handleLogin}>login</button>
+        <button onClick={this.handleLogin}>Login</button>
       </div>
     );
   }

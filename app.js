@@ -177,6 +177,26 @@ app.post('/api/movement', (req, res) => {
   }
 });
 
+app.post('/api/moveArray', (req, res) => {
+  if (!req.user || !manager.isCurrentUser(req.user)) {
+    res.status(403).send('Not authorized');
+  } else {
+    const xArr = req.body.x;
+    const yArr = req.body.y;
+    const data = {
+      "methodName": "moveArray",
+      "responseTimeoutInSeconds": 60,
+      "payload": {
+        'x': xArr,
+        'y': yArr
+      }
+    };
+    axios.post(iotHubURL, data, iotHubConfig)
+      .catch(err => console.log(err))
+      .then(response => res.status(200).send('ok'))
+  }
+});
+
 
 
 
