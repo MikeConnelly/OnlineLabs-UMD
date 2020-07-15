@@ -8,11 +8,11 @@ class LoginPanel extends Component {
   }
 
   render() {
-    return(
+    return (
       <div className="login-panel">
         <button onClick={this.handleLogin}>login</button>
       </div>
-    )
+    );
   }
 }
 

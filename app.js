@@ -20,7 +20,7 @@ var UserManager = require('./utils/UserManager');
 var manager = new UserManager();
 
 dotenv.config();
-const mode = process.env.MODE;
+// const mode = process.env.MODE;
 const mongo_connection = process.env.DBCONN;
 const auth_client_id = process.env.AUTHID;
 const auth_client_secret = process.env.AUTHSECRET;
@@ -96,7 +96,7 @@ app.use(cookieParser(cookieKey));
 var sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection,
   autoRemove: 'interval',
-  autoRemoveInterval: 10 // in minutes
+  autoRemoveInterval: 10
 });
 app.use(session({
   store: sessionStore,
@@ -123,6 +123,7 @@ app.get('/auth/logout', (req, res) => {
   else {
     manager.userDisconnected(req.user);
     req.logout();
+    res.status(200).send('logged out');
     updateAllClients();
   }
 });
@@ -135,8 +136,6 @@ app.get('/api/info', (req, res) => {
   const loggedIn = Boolean(user);
   const queueState = manager.getQueueState(user);
   res.status(200).json({
-    'mode:': mode,
-    'port': port,
     'loggedIn': loggedIn,
     'queueState': queueState
   });
@@ -162,7 +161,7 @@ app.post('/api/movement', (req, res) => {
     const xDelta = parseInt(req.body.x);
     const yDelta = parseInt(req.body.y);
     if (isNaN(xDelta) || isNaN(yDelta)) {
-      res.send('error');
+      res.status(400).send('error');
     }
     const data = {
       "methodName": "move",

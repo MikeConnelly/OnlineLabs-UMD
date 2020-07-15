@@ -1,0 +1,50 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+button {
+  width: 75px;
+  height: 40px;
+}
+
+.header {
+  background-color: #720012;
+  padding: 1%;
+  margin-bottom: 5px;
+  color: white;
+}
+
+.dashboard-container {
+  background-color: #aaa;
+  border-radius: 15px;
+  margin-top: 10px;
+  width: 100%;
+  height: 200px;
+}
+
+.queue-info {
+  text-align: center;
+  font-size: medium;
+}
+
+.dashboard {
+  text-align: center;
+}
+
+.queue-info {
+  margin: 10px;
+}
+
+#queue-length-text, #current-user-text {
+  margin: 10px;
+  display: inline;
+}
+
+#is-current-user {
+  font-size: medium;
+}
+
+.queued-panel {
+  font-size: large;
+}

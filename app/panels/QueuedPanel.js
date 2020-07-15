@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 
 class QueuedPanel extends Component {
   render() {
-    return(
+    return (
       <div className="queued-panel">
-        <p>waiting in queue...</p>
+        {`#${this.props.placeInQueue} in the queue`}
       </div>
-    )
+    );
   }
 }
 

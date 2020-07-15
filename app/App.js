@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Header from './Header';
+import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
-// import TestComp from './TestComp';
 
 class App extends Component {
 
@@ -24,10 +25,11 @@ class App extends Component {
 
   render() {
     const { loggedIn } = this.state;
-
     return (
       <div id="app-container">
-        <button onClick={this.handleLogout}>logout</button>
+        {loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>}
+        <Header />
+        <VideoContainer />
         <DashboardContainer loggedIn={loggedIn} setLoggedIn={this.setLoggedIn} />
       </div>
     );

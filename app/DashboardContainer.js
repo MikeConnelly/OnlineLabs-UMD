@@ -18,17 +18,16 @@ class DashboardContainer extends Component {
         placeInQueue: 0,
         queueLength: 0,
         currentUserName: ''
-      },
-      endpoint: ''
+      }
     };
-    this.setSocketEndpoint = this.setSocketEndpoint.bind(this);
+    // this.setSocketEndpoint = this.setSocketEndpoint.bind(this);
     this.getPanel = this.getPanel.bind(this);
     this.handleEnqueue = this.handleEnqueue.bind(this);
   }
 
   componentDidMount() {
     axios.get('/api/info').then(res => {
-      this.setSocketEndpoint(res.data.mode, res.data.port);
+      // this.setSocketEndpoint(res.data.mode, res.data.port);
       this.setState({ queueState: res.data.queueState });
       this.props.setLoggedIn(res.data.loggedIn);
     });
@@ -47,10 +46,10 @@ class DashboardContainer extends Component {
   //   }
   // }
 
-  setSocketEndpoint(mode, port) {
-    const url = (mode === 'dev') ? `http://localhost:${port}` : `https://enee101online-webapp.herokuapp.com:${port}`;
-    this.setState({ endpoint: url });
-  }
+  // setSocketEndpoint(mode, port) {
+  //   const url = (mode === 'dev') ? `http://localhost:${port}` : `https://enee101online-webapp.herokuapp.com:${port}`;
+  //   this.setState({ endpoint: url });
+  // }
 
   handleEnqueue() {
     // axios.post('/api/enqueue').then(res => {
@@ -63,7 +62,7 @@ class DashboardContainer extends Component {
     if (this.state.queueState.isCurrentUser) {
       return <ControlPanel />
     } else if (this.state.queueState.inQueue) {
-      return <QueuedPanel />
+      return <QueuedPanel placeInQueue={this.state.queueState.placeInQueue} />
     } else if (this.props.loggedIn) { // logged in but haven't enqueued
       return <NotQueuedPanel enqueue={this.handleEnqueue} />
     } else { // login button
@@ -73,14 +72,20 @@ class DashboardContainer extends Component {
 
   render() {
     const { inQueue, isCurrentUser, placeInQueue, queueLength, currentUserName } = this.state.queueState;
-    console.log(`socket info update: ${JSON.stringify(this.state.queueState)}`);
+    const personWord = (queueLength === 1) ? 'person' : 'people';
+    // console.log(`socket info update: ${JSON.stringify(this.state.queueState)}`);
 
     return (
       <div className="dashboard-container">
         <div className="queue-info">
-          {`${queueLength} people in queue`}
-          <br />
-          {`current user: ${currentUserName}`}
+          {!isCurrentUser ? (
+            <div>
+              <p id="queue-length-text">{`${queueLength} ${personWord} in the queue`}</p>
+              <p id="current-user-text">{`current user: ${currentUserName}`}</p>
+            </div>
+          ) : (
+            <p id="is-current-user">You are in control!</p>
+          )}
         </div>
         <div className="dashboard">
           {this.getPanel()}
