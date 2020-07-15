@@ -86,14 +86,12 @@ class UserManager {
    * @returns {Object} queue info
    */
   getQueueState(user) {
-    const currentUser = this.getCurrentUser();
-
     const placeInQueue = user ? this.getPlaceInQueue(user) : 0; // 0 if user not there
     const queueLength = this.getLength();
-    const currentUserName = currentUser ? currentUser.name : 'None'
+    const currentUserName = this.currentUser ? this.currentUser.name : 'None'
     const isCurrentUser = user ? this.isCurrentUser(user) : false;
-    const inQueue = (placeInQueue > 0) ? true : false;
-
+    const inQueue = (placeInQueue > 0);
+ 
     return {
       'inQueue': inQueue,
       'isCurrentUser': isCurrentUser,

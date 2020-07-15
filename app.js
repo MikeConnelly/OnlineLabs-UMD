@@ -121,10 +121,9 @@ app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => 
 app.get('/auth/logout', (req, res) => {
   if (!req.user) { res.status(400).send('not logged in'); }
   else {
-    console.log('logout');
     manager.userDisconnected(req.user);
     req.logout();
-    res.status(200).json(manager.getQueueState(undefined));
+    updateAllClients();
   }
 });
 
@@ -143,17 +142,17 @@ app.get('/api/info', (req, res) => {
   });
 });
 
-app.post('/api/enqueue', (req, res) => {
-  if (!req.user) {
-    res.redirect('/auth/google');
-  } else {
-    const user = req.user;
-    manager.addUser(user);
-    
-    const queueState = manager.getQueueState(user);
-    res.status(200).json(queueState);
-  }
-});
+// app.post('/api/enqueue', (req, res) => {
+//   if (!req.user) {
+//     res.redirect('/auth/google');
+//   } else {
+//     const user = req.user;
+//     manager.addUser(user);
+//     
+//     const queueState = manager.getQueueState(user);
+//     res.status(200).json(queueState);
+//   }
+// });
 
 app.post('/api/movement', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
@@ -186,9 +185,9 @@ app.post('/api/movement', (req, res) => {
  * send queue state to clients
  * @param {SocketIO.Socket} socket socket the information is being sent to
  */
-function updateState(socket) {
+function updateClient(socket) {
   let user;
-  if (!socket.request.user.logged_in) { 
+  if (!socket.request.user.logged_in) {
     user = undefined;
   } else {
     user = socket.request.user;
@@ -199,13 +198,54 @@ function updateState(socket) {
 }
 
 /**
+ * send queue state to all clients
+ */
+function updateAllClients() {
+  Object.keys(io.sockets.sockets).forEach(id => {
+    updateClient(io.sockets.connected[id]);
+  });
+}
+
+/**
+ * handle user enqueue event
+ * @param {SocketIO.Socket} socket socket of the client entering the queue
+ */
+function handleEnqueue(socket) {
+  if (!socket.request.user.logged_in) { return; }
+  const user = socket.request.user;
+  manager.addUser(user);
+}
+
+/**
  * handle user disconnect
- * @param {SocketIO.Socket} socket socket of the user that disconnected
+ * @param {SocketIO.Socket} socket socket of the client that disconnected
  */
 function handleDisconnect(socket) {
   const user = socket.request.user;
   manager.userDisconnected(user);
 }
+
+// where socket connections and events are handled
+io.on('connection', socket => {
+  console.log('new connection');
+
+  socket.on('enqueue', () => {
+    // enqueue user
+    handleEnqueue(socket)
+    // broadcast update to all other clients
+    updateAllClients();
+  });
+
+  socket.on('disconnect', () => {
+    if (socket.request.user) {
+      console.log('user disconnected: ' + socket.request.user.name);
+      // use socket to dequeue user
+      handleDisconnect(socket);
+      // broadcast update to all other clients
+      updateAllClients();
+    }
+  });
+});
 
 /**
  * Optional success callback for passport-socket.io
@@ -223,6 +263,7 @@ function onAuthorizeFail(data, message, error, accept) {
   accept(null, false);
 }
 
+// inject user and session data from passport into sockets
 io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
   secret: cookieKey,
@@ -231,23 +272,7 @@ io.use(passportSocketIo.authorize({
   fail: onAuthorizeFail
 }));
 
-let interval; // interval to update state for each socket
-io.on('connection', socket => {
-  console.log('new connection');
-
-  if (interval) { clearInterval(interval); }
-  interval = setInterval(() => updateState(socket), 3000); // update every 3 seconds
-
-  socket.on('disconnect', () => {
-    if (socket.request.user) {
-      console.log('user disconnected ' + socket.request.user.name);
-      clearInterval(interval);
-      // use socket to dequeue user
-      handleDisconnect(socket);
-    }
-  });
-});
-
+// go
 http.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
