@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
-import LoginPanel from './panels/LoginPanel';
-import NotQueuedPanel from './panels/NotQueuedPanel';
+// import LoginPanel from './panels/LoginPanel';
+// import NotQueuedPanel from './panels/NotQueuedPanel';
 import QueuedPanel from './panels/QueuedPanel';
 import ControlPanel from './panels/ControlPanel';
+import EnterQueuePanel from './panels/EnterQueuePanel';
 const socket = io();
 
 class DashboardContainer extends Component {
@@ -63,17 +64,20 @@ class DashboardContainer extends Component {
       return <ControlPanel />
     } else if (this.state.queueState.inQueue) {
       return <QueuedPanel placeInQueue={this.state.queueState.placeInQueue} />
-    } else if (this.props.loggedIn) { // logged in but haven't enqueued
-      return <NotQueuedPanel enqueue={this.handleEnqueue} />
-    } else { // login button
-      return <LoginPanel />
-    }
+    } 
+    // else if (this.props.loggedIn) { // logged in but haven't enqueued
+    //   return <NotQueuedPanel enqueue={this.handleEnqueue} />
+    // } else { // login button
+    //   return <LoginPanel />
+    // }
+    return <EnterQueuePanel />
   }
 
   render() {
     const { inQueue, isCurrentUser, placeInQueue, queueLength, currentUserName } = this.state.queueState;
     const personWord = (queueLength === 1) ? 'person' : 'people';
     // console.log(`socket info update: ${JSON.stringify(this.state.queueState)}`);
+    console.log(JSON.stringify(this.state.queueState));
 
     return (
       <div className="dashboard-container">

@@ -19,7 +19,8 @@ class UserManager {
    * @returns {boolean} true if user is in the queue
    */
   userInQueue(user) {
-    return this.queue.some(u => u.googleId === user.googleId);
+    // return this.queue.some(u => u.googleId === user.googleId);
+    return this.queue.some(u => u.name === user.name);
   }
 
   /**
@@ -47,7 +48,8 @@ class UserManager {
    * @returns {number} user's place in queue or 0 if the user does not exist in the queue
    */
   getPlaceInQueue(user) {
-    return (this.queue.findIndex(u => u.googleId === user.googleId) + 1);
+    // return (this.queue.findIndex(u => u.googleId === user.googleId) + 1);
+    return (this.queue.findIndex(u => u.name === user.name) + 1);
   }
 
   /**
@@ -57,7 +59,8 @@ class UserManager {
    */
   isCurrentUser(user) {
     if (!this.currentUser) { return false; }
-    return (this.currentUser.googleId === user.googleId);
+    // return (this.currentUser.googleId === user.googleId);
+    return (this.currentUser.name === user.name);
   }
 
   /**
@@ -74,7 +77,8 @@ class UserManager {
    */
   userDisconnected(user) {
     if (this.userInQueue(user)) {
-      this.queue = this.queue.filter(u => u.googleId !== user.googleId);
+      // this.queue = this.queue.filter(u => u.googleId !== user.googleId);
+      this.queue = this.queue.filter(u => u.name !== user.name);
     } else if (this.isCurrentUser(user)) {
       this.replaceCurrentUser();
     }

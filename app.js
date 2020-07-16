@@ -14,7 +14,8 @@ var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 var passportSocketIo = require('passport.socketio');
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+// var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var User = require('./models/User');
 var UserManager = require('./utils/UserManager');
 var manager = new UserManager();
@@ -49,27 +50,43 @@ mongoose.connection.once('open', () => {
 });
 
 // setup passport to use Google Strategy
+// passport.use(
+//   new GoogleStrategy({
+//       clientID: auth_client_id,
+//       clientSecret: auth_client_secret,
+//       callbackURL: '/auth/google/redirect'
+//     }, (accessToken, refreshToken, profile, done) => {
+//       User.findOne({ googleId: profile.id }).then(currentUser => {
+//         if (currentUser) {
+//           done(null, currentUser);
+//         } else {
+//           new User({
+//             googleId: profile.id,
+//             name: profile.displayName
+//           }).save().then(newUser => {
+//             done(null, newUser);
+//           })
+//         }
+//       })
+//     }
+//   )
+// );
+
 passport.use(
-  new GoogleStrategy({
-      clientID: auth_client_id,
-      clientSecret: auth_client_secret,
-      callbackURL: '/auth/google/redirect'
-    }, (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id }).then(currentUser => {
-        if (currentUser) {
-          done(null, currentUser);
-        } else {
-          new User({
-            googleId: profile.id,
-            name: profile.displayName
-          }).save().then(newUser => {
-            done(null, newUser);
-          })
-        }
-      })
-    }
-  )
-);
+  new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'username'  
+  }, (username, password, done) => {
+    User.findOne({ name: username }).then(currentUser => {
+      if (currentUser) { done(null, currentUser); }
+      else {
+        new User({
+          name: username
+        }).save().then(newUser => done(null, newUser))
+      }
+    })
+  })
+)
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -84,7 +101,7 @@ passport.deserializeUser((id, done) => {
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 // app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 // app.set('view engine', 'handlebars');
@@ -112,10 +129,18 @@ app.use(passport.session());
 
 
 // auth routes
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+// app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+// 
+// app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
+//   res.redirect('/');
+// });
 
-app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
-  res.redirect('/');
+app.post('/auth/login', passport.authenticate('local', { failureRedirect: '/failure' }), (req, res) => {
+  // need to enqueue user
+  console.log('user: ' + req.user);
+  const user = req.user;
+  manager.addUser(user);
+  updateAllClients();
 });
 
 app.get('/auth/logout', (req, res) => {
@@ -211,6 +236,7 @@ function updateClient(socket) {
   } else {
     user = socket.request.user;
   }
+  console.log(JSON.stringify(user));
 
   const queueState = manager.getQueueState(user);
   socket.emit('QueueState', queueState);
@@ -286,6 +312,7 @@ function onAuthorizeFail(data, message, error, accept) {
 io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
   secret: cookieKey,
+  key: 'express.sid',
   store: sessionStore,
   success: onAuthorizeSuccess,
   fail: onAuthorizeFail
