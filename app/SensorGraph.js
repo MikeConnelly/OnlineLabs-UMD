@@ -57,7 +57,7 @@ class SensorGraph extends Component {
         }
       ]
     }
-    this.chartData.labels = this.timeData;
+    // this.chartData.labels = this.timeData;
     this.chartData.datasets[0].data = this.xAxisData;
     this.chartData.datasets[1].data = this.yAxisData;
   }

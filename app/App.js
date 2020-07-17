@@ -28,7 +28,7 @@ class App extends Component {
     const loggedIn = this.state.loggedIn;
     return (
       <div id="app-container">
-        {loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>}
+        {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
         <Header />
         <SensorGraph />
         <DashboardContainer loggedIn={loggedIn} setLoggedIn={this.setLoggedIn} />

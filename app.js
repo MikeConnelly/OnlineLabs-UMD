@@ -124,6 +124,7 @@ app.get('/auth/logout', (req, res) => {
   if (!req.user) { res.status(400).send('not logged in'); }
   else {
     manager.userDisconnected(req.user);
+    resetMotors(null);
     req.logout();
     res.status(200).send('logged out');
     updateAllClients();
@@ -199,8 +200,48 @@ app.post('/api/moveArray', (req, res) => {
   }
 });
 
+app.post('/api/reset', (req, res) => {
+  if (!req.user || !manager.isCurrentUser(req.user)) {
+    res.status(403).send('Not authorized');
+  } else {
+    resetMotors(() => {
+      res.status(200).send('motors reset');
+    });
+  }
+});
+
+app.post('/api/finish', (req, res) => {
+  if (!req.user || !manager.isCurrentUser(req.user)) {
+    res.status(403).send('Not authorized');
+  } else {
+    manager.replaceCurrentUser();
+    resetMotors(() => {
+      res.status(200).send('user finished');
+    });
+    updateAllClients();
+  }
+})
 
 
+
+
+/**
+ * Calls device method to reset motor position
+ * @param {Function} cb optional callback function
+ */
+function resetMotors(cb) {
+  const data = {
+    "methodName": "reset",
+    "responseTimeoutInSeconds": 60,
+    "payload": {}
+  };
+  axios.post(iotHubURL, data, iotHubConfig)
+    .catch(err => console.log(err))
+    .then(response => {
+      console.log('motors reset');
+      if (cb) { cb(); }
+    });
+}
 
 /**
  * send queue state to clients
@@ -244,6 +285,7 @@ function handleEnqueue(socket) {
 function handleDisconnect(socket) {
   const user = socket.request.user;
   manager.userDisconnected(user);
+  resetMotors(null);
 }
 
 // where socket connections and events are handled

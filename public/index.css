@@ -20,7 +20,8 @@ button {
   border-radius: 15px;
   margin-top: 10px;
   width: 100%;
-  height: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .queue-info {
@@ -53,14 +54,29 @@ button {
   color: red;
 }
 
-#add-point, #remove-point, #submit-form {
-  width: 75px;
-  height: 40px;
+#add-point, #submit-form  {
+  width: 80px;
+  height: 35px;
   margin: 5px;
 }
 
 #remove-point {
-  width: 60px;
-  height: 25px;
+  width: 80px;
+  height: 35px;
   margin-left: 10px;
+}
+
+#reset-position {
+  background-color: green;
+}
+
+#finish {
+  background-color: red;
+  margin-left: 10px;
+}
+
+#other-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

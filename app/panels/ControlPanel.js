@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+const defaultPoints = [ { x: 0, y: 0 } ];
 
 class ControlPanel extends Component {
 
@@ -14,6 +15,21 @@ class ControlPanel extends Component {
     this.handleAddPoint = this.handleAddPoint.bind(this);
     this.handlePointUpdate = this.handlePointUpdate.bind(this);
     this.handleRemovePoint = this.handleRemovePoint.bind(this);
+
+    this.handleResetPosition = this.handleResetPosition.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
+  }
+  
+  handleResetPosition(_event) {
+    axios.post('/api/reset').then(res => {
+      console.log('motors reset');
+    });
+  }
+
+  handleFinish(_event) {
+    axios.post('/api/finish').then(res => {
+      console.log('finished');
+    })
   }
 
   handleSubmit(event) {
@@ -26,6 +42,7 @@ class ControlPanel extends Component {
         'x': points[0].x,
         'y': points[0].y
       });
+      this.setState({ 'points': defaultPoints });
     } else {
       if (!this.state.validInput) { this.setState({ validInput: true }); }
       const xArr = points.map(p => p.x);
@@ -34,6 +51,7 @@ class ControlPanel extends Component {
         'x': xArr,
         'y': yArr
       });
+      this.setState({ 'points': defaultPoints });
     }
   }
 
@@ -76,24 +94,34 @@ class ControlPanel extends Component {
   render() {
     return (
       <div className="control-panel">
-        <form onSubmit={this.handleSubmit}>
+        <form id="control-form" onSubmit={this.handleSubmit}>
           {this.state.points.map((point, index) => (
             <div className="point">
+              <label for="x">x axis</label>
               <input
+                name="x"
                 type="number"
+                className="control-input"
                 onChange={event => this.handlePointUpdate(event, 'x', index)}
               />
+              <label for="y">y axis</label>
               <input
+                name="y"
                 type="number"
+                className="control-input"
                 onChange={event => this.handlePointUpdate(event, 'y', index)}
               />
-              <button id="remove-point" onClick={event => this.handleRemovePoint(index)}>remove</button>
+              <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} value="remove" />
             </div>
           ))}
-          <button id="add-point" onClick={this.handleAddPoint}>add point</button>
+          <input id="add-point" type="button" value="add point" onClick={this.handleAddPoint} />
           <input id="submit-form" type="submit" value="submit" />
         </form>
         {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
+        <div id="other-controls">
+          <button id="reset-position" onClick={this.handleResetPosition}>reset position</button>
+          <button id="finish" onClick={this.handleFinish}>finish</button>
+        </div>
       </div>
     );
   }
