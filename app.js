@@ -77,6 +77,7 @@ passport.use(
     usernameField: 'username',
     passwordField: 'username'  
   }, (username, password, done) => {
+    console.log('passport authorization function');
     User.findOne({ name: username }).then(currentUser => {
       if (currentUser) { done(null, currentUser); }
       else {
@@ -137,10 +138,14 @@ app.use(passport.session());
 
 app.post('/auth/login', passport.authenticate('local', { failureRedirect: '/failure' }), (req, res) => {
   // need to enqueue user
-  console.log('user: ' + req.user);
-  const user = req.user;
-  manager.addUser(user);
+  // console.log('user: ' + req.user);
+  // const user = req.user;
+  // manager.addUser(user);
+  // updateAllClients();
+  console.log(`user: ${req.user}, session: ${JSON.stringify(req.session)}`);
+  manager.addUser(req.user);
   updateAllClients();
+  res.redirect('/');
 });
 
 app.get('/auth/logout', (req, res) => {
@@ -157,6 +162,7 @@ app.get('/auth/logout', (req, res) => {
 
 
 app.get('/api/info', (req, res) => {
+  console.log(`user: ${req.user}, session: ${JSON.stringify(req.session)}`);
   const user = req.user;
   const loggedIn = Boolean(user);
   const queueState = manager.getQueueState(user);
@@ -305,14 +311,14 @@ function onAuthorizeSuccess(data, accept) {
  */
 function onAuthorizeFail(data, message, error, accept) {
   console.log('failed connection to socket.io: ', message);
-  accept(null, false);
+  //accept(null, false);
+  accept(new Error(message));
 }
 
 // inject user and session data from passport into sockets
 io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
   secret: cookieKey,
-  key: 'express.sid',
   store: sessionStore,
   success: onAuthorizeSuccess,
   fail: onAuthorizeFail
