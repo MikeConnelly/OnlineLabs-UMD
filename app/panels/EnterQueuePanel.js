@@ -27,7 +27,7 @@ export class EnterQueuePanel extends Component {
     return (
       <div className="enter-queue-panel">
         <form onSubmit={this.handleEnterQueue}>
-          <input type="text" name="username" onChange={this.handleNameUpdate} />
+          <input type="text" name="username" onChange={this.handleNameUpdate} autoComplete="off" />
           <input type="submit" value="submit" />
         </form>
       </div>

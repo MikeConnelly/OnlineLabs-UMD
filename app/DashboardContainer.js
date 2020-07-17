@@ -27,7 +27,7 @@ class DashboardContainer extends Component {
   }
 
   componentDidMount() {
-    axios.get('/api/info').then(res => {
+    axios.get('/api/info', {withCredentials: true}).then(res => {
       // this.setSocketEndpoint(res.data.mode, res.data.port);
       this.setState({ queueState: res.data.queueState });
       this.props.setLoggedIn(res.data.loggedIn);

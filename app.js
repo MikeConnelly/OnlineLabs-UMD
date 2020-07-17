@@ -102,7 +102,7 @@ passport.deserializeUser((id, done) => {
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false })); // needs to be false for sessions to work for some reason???
 app.use(cors());
 // app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 // app.set('view engine', 'handlebars');
@@ -137,16 +137,16 @@ app.use(passport.session());
 // });
 
 app.post('/auth/login', passport.authenticate('local', { failureRedirect: '/failure' }), (req, res) => {
-  // need to enqueue user
-  // console.log('user: ' + req.user);
-  // const user = req.user;
-  // manager.addUser(user);
-  // updateAllClients();
-  console.log(`user: ${req.user}, session: ${JSON.stringify(req.session)}`);
+  console.log(`/auth/login user: ${req.user}, session: ${JSON.stringify(req.session)}`);
   manager.addUser(req.user);
   updateAllClients();
-  res.redirect('/');
 });
+
+// app.get('/done', (req, res) => {
+//   console.log(`/auth/login user: ${req.user}, session: ${JSON.stringify(req.session)}`);
+//   manager.addUser(req.user);
+//   updateAllClients();
+// });
 
 app.get('/auth/logout', (req, res) => {
   if (!req.user) { res.status(400).send('not logged in'); }
@@ -162,7 +162,7 @@ app.get('/auth/logout', (req, res) => {
 
 
 app.get('/api/info', (req, res) => {
-  console.log(`user: ${req.user}, session: ${JSON.stringify(req.session)}`);
+  console.log(`/api/info user: ${req.user}, session: ${JSON.stringify(req.session)}`);
   const user = req.user;
   const loggedIn = Boolean(user);
   const queueState = manager.getQueueState(user);
