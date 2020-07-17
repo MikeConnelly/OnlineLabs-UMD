@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header';
-import VideoContainer from './VideoContainer';
+// import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
+import SensorGraph from './SensorGraph';
 
 class App extends Component {
 
@@ -24,12 +25,12 @@ class App extends Component {
   }
 
   render() {
-    const { loggedIn } = this.state;
+    const loggedIn = this.state.loggedIn;
     return (
       <div id="app-container">
         {loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>}
         <Header />
-        <VideoContainer />
+        <SensorGraph />
         <DashboardContainer loggedIn={loggedIn} setLoggedIn={this.setLoggedIn} />
       </div>
     );

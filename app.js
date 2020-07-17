@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-// var exphbs = require('express-handlebars');
 var path = require('path');
 var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
@@ -17,6 +16,9 @@ var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('./models/User');
 var UserManager = require('./utils/UserManager');
+var EventHubReader = require('./scripts/event-hub-reader');
+var Client = require('azure-iothub').Client;
+var config = require('./scripts/config');
 var manager = new UserManager();
 
 dotenv.config();
@@ -295,3 +297,41 @@ io.use(passportSocketIo.authorize({
 http.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
+
+const iotHubConnectionString = config.iotHubConnectionString;
+const eventHubConsumerGroup = config.eventHubConsumerGroup;
+
+const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
+
+(async () => {
+  await eventHubReader.startReadMessage((message, date, deviceId) => {
+    try {
+      const payload = {
+        IotData: message,
+        MessageDate: date || Date.now().toISOString(),
+        DeviceId: deviceId
+      };
+      const fakePayload = {
+        IotData: {
+          messageId: 1,
+          x_distance: 11,
+          y_distance: 3,
+        },
+        MessageDate: Date.now().toISOString(),
+        DeviceId: 'MyNodeESP32'
+      }
+      // broadcast shit
+      // console.log(JSON.stringify(payload));
+      broadcastSensorData(fakePayload);
+    } catch (err) {
+      console.log(`${err}, ${JSON.stringify(message)}`);
+    }
+  })
+})().catch();
+
+function broadcastSensorData(payload) {
+  Object.keys(io.sockets.sockets).forEach(id => {
+    const socket = io.sockets.connected[id]
+    socket.emit('graph-data', payload);
+  });
+}
