@@ -350,21 +350,11 @@ const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsum
     try {
       const payload = {
         IotData: message,
-        MessageDate: date || Date.now().toISOString(),
         DeviceId: deviceId
       };
-      const fakePayload = {
-        IotData: {
-          messageId: 1,
-          x_distance: 11,
-          y_distance: 3,
-        },
-        MessageDate: Date.now().toISOString(),
-        DeviceId: 'MyNodeESP32'
-      }
       // broadcast shit
       // console.log(JSON.stringify(payload));
-      broadcastSensorData(fakePayload);
+      broadcastSensorData(payload);
     } catch (err) {
       console.log(`${err}, ${JSON.stringify(message)}`);
     }

@@ -28,7 +28,6 @@ class SensorGraph extends Component {
 
     this.chartRef = React.createRef();
     this.maxLen = 50;
-    this.timeData = new Array(this.maxLen);
     this.xAxisData = new Array(this.maxLen);
     this.yAxisData = new Array(this.maxLen);
     this.chartData = {
@@ -72,19 +71,17 @@ class SensorGraph extends Component {
 
     socket.on('chart-data', data => {
       console.log(JSON.stringify(data));
-      if (!data.MessageDate || (!data.IotData.x_distance && !data.y_distance)) { return; }
-      this.addData(data.MessageDate, data.IotData.x_distance, data.IotData.y_distance);
+      if (!data.IotData.x_distance && !data.y_distance) { return; }
+      this.addData(data.IotData.x_distance, data.IotData.y_distance);
       chart.update();
     });
   }
 
-  addData(time, xAxis, yAxis) {
-    this.timeData.push(time);
+  addData(xAxis, yAxis) {
     this.xAxisData.push(xAxis);
     this.yAxisData.push(yAxis);
 
-    if (this.timeData.length > this.maxLen) {
-      this.timeData.shift();
+    if (this.xAxisData.length > this.maxLen) {
       this.xAxisData.shift();
       this.yAxisData.shift();
     }
