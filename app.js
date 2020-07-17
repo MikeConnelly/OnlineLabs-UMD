@@ -31,6 +31,9 @@ const sas = process.env.SAS;
 const iotHubURL = process.env.URL;
 const port = process.env.PORT || 3000;
 
+const iotHubConnectionString = config.iotHubConnectionString;
+const eventHubConsumerGroup = config.eventHubConsumerGroup;
+
 const iotHubConfig = {
   'headers': {
     'Content-Type': 'Application/json',
@@ -174,10 +177,11 @@ app.post('/api/movement', (req, res) => {
         'y': yDelta
       }
     };
-    axios.post(iotHubURL, data, iotHubConfig)
-      .catch(err => console.log(err))
-      .then(response => res.status(200).send('ok'))
-  }
+    deviceMethod(data, () => res.status(200).send('ok'));
+    // axios.post(iotHubURL, data, iotHubConfig)
+    //   .catch(err => console.log(err))
+    //   .then(response => res.status(200).send('ok'))
+  }// 
 });
 
 app.post('/api/moveArray', (req, res) => {
@@ -194,9 +198,10 @@ app.post('/api/moveArray', (req, res) => {
         'y': yArr
       }
     };
-    axios.post(iotHubURL, data, iotHubConfig)
-      .catch(err => console.log(err))
-      .then(response => res.status(200).send('ok'))
+    deviceMethod(data, () => res.status(200).send('ok'));
+    // axios.post(iotHubURL, data, iotHubConfig)
+    //   .catch(err => console.log(err))
+    //   .then(response => res.status(200).send('ok'))
   }
 });
 
@@ -235,12 +240,13 @@ function resetMotors(cb) {
     "responseTimeoutInSeconds": 60,
     "payload": {}
   };
-  axios.post(iotHubURL, data, iotHubConfig)
-    .catch(err => console.log(err))
-    .then(response => {
-      console.log('motors reset');
-      if (cb) { cb(); }
-    });
+  deviceMethod(data, () => res.status(200).send('ok'));
+  // axios.post(iotHubURL, data, iotHubConfig)
+  //   .catch(err => console.log(err))
+  //   .then(response => {
+  //     console.log('motors reset');
+  //     if (cb) { cb(); }
+  //   });
 }
 
 /**
@@ -340,8 +346,22 @@ http.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 
-const iotHubConnectionString = config.iotHubConnectionString;
-const eventHubConsumerGroup = config.eventHubConsumerGroup;
+var client = Client.fromConnectionString(iotHubConnectionString);
+
+/**
+ * Wrapper for getting SAS key and sending a post request to our device
+ * @param {Object} data direct method parameters
+ */
+function deviceMethod(data, cb) {
+  client.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
+    if (err) {
+      console.log('failed to invoke device method...');
+    } else {
+      console.log(JSON.stringify(result, null, 2));
+      cb();
+    }
+  });
+}
 
 const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 
