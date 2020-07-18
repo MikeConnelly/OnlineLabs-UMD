@@ -3,6 +3,7 @@ class UserManager {
   constructor() {
     this.queue = [];
     this.currentUser = null;
+    // this.currentUserInactiveInterval = null;
   }
     
   /**
@@ -73,13 +74,13 @@ class UserManager {
    * @param {User} user user or null
    */
   setCurrentUser(user) {
-    if (this.currentUserInactiveInterval) { this.currentUserInactiveInterval = null }
+    // if (this.currentUserInactiveInterval) { this.currentUserInactiveInterval = null; }
     this.currentUser = user;
-    if (user) {
-      this.currentUserInactiveInterval = setInterval(() => {
-        this.replaceCurrentUser();
-      }, 1000*60*3); // 3 mins
-    }
+    // if (user) {
+    //   this.currentUserInactiveInterval = setInterval(() => {
+    //     this.replaceCurrentUser();
+    //   }, 1000*60*3); // 3 mins
+    // }
   }
 
   /**

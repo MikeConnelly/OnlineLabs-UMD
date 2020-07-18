@@ -357,7 +357,7 @@ function deviceMethod(data, cb) {
     if (err) {
       console.log('failed to invoke device method...');
     } else {
-      console.log(JSON.stringify(result, null, 2));
+      console.log('successfully invoked device method');
       cb();
     }
   });
