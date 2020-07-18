@@ -3,14 +3,16 @@ import axios from 'axios';
 import Header from './Header';
 // import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
-import SensorGraph from './SensorGraph';
+import GraphWrapper from './GraphWrapper';
+import io from 'socket.io-client';
+const socket = io();
 
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false
+      loggedIn: false,
     };
     this.setLoggedIn = this.setLoggedIn.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
@@ -30,8 +32,12 @@ class App extends Component {
       <div id="app-container">
         {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
         <Header />
-        <SensorGraph />
-        <DashboardContainer loggedIn={loggedIn} setLoggedIn={this.setLoggedIn} />
+        <GraphWrapper socket={socket} />
+        <DashboardContainer
+          loggedIn={loggedIn}
+          setLoggedIn={this.setLoggedIn}
+          socket={socket}
+        />
       </div>
     );
   }

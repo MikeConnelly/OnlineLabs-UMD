@@ -96,15 +96,15 @@ class ControlPanel extends Component {
       <div className="control-panel">
         <form id="control-form" onSubmit={this.handleSubmit}>
           {this.state.points.map((point, index) => (
-            <div className="point">
-              <label for="x">x axis</label>
+            <div className="point" key={index}>
+              <label htmlFor="x">x axis</label>
               <input
                 name="x"
                 type="number"
                 className="control-input"
                 onChange={event => this.handlePointUpdate(event, 'x', index)}
               />
-              <label for="y">y axis</label>
+              <label htmlFor="y">y axis</label>
               <input
                 name="y"
                 type="number"

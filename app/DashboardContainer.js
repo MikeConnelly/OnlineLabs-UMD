@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import io from 'socket.io-client';
 import LoginPanel from './panels/LoginPanel';
 import NotQueuedPanel from './panels/NotQueuedPanel';
 import QueuedPanel from './panels/QueuedPanel';
 import ControlPanel from './panels/ControlPanel';
-const socket = io();
 
 class DashboardContainer extends Component {
   
@@ -32,7 +30,7 @@ class DashboardContainer extends Component {
       this.props.setLoggedIn(res.data.loggedIn);
     });
 
-    socket.on('QueueState', data => {
+    this.props.socket.on('QueueState', data => {
       this.setState({ queueState: data });
     });
   }
@@ -55,7 +53,7 @@ class DashboardContainer extends Component {
     // axios.post('/api/enqueue').then(res => {
     //   this.setState({ queueState: res.data });
     // });
-    socket.emit('enqueue');
+    this.props.socket.emit('enqueue');
   }
 
   getPanel() {

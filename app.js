@@ -364,17 +364,20 @@ function deviceMethod(data, cb) {
 }
 
 const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
+let i = 0;
 
 (async () => {
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {
       const payload = {
+        index: i,
         IotData: message,
         DeviceId: deviceId
       };
       // broadcast shit
       // console.log(JSON.stringify(payload));
       broadcastSensorData(payload);
+      i++;
     } catch (err) {
       console.log(`${err}, ${JSON.stringify(message)}`);
     }
@@ -384,6 +387,7 @@ const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsum
 function broadcastSensorData(payload) {
   Object.keys(io.sockets.sockets).forEach(id => {
     const socket = io.sockets.connected[id]
-    socket.emit('graph-data', payload);
+    console.log(`broadcasting data: ${JSON.stringify(payload)}`);
+    socket.emit('sensor-data', payload);
   });
 }
