@@ -28,7 +28,7 @@ class UserManager {
    * @param {User} user The user to enqueue
    */
   addUser(user) {
-    if (this.queue.length === 0 && !this.currentUser) { this.currentUser = user; }
+    if (this.queue.length === 0 && !this.currentUser) { this.setCurrentUser(user); }
     else if (!this.userInQueue(user)) { this.queue.push(user); }
   }
 
@@ -38,7 +38,7 @@ class UserManager {
    */
   replaceCurrentUser() {
     const shifted = this.queue.shift();
-    this.currentUser = shifted ? shifted : null;
+    this.setCurrentUser((shifted ? shifted : null));
   }
 
   /**
@@ -66,6 +66,20 @@ class UserManager {
    */
   getCurrentUser() {
     return this.currentUser;
+  }
+
+  /**
+   * Set the current user
+   * @param {User} user user or null
+   */
+  setCurrentUser(user) {
+    if (this.currentUserInactiveInterval) { this.currentUserInactiveInterval = null }
+    this.currentUser = user;
+    if (user) {
+      this.currentUserInactiveInterval = setInterval(() => {
+        this.replaceCurrentUser();
+      }, 1000*60*3); // 3 mins
+    }
   }
 
   /**
