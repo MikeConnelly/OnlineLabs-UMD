@@ -4,10 +4,25 @@ body {
 }
 
 .header {
-  background-color: #720012;
-  padding: 1%;
+  width: 100%;
   margin-bottom: 5px;
-  color: white;
+  display: flex;
+  flex-direction: row;
+}
+
+.inner-header {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 6;
+}
+
+.inner-header .underline {
+  background-color: #720012;
+  height: 10px;
+}
+
+.inner-header .header-text {
+  align-self: center;
 }
 
 .dashboard-container {
@@ -89,4 +104,5 @@ body {
 #other-controls {
   display: flex;
   flex-direction: column;
+  margin-left: 10px;
 }
