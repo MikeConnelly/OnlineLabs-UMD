@@ -61,10 +61,6 @@ body {
   font-size: large;
 }
 
-#invalid-input {
-  color: red;
-}
-
 #add-point, #submit-form  {
   width: 80px;
   height: 35px;
@@ -105,4 +101,12 @@ body {
   display: flex;
   flex-direction: column;
   margin-left: 10px;
+}
+
+#invalid-input, #command-error {
+  color: red;
+}
+
+#command-success {
+  color: rgb(38, 255, 0);
 }

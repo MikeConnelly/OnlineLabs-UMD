@@ -147,17 +147,20 @@ app.get('/api/info', (req, res) => {
   });
 });
 
-// app.post('/api/enqueue', (req, res) => {
-//   if (!req.user) {
-//     res.redirect('/auth/google');
-//   } else {
-//     const user = req.user;
-//     manager.addUser(user);
-//     
-//     const queueState = manager.getQueueState(user);
-//     res.status(200).json(queueState);
-//   }
-// });
+// This route is handled by socket.on('enqueue') instead
+/*
+app.post('/api/enqueue', (req, res) => {
+  if (!req.user) {
+    res.redirect('/auth/google');
+  } else {
+    const user = req.user;
+    manager.addUser(user);
+    
+    const queueState = manager.getQueueState(user);
+    res.status(200).json(queueState);
+  }
+});
+*/
 
 app.post('/api/movement', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
@@ -177,7 +180,7 @@ app.post('/api/movement', (req, res) => {
         'y': yDelta
       }
     };
-    deviceMethod(data, () => res.status(200).send('ok'));
+    deviceMethod(data, err => res.status(200).send('ok'));
     // axios.post(iotHubURL, data, iotHubConfig)
     //   .catch(err => console.log(err))
     //   .then(response => res.status(200).send('ok'))
@@ -198,18 +201,29 @@ app.post('/api/moveArray', (req, res) => {
         'y': yArr
       }
     };
-    deviceMethod(data, () => res.status(200).send('ok'));
+    deviceMethod(data, err => res.status(200).send('ok'));
     // axios.post(iotHubURL, data, iotHubConfig)
     //   .catch(err => console.log(err))
     //   .then(response => res.status(200).send('ok'))
   }
 });
 
+// route should not be called from UI, use /api/clearReset instead
 app.post('/api/reset', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
     res.status(403).send('Not authorized');
   } else {
-    resetMotors(() => {
+    resetMotors(err => {
+      res.status(200).send('motors reset');
+    });
+  }
+});
+
+app.post('/api/clearReset', (req, res) => {
+  if (!req.user || !manager.isCurrentUser(req.user)) {
+    res.status(403).send('Not authorized');
+  } else {
+    resetMotorsAndClear(err => {
       res.status(200).send('motors reset');
     });
   }
@@ -220,10 +234,10 @@ app.post('/api/finish', (req, res) => {
     res.status(403).send('Not authorized');
   } else {
     manager.replaceCurrentUser();
-    resetMotors(() => {
+    resetMotorsAndClear(err => {
       res.status(200).send('user finished');
+      updateAllClients();
     });
-    updateAllClients();
   }
 })
 
@@ -240,13 +254,27 @@ function resetMotors(cb) {
     "responseTimeoutInSeconds": 60,
     "payload": {}
   };
-  deviceMethod(data, () => res.status(200).send('ok'));
+  deviceMethod(data, cb);
   // axios.post(iotHubURL, data, iotHubConfig)
   //   .catch(err => console.log(err))
   //   .then(response => {
   //     console.log('motors reset');
   //     if (cb) { cb(); }
   //   });
+}
+
+/**
+ * Calls device method to reset motor position and clear motor queue.
+ * Should be called whenever a user clicks reset or is finished.
+ * @param {Function} cb optional callback function
+ */
+function resetMotorsAndClear(cb) {
+  const data = {
+    "methodName": "clearReset",
+    "responseTimeoutInSeconds": 60,
+    "payload": {}
+  };
+  deviceMethod(data, cb);
 }
 
 /**
@@ -355,11 +383,15 @@ var client = Client.fromConnectionString(iotHubConnectionString);
  */
 function deviceMethod(data, cb) {
   client.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
-    if (err) {
+    if (err && !(err instanceof SyntaxError)) {
+      // this gets called with a syntax error whenever invoking
+      // a device method, despite the device method actually working
+      // should look into this later but for now it can be ignored
       console.log('failed to invoke device method...');
+      if (cb) { cb(err); }
     } else {
       console.log('successfully invoked device method');
-      cb();
+      if (cb) { cb(); }
     }
   });
 }

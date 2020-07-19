@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
 // import { Line } from 'react-chartjs-2';
-// import classes from './LineGraph.module.css';
 const chartOptions = {
   scales: {
     yAxes: [{
@@ -21,6 +20,7 @@ const chartOptions = {
 };
 
 class SensorGraph extends Component {
+
   constructor(props) {
     super(props);
     this.chartRef = React.createRef();
@@ -59,7 +59,7 @@ class SensorGraph extends Component {
           }
         ]
       }
-    })
+    });
   }
 
   componentDidUpdate() {

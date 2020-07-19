@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-const defaultPoints = [ { x: 0, y: 0 } ];
+const RESPONSE_TEXT_DELAY = 3000;
 
 class ControlPanel extends Component {
 
@@ -8,22 +8,36 @@ class ControlPanel extends Component {
     super(props);
     this.state = {
       validInput: true,
-      points: [ { x: 0, y: 0 } ]
+      enableForm: true,
+      points: [ { x: 0, y: 0 } ],
+      commandSuccess: false,
+      commandError: false
     };
+    this.handleResetPosition = this.handleResetPosition.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // this.handleUpdate = this.handleUpdate.bind(this);
     this.handleAddPoint = this.handleAddPoint.bind(this);
     this.handlePointUpdate = this.handlePointUpdate.bind(this);
     this.handleRemovePoint = this.handleRemovePoint.bind(this);
-
-    this.handleResetPosition = this.handleResetPosition.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
   }
   
   handleResetPosition(_event) {
-    axios.post('/api/reset').then(res => {
-      console.log('motors reset');
-    });
+    this.setState({ enableForm: false });
+    axios.post('/api/clearReset')
+    .catch(err => {
+      this.setState({ enableForm: true });
+      this.setState({ commandError: true });
+      setTimeout(() => {
+        this.setState({ commandError: false });
+      }, RESPONSE_TEXT_DELAY);
+    })
+    .then(res => {
+      this.setState({ enableForm: true });
+      this.setState({ commandSuccess: true });
+      setTimeout(() => {
+        this.setState({ commandSuccess: false });
+      }, RESPONSE_TEXT_DELAY);
+    })
   }
 
   handleFinish(_event) {
@@ -36,36 +50,32 @@ class ControlPanel extends Component {
     event.preventDefault();
     const points = this.state.points;
     if (points.length === 0) { this.setState({ validInput: false }); }
-    else if (points.length === 1) {
-      if (!this.state.validInput) { this.setState({ validInput: true }); }
-      axios.post('/api/movement', {
-        'x': points[0].x,
-        'y': points[0].y
-      });
-      this.setState({ 'points': defaultPoints });
-    } else {
+    else {
       if (!this.state.validInput) { this.setState({ validInput: true }); }
       const xArr = points.map(p => p.x);
       const yArr = points.map(p => p.y);
+      this.setState({ enableForm: false });
       axios.post('/api/moveArray', {
         'x': xArr,
         'y': yArr
-      });
-      this.setState({ 'points': defaultPoints });
+      })
+      .catch(err => {
+        console.log('error caught at /api/moveArray');
+        this.setState({ enableForm: true });
+        this.setState({ commandError: true });
+        setTimeout(() => {
+          this.setState({ commandError: false });
+        }, RESPONSE_TEXT_DELAY);
+      })
+      .then(res => {
+        this.setState({ enableForm: true });
+        this.setState({ commandSuccess: true });
+        setTimeout(() => {
+          this.setState({ commandSuccess: false });
+        }, RESPONSE_TEXT_DELAY);
+      })
     }
   }
-
-  // handleUpdate(event, dimension) {
-  //   if (dimension === 'x') {
-  //     this.setState({
-  //       x: event.target.value
-  //     });
-  //   } else {
-  //     this.setState({
-  //       y: event.target.value
-  //     });
-  //   }
-  // }
 
   handleAddPoint() {
     this.setState({ points: this.state.points.concat([{ x: 0, y: 0 }])});
@@ -93,61 +103,48 @@ class ControlPanel extends Component {
   
   render() {
     return (
-      <div className="control-panel">
-        <form id="control-form" onSubmit={this.handleSubmit}>
-          {this.state.points.map((point, index) => (
-            <div className="point" key={index}>
-              <label htmlFor="x">x axis</label>
-              <input
-                id="x-input"
-                name="x"
-                type="number"
-                autoComplete="off"
-                className="control-input"
-                onChange={event => this.handlePointUpdate(event, 'x', index)}
-              />
-              <label htmlFor="y">y axis</label>
-              <input
-                id="y-input"
-                name="y"
-                type="number"
-                autoComplete="off"
-                className="control-input"
-                onChange={event => this.handlePointUpdate(event, 'y', index)}
-              />
-              <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} value="remove" />
-            </div>
-          ))}
-          <input id="add-point" type="button" value="add point" onClick={this.handleAddPoint} />
-          <input id="submit-form" type="submit" value="submit" />
-        </form>
-        {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
-        <div id="other-controls">
-          <button id="reset-position" onClick={this.handleResetPosition}>reset position</button>
-          <button id="finish" onClick={this.handleFinish}>finish</button>
+      <div className="control-panel-wrapper">
+        <div className="control-panel">
+          <form id="control-form" onSubmit={this.handleSubmit}>
+            <fieldset>
+              {this.state.points.map((point, index) => (
+                <div className="point" key={index}>
+                  <label htmlFor="x">x axis</label>
+                  <input
+                    id="x-input"
+                    name="x"
+                    type="number"
+                    autoComplete="off"
+                    className="control-input"
+                    onChange={event => this.handlePointUpdate(event, 'x', index)}
+                  />
+                  <label htmlFor="y">y axis</label>
+                  <input
+                    id="y-input"
+                    name="y"
+                    type="number"
+                    autoComplete="off"
+                    className="control-input"
+                    onChange={event => this.handlePointUpdate(event, 'y', index)}
+                  />
+                  <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} value="remove" />
+                </div>
+              ))}
+              <input id="add-point" type="button" value="add point" onClick={this.handleAddPoint} />
+              <input id="submit-form" type="submit" value="submit" disabled={!this.state.enableForm} />
+            </fieldset>
+          </form>
+          {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
+          <div id="other-controls">
+            <button id="reset-position" disabled={!this.state.enableForm} onClick={this.handleResetPosition}>reset position</button>
+            <button id="finish" onClick={this.handleFinish}>finish</button>
+          </div>
         </div>
+        {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
+        {this.state.commandError ? <p id="command-error">"Error sending command</p> : <></>}
       </div>
     );
   }
 }
 
 export default ControlPanel;
-
-/**
- * 
-          <label>
-            x position:
-            <input
-              type="number"
-              onChange={event => this.handleUpdate(event, 'x')}
-            />
-          </label>
-          <label>
-            y position:
-            <input
-              type="number"
-              onChange={event => this.handleUpdate(event, 'y')}
-            />
-          </label>
-          
- */

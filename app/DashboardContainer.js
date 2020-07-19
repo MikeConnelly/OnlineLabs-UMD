@@ -35,20 +35,6 @@ class DashboardContainer extends Component {
     });
   }
 
-  // componentDidUpdate() {
-  //   if (this.state.endpoint) {
-  //     var socket = io(this.state.endpoint);
-  //     socket.on('QueueState', data => {
-  //       this.setState({ queueState: data });
-  //     });
-  //   }
-  // }
-
-  // setSocketEndpoint(mode, port) {
-  //   const url = (mode === 'dev') ? `http://localhost:${port}` : `https://enee101online-webapp.herokuapp.com:${port}`;
-  //   this.setState({ endpoint: url });
-  // }
-
   handleEnqueue() {
     // axios.post('/api/enqueue').then(res => {
     //   this.setState({ queueState: res.data });
@@ -111,3 +97,6 @@ export default DashboardContainer;
  * controls
  *   when user is current uesr
  */
+
+// this should be brought down to 3 screens when login and enqueue
+// are combined and we use local authentication
