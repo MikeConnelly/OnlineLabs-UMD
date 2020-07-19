@@ -181,7 +181,7 @@ app.post('/api/movement', (req, res) => {
     // axios.post(iotHubURL, data, iotHubConfig)
     //   .catch(err => console.log(err))
     //   .then(response => res.status(200).send('ok'))
-  }// 
+  }
 });
 
 app.post('/api/moveArray', (req, res) => {
@@ -351,6 +351,7 @@ var client = Client.fromConnectionString(iotHubConnectionString);
 /**
  * Wrapper for getting SAS key and sending a post request to our device
  * @param {Object} data direct method parameters
+ * Device name should be MyNodeESP32 for Kang's esp or MyNodeDevice for Mike's AZ3166
  */
 function deviceMethod(data, cb) {
   client.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {

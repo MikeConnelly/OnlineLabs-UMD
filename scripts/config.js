@@ -1,5 +1,7 @@
+// Kang's ESP
 const iotHubConnectionString = "HostName=amatti-iot-hub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=/iXuuvWTNvxhOCNz3ISFUpVYTUfbgPL76EAY/1wOcXM=";
-// const iotHubConnectionString = "HostName=amatti-iot-hub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=zEyEkUkz2L7CsgH74O7K+w7ktq6sr/DC6majfrgAaDs="
+// Mike's AZ3166
+// const iotHubConnectionString = "HostName=ENEE101IOTHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=JwJEwPs2pwr2my/5kR7ZbmpOuVqL7xOdfGFKyZ8zMc8="
 const eventHubConsumerGroup = "$Default";
 
 module.exports = {

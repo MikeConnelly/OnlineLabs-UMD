@@ -3,11 +3,6 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-button {
-  width: 75px;
-  height: 40px;
-}
-
 .header {
   background-color: #720012;
   padding: 1%;
@@ -19,6 +14,7 @@ button {
   background-color: #aaa;
   border-radius: 15px;
   margin-top: 10px;
+  padding-bottom: 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -67,16 +63,30 @@ button {
 }
 
 #reset-position {
+  width: 75px;
+  height: 40px;
   background-color: green;
 }
 
 #finish {
+  width: 75px;
+  height: 40px;
   background-color: red;
-  margin-left: 10px;
+}
+
+.control-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#x-input, #y-input {
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 40px;
 }
 
 #other-controls {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
 }

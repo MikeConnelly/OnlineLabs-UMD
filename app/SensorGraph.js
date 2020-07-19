@@ -70,7 +70,9 @@ class SensorGraph extends Component {
 
   render() {
     return (
-      <canvas ref={this.chartRef} />
+      <div className="chart-container">
+        <canvas ref={this.chartRef} />
+      </div>
     );
   }
 }

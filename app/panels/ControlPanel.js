@@ -99,15 +99,19 @@ class ControlPanel extends Component {
             <div className="point" key={index}>
               <label htmlFor="x">x axis</label>
               <input
+                id="x-input"
                 name="x"
                 type="number"
+                autoComplete="off"
                 className="control-input"
                 onChange={event => this.handlePointUpdate(event, 'x', index)}
               />
               <label htmlFor="y">y axis</label>
               <input
+                id="y-input"
                 name="y"
                 type="number"
+                autoComplete="off"
                 className="control-input"
                 onChange={event => this.handlePointUpdate(event, 'y', index)}
               />

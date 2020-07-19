@@ -32,12 +32,12 @@ class App extends Component {
       <div id="app-container">
         {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
         <Header />
-        <GraphWrapper socket={socket} />
         <DashboardContainer
           loggedIn={loggedIn}
           setLoggedIn={this.setLoggedIn}
           socket={socket}
         />
+        <GraphWrapper socket={socket} />
       </div>
     );
   }
