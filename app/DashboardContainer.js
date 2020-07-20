@@ -42,38 +42,48 @@ class DashboardContainer extends Component {
     this.props.socket.emit('enqueue');
   }
 
+  /**
+   * 
+   */
   getPanel() {
+    const panel = {
+      isControl: false,
+      comp: null
+    };
     if (this.state.queueState.isCurrentUser) {
-      return <ControlPanel />
+      panel.isControl = true;
+      panel.comp = (<ControlPanel />);
     } else if (this.state.queueState.inQueue) {
-      return <QueuedPanel placeInQueue={this.state.queueState.placeInQueue} />
+      panel.comp = (<QueuedPanel placeInQueue={this.state.queueState.placeInQueue} />);
     } else if (this.props.loggedIn) { // logged in but haven't enqueued
-      return <NotQueuedPanel enqueue={this.handleEnqueue} />
+      panel.comp = (<NotQueuedPanel enqueue={this.handleEnqueue} />);
     } else { // login button
-      return <LoginPanel />
+      panel.comp = (<LoginPanel />);
     }
+    return panel;
   }
 
   render() {
     const { inQueue, isCurrentUser, placeInQueue, queueLength, currentUserName } = this.state.queueState;
     const personWord = (queueLength === 1) ? 'person' : 'people';
-    // console.log(`socket info update: ${JSON.stringify(this.state.queueState)}`);
+    const { isControl, comp } = this.getPanel();
+    // for design testing
+    // const isControl = true;
+    // const comp = (<ControlPanel />);
 
     return (
-      <div className="dashboard-container">
-        <div className="queue-info">
-          {!isCurrentUser ? (
-            <div>
+      <div>
+        {!isControl ? (
+          <div className="dashboard-container">
+            <div className="queue-info">
               <p id="queue-length-text">{`${queueLength} ${personWord} in the queue`}</p>
               <p id="current-user-text">{`current user: ${currentUserName}`}</p>
             </div>
-          ) : (
-            <p id="is-current-user">You are in control!</p>
-          )}
-        </div>
-        <div className="dashboard">
-          {this.getPanel()}
-        </div>
+            <div className="dashboard">
+              {comp}
+            </div>
+          </div>
+        ) : comp}
       </div>
     );
   }

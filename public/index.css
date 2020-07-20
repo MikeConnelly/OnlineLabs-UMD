@@ -61,47 +61,76 @@ body {
   font-size: large;
 }
 
-#add-point, #submit-form  {
-  width: 80px;
-  height: 35px;
-  margin: 5px;
+#remove-point {
+  margin-left: 10px;
+  font-size: large;
+  width: 25px;
+  height: 25px;
+  vertical-align: top;
 }
 
-#remove-point {
-  width: 80px;
-  height: 35px;
-  margin-left: 10px;
+#add-point {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: large;
+  width: 25px;
+  height: 25px;
 }
 
 #reset-position {
   width: 75px;
   height: 40px;
-  background-color: green;
+  background-color: rgb(0, 255, 0);
+  border-style: solid;
+  font-size: large;
 }
 
 #finish {
   width: 75px;
   height: 40px;
   background-color: red;
+  border-style: solid;
+  font-size: large;
+}
+
+#submit-form  {
+  width: 75px;
+  height: 40px;
+  margin: 5px;
+  border-style: solid;
+  font-size: large;
 }
 
 .control-panel {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  text-align: center;
+  font-size: large;
+}
+
+.instructions li {
+  text-align: left;
+  flex-grow: 1;
+}
+
+#control-form {
+  flex-grow: 2;
 }
 
 #x-input, #y-input {
   margin-left: 5px;
   margin-right: 5px;
-  width: 60px;
+  width: 80px;
+  height: 20px;
 }
-
+/*
 #other-controls {
   display: flex;
   flex-direction: column;
   margin-left: 10px;
 }
+*/
 
 #invalid-input, #command-error {
   color: red;
@@ -109,4 +138,52 @@ body {
 
 #command-success {
   color: rgb(38, 255, 0);
+}
+
+.control-panel-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.button-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottomRowOfControls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.control-panel, .command-sequence {
+  background-color: #aaa;
+  border-radius: 15px;
+  margin-top: 10px;
+  padding-bottom: 20px;
+}
+
+.control-panel {
+  flex-grow: 3;
+  margin-right: 10px;
+  padding-top: 20px;
+}
+
+.command-sequence {
+  flex-grow: 1;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.command-sequence #cs-title {
+  font-size: large;
+}
+
+.command-sequence #no-commands {
+  color: grey;
 }
