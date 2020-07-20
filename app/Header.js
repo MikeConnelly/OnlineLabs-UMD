@@ -7,7 +7,7 @@ class Header extends Component {
       <div className="header">
         <img id="header-img" src={Logo} alt="logo" width="75" height="75" />
         <div className="inner-header">
-          <h3 className="header-text">ENEE 101 Motor Controller</h3>
+          <h3 className="header-text">Gizmo-1 Demo</h3>
           <div className="underline"></div>
         </div>
       </div>

@@ -18,14 +18,12 @@ class DashboardContainer extends Component {
         currentUserName: ''
       }
     };
-    // this.setSocketEndpoint = this.setSocketEndpoint.bind(this);
     this.getPanel = this.getPanel.bind(this);
     this.handleEnqueue = this.handleEnqueue.bind(this);
   }
 
   componentDidMount() {
     axios.get('/api/info').then(res => {
-      // this.setSocketEndpoint(res.data.mode, res.data.port);
       this.setState({ queueState: res.data.queueState });
       this.props.setLoggedIn(res.data.loggedIn);
     });
@@ -36,14 +34,15 @@ class DashboardContainer extends Component {
   }
 
   handleEnqueue() {
+    this.props.socket.emit('enqueue');
     // axios.post('/api/enqueue').then(res => {
     //   this.setState({ queueState: res.data });
     // });
-    this.props.socket.emit('enqueue');
   }
 
   /**
-   * 
+   * Gets panel component to display based on current state
+   * @returns {Object} object with fields isControl: Boolean, comp: JSX Component
    */
   getPanel() {
     const panel = {

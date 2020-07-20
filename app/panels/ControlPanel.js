@@ -37,8 +37,7 @@ class ControlPanel extends Component {
       }, RESPONSE_TEXT_DELAY);
     })
     .then(res => {
-      this.setState({ enableForm: true });
-      this.setState({ commandSuccess: true });
+      this.setState({ enableForm: true, commandSuccess: true });
       setTimeout(() => {
         this.setState({ commandSuccess: false });
       }, RESPONSE_TEXT_DELAY);

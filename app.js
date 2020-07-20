@@ -15,20 +15,20 @@ var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var Client = require('azure-iothub').Client;
+var EventHubReader = require('./scripts/event-hub-reader');
 var User = require('./models/User');
 var UserManager = require('./utils/UserManager');
-var EventHubReader = require('./scripts/event-hub-reader');
-var Client = require('azure-iothub').Client;
 var manager = new UserManager();
 
 dotenv.config();
 // const mode = process.env.MODE;
+// const sas = process.env.SAS;
+// const iotHubURL = process.env.URL;
 const mongo_connection = process.env.DBCONN;
 const auth_client_id = process.env.AUTHID;
 const auth_client_secret = process.env.AUTHSECRET;
 const cookieKey = process.env.COOKIEKEY;
-// const sas = process.env.SAS;
-// const iotHubURL = process.env.URL;
 const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
 const port = process.env.PORT || 3000;
@@ -407,7 +407,6 @@ const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsum
         IotData: message,
         DeviceId: deviceId
       };
-      // broadcast shit
       // console.log(JSON.stringify(payload));
       broadcastSensorData(payload);
     } catch (err) {

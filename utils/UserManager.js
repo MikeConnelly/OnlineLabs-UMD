@@ -1,3 +1,6 @@
+/**
+ * Handles the state of the queue and current user
+ */
 class UserManager {
 
   constructor() {
