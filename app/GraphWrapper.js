@@ -16,8 +16,8 @@ export class GraphWrapper extends Component {
   
   componentDidMount() {
     this.props.socket.on('sensor-data', data => {
-      if (!data.IotData.x_distance && !data.IotData.y_distance) { return; }
-      this.addData(data.index, data.IotData.x_distance, data.IotData.y_distance);
+      if (!data.index || !data.IotData.x_distance || !data.IotData.y_distance) { return; }
+      this.addData(data.index, data.IotData.x_distance, data.IotData.y_distance); // time: string, x: number, y: number
     });
   }
   
@@ -25,7 +25,7 @@ export class GraphWrapper extends Component {
     const newLabels = this.state.labels;
     const newX = this.state.xData;
     const newY = this.state.yData;
-    newLabels.push(`${index}`);
+    newLabels.push(index);
     newX.push(xAxis);
     newY.push(yAxis);
   

@@ -3,6 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
+var moment = require('moment');
 var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
 var cors = require('cors');
@@ -395,20 +396,20 @@ function deviceMethod(data, cb) {
 }
 
 const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
-let i = 0;
 
 (async () => {
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {
+      const now = moment();
+      const time = now.format('h:mm:ss');
       const payload = {
-        index: i,
+        index: time,
         IotData: message,
         DeviceId: deviceId
       };
       // broadcast shit
       // console.log(JSON.stringify(payload));
       broadcastSensorData(payload);
-      i++;
     } catch (err) {
       console.log(`${err}, ${JSON.stringify(message)}`);
     }
