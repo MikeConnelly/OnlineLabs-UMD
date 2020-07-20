@@ -6,7 +6,7 @@ var path = require('path');
 var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
 var cors = require('cors');
-var axios = require('axios');
+// var axios = require('axios'); // was used for manually sending device requests
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
@@ -18,7 +18,6 @@ var User = require('./models/User');
 var UserManager = require('./utils/UserManager');
 var EventHubReader = require('./scripts/event-hub-reader');
 var Client = require('azure-iothub').Client;
-var config = require('./scripts/config');
 var manager = new UserManager();
 
 dotenv.config();
@@ -27,19 +26,22 @@ const mongo_connection = process.env.DBCONN;
 const auth_client_id = process.env.AUTHID;
 const auth_client_secret = process.env.AUTHSECRET;
 const cookieKey = process.env.COOKIEKEY;
-const sas = process.env.SAS;
-const iotHubURL = process.env.URL;
+// const sas = process.env.SAS;
+// const iotHubURL = process.env.URL;
+const iotHubConnectionString = process.env.CONNECTIONSTRING;
+const eventHubConsumerGroup = process.env.CONSUMERGROUP;
 const port = process.env.PORT || 3000;
 
-const iotHubConnectionString = config.iotHubConnectionString;
-const eventHubConsumerGroup = config.eventHubConsumerGroup;
-
+// Used along with iotHubURL to manually send post requests to the device given an SAS key
+// Not used anymore in favor of the azure-iothub library
+/**
 const iotHubConfig = {
   'headers': {
     'Content-Type': 'Application/json',
     'Authorization': sas
   }
 }
+*/
 
 // setup mongo connection
 mongoose.connect(mongo_connection, {
@@ -76,10 +78,10 @@ passport.use(
   )
 );
 
+// needed for passport stuff, why? idk, is it really needed? idk
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
-
 passport.deserializeUser((id, done) => {
   User.findById(id).then(user => {
     done(null, user);
@@ -91,9 +93,6 @@ passport.deserializeUser((id, done) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-// app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-// app.set('view engine', 'handlebars');
-// app.use('/public', express.static('public'));
 app.use(express.static(path.join(__dirname, 'build/')));
 app.use(cookieParser(cookieKey));
 
@@ -146,21 +145,6 @@ app.get('/api/info', (req, res) => {
     'queueState': queueState
   });
 });
-
-// This route is handled by socket.on('enqueue') instead
-/*
-app.post('/api/enqueue', (req, res) => {
-  if (!req.user) {
-    res.redirect('/auth/google');
-  } else {
-    const user = req.user;
-    manager.addUser(user);
-    
-    const queueState = manager.getQueueState(user);
-    res.status(200).json(queueState);
-  }
-});
-*/
 
 app.post('/api/movement', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
@@ -241,6 +225,20 @@ app.post('/api/finish', (req, res) => {
   }
 })
 
+// This route is handled by socket.on('enqueue') instead
+/*
+app.post('/api/enqueue', (req, res) => {
+  if (!req.user) {
+    res.redirect('/auth/google');
+  } else {
+    const user = req.user;
+    manager.addUser(user);
+    
+    const queueState = manager.getQueueState(user);
+    res.status(200).json(queueState);
+  }
+});
+*/
 
 
 
