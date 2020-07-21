@@ -6,7 +6,8 @@ class UserManager {
   constructor() {
     this.queue = [];
     this.currentUser = null;
-    // this.currentUserInactiveInterval = null;
+    this.currentUserInactiveInterval = null;
+    this.minutesIdle = 0;
   }
     
   /**
@@ -76,17 +77,40 @@ class UserManager {
   }
 
   /**
-   * Set the current user
+   * Set the current user.
+   * Begin a new inactivity timer for the current user.
    * @param {User} user user or null
    */
   setCurrentUser(user) {
-    // if (this.currentUserInactiveInterval) { this.currentUserInactiveInterval = null; }
+    if (this.currentUserInactiveInterval) {
+      this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
+    }
     this.currentUser = user;
-    // if (user) {
-    //   this.currentUserInactiveInterval = setInterval(() => {
-    //     this.replaceCurrentUser();
-    //   }, 1000*60*3); // 3 mins
-    // }
+    if (user) {
+      this.currentUserInactiveInterval = setInterval(() => {
+        this.currentUserTimoutCheck();
+      }, 1000*60); // 1 min
+    }
+  }
+
+  /**
+   * Called from current user api routes to refresh inactivity timer
+   */
+  refreshCurrentUserTimer() {
+    this.minutesIdle = 0;
+  }
+
+  /**
+   * Increments minutesIdle and calls replaceCurrentUser if >= 3.
+   * Does not yet clear and reset motor commands.
+   * Also needs to update all clients...
+   */
+  currentUserTimoutCheck() {
+    this.minutesIdle++;
+    if (this.minutesIdle >= 4) {
+      this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
+      this.replaceCurrentUser();
+    }
   }
 
   /**

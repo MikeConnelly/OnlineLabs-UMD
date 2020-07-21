@@ -35,6 +35,7 @@ const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
 const facebook_client_id = process.env.FACEBOOK_CLIENT_ID;
 const facebook_client_secret = process.env.FACEBOOK_CLIENT_SECRET;
+const admin_pass = process.env.ADMIN_PASS;
 const port = process.env.PORT || 3000;
 
 // Used along with iotHubURL to manually send post requests to the device given an SAS key
@@ -204,6 +205,20 @@ app.get('/auth/logout', (req, res) => {
 
 
 
+app.get('/admin/kick/:pass', (req, res) => {
+  const pass = req.params.pass;
+  if (pass === admin_pass) {
+    manager.replaceCurrentUser();
+    res.status(200).send('success');
+    updateAllClients();
+  } else {
+    res.status(403).send('Not authorized');
+  }
+});
+
+
+
+
 app.get('/api/info', (req, res) => {
   const user = req.user;
   const loggedIn = Boolean(user);
@@ -218,6 +233,7 @@ app.post('/api/movement', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
     res.status(403).send('Not authorized');
   } else {
+    manager.refreshCurrentUserTimer();
     // motor input scheme is 0000,0000 to 9999,9999
     let xDelta = parseInt(req.body.x);
     let yDelta = parseInt(req.body.y);
@@ -255,6 +271,7 @@ app.post('/api/moveArray', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
     res.status(403).send('Not authorized');
   } else {
+    manager.refreshCurrentUserTimer();
     const xArr = formatInputArray(req.body.x);
     const yArr = formatInputArray(req.body.y);
     const data = {
@@ -277,6 +294,7 @@ app.post('/api/reset', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
     res.status(403).send('Not authorized');
   } else {
+    manager.refreshCurrentUserTimer();
     resetMotors(err => {
       res.status(200).send('motors reset');
     });
@@ -287,6 +305,7 @@ app.post('/api/clearReset', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
     res.status(403).send('Not authorized');
   } else {
+    manager.refreshCurrentUserTimer();
     resetMotorsAndClear(err => {
       res.status(200).send('motors reset');
     });
@@ -324,6 +343,7 @@ app.post('/api/enqueue', (req, res) => {
 
 /**
  * Calls device method to reset motor position
+ * Doesn't get used anymore in favor of resetMotorsAndClear
  * @param {Function} cb optional callback function
  */
 function resetMotors(cb) {
@@ -450,10 +470,13 @@ function onAuthorizeFail(data, message, error, accept) {
   accept(null, false);
 }
 
-// go
-http.listen(port, () => {
-  console.log(`listening on port ${port}`);
-});
+function broadcastSensorData(payload) {
+  Object.keys(io.sockets.sockets).forEach(id => {
+    const socket = io.sockets.connected[id]
+    console.log(`broadcasting data: ${JSON.stringify(payload)}`);
+    socket.emit('sensor-data', payload);
+  });
+}
 
 var client = Client.fromConnectionString(iotHubConnectionString);
 
@@ -497,10 +520,8 @@ const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsum
   })
 })().catch();
 
-function broadcastSensorData(payload) {
-  Object.keys(io.sockets.sockets).forEach(id => {
-    const socket = io.sockets.connected[id]
-    console.log(`broadcasting data: ${JSON.stringify(payload)}`);
-    socket.emit('sensor-data', payload);
-  });
-}
+
+// go
+http.listen(port, () => {
+  console.log(`listening on port ${port}`);
+});
