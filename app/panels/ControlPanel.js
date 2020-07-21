@@ -114,7 +114,6 @@ class ControlPanel extends Component {
       }
     } else {
       const points = JSON.parse(JSON.stringify(this.state.points)); // deep copy
-      const sequence = this.state.sequence;
 
       if (points.length === 0) { this.setState({ validInput: false }); }
       else {
@@ -141,6 +140,7 @@ class ControlPanel extends Component {
       }, RESPONSE_TEXT_DELAY);
     })
     .then(res => {
+      const sequence = this.state.sequence;
       if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: sequence.concat(points) }); }
       else { this.setState({ enableForm: true, commandSuccess: true }); }
       setTimeout(() => {
