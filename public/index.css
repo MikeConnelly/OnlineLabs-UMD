@@ -114,6 +114,12 @@ body {
   flex-grow: 1;
 }
 
+@media(max-width: 1200px) {
+  .instructions {
+    display: none;
+  }
+}
+
 #control-form {
   flex-grow: 2;
 }
@@ -187,3 +193,4 @@ body {
 .command-sequence #no-commands {
   color: grey;
 }
+
