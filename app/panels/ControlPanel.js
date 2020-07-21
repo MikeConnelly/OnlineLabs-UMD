@@ -39,22 +39,20 @@ class ControlPanel extends Component {
           <div className="point" key={index}>
             <label id="x-input-label" htmlFor="x">x axis</label>
             <input
-              id="x-input"
+              className="x-input"
               name="x"
               type="number"
               value={point.x}
               autoComplete="off"
-              className="control-input"
               onChange={event => this.handlePointUpdate(event, 'x', index)}
             />
             <label id="y-input-label" htmlFor="y">y axis</label>
             <input
-              id="y-input"
+              className="y-input"
               name="y"
               type="number"
               value={point.y}
               autoComplete="off"
-              className="control-input"
               onChange={event => this.handlePointUpdate(event, 'y', index)}
             />
             <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} value="-" />
@@ -108,7 +106,7 @@ class ControlPanel extends Component {
 
         if (!this.state.validInput) { this.setState({ enableForm: false, validInput: true }); }
         else { this.setState({ enableForm: false }); }
-        this.sendCommand(xArr, yArr, null);
+        this.sendCommand(xArr, yArr, []);
       } catch (e) {
         this.setState({ validInput: false });
       }
@@ -134,14 +132,14 @@ class ControlPanel extends Component {
       'y': yArr
     })
     .catch(err => {
+      console.log(err);
       this.setState({ enableForm: true, commandError: true });
       setTimeout(() => {
         this.setState({ commandError: false });
       }, RESPONSE_TEXT_DELAY);
     })
     .then(res => {
-      const sequence = this.state.sequence;
-      if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: sequence.concat(pointsCopy) }); }
+      if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: this.state.sequence.concat(pointsCopy) }); }
       else { this.setState({ enableForm: true, commandSuccess: true }); }
       setTimeout(() => {
         this.setState({ commandSuccess: false });
