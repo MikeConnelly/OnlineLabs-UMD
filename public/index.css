@@ -139,7 +139,7 @@ body {
   flex-grow: 2;
 }
 
-#x-input, #y-input {
+.x-input, .y-input {
   margin-left: 5px;
   margin-right: 5px;
   width: 80px;
