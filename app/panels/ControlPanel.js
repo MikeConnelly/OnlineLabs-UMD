@@ -197,6 +197,7 @@ class ControlPanel extends Component {
               <li>Input values to control motor movement in the x and y directions</li>
               <li>Hit submit to send your command to the device</li>
               <li>The + and - buttons allow you to send multiple points at once</li>
+              <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li>
             </ul>
           </div>
           <form id="control-form" onSubmit={this.handleSubmit}>
@@ -226,6 +227,8 @@ class ControlPanel extends Component {
             {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
             {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
           </form>
+         
+
         </div>
         <CommandSequence
           sequence={this.state.sequence}

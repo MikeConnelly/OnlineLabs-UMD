@@ -15,7 +15,9 @@ class LoginPanel extends Component {
   render() {
     return (
       <div className="login-panel">
-        <button id="google-login" onClick={this.handleLoginGoogle}>Login with Google</button>
+        <button id="google-login" onClick={this.handleLoginGoogle}>
+          <span class="buttonText">Login with Google</span>
+        </button>
       </div>
     );
   }
