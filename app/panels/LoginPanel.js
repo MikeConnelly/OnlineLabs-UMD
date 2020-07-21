@@ -3,14 +3,19 @@ import path from 'path';
 
 class LoginPanel extends Component {
   
-  handleLogin(event) {
+  handleLoginGoogle(event) {
     window.location.pathname = path.join(window.location.pathname, '/auth/google');
+  }
+
+  hanldeLoginFacebook(event) {
+    window.location.pathname = path.join(window.location.pathname, '/auth/facebook');
   }
 
   render() {
     return (
       <div className="login-panel">
-        <button onClick={this.handleLogin}>Login</button>
+        <button id="google-login" onClick={this.handleLoginGoogle}>Login with Google</button>
+        <button id="facebook-login" onClick={this.hanldeLoginFacebook}>Login with Facebook</button>
       </div>
     );
   }

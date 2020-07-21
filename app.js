@@ -8,13 +8,15 @@ var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 // var axios = require('axios'); // was used for manually sending device requests
-var session = require('express-session');
+var expressSession = require('express-session');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
-var MongoStore = require('connect-mongo')(session);
+var MongoStore = require('connect-mongo')(expressSession);
 var passport = require('passport');
 var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
+// var LocalStrategy = require('passport-local').Strategy;
 var Client = require('azure-iothub').Client;
 var EventHubReader = require('./scripts/event-hub-reader');
 var User = require('./models/User');
@@ -31,6 +33,8 @@ const auth_client_secret = process.env.AUTHSECRET;
 const cookieKey = process.env.COOKIEKEY;
 const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
+const facebook_client_id = process.env.FACEBOOK_CLIENT_ID;
+const facebook_client_secret = process.env.FACEBOOK_CLIENT_SECRET;
 const port = process.env.PORT || 3000;
 
 // Used along with iotHubURL to manually send post requests to the device given an SAS key
@@ -63,12 +67,12 @@ passport.use(
       clientSecret: auth_client_secret,
       callbackURL: '/auth/google/redirect'
     }, (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id }).then(currentUser => {
+      User.findOne({ siteId: profile.id }).then(currentUser => {
         if (currentUser) {
           done(null, currentUser);
         } else {
           new User({
-            googleId: profile.id,
+            siteId: profile.id,
             name: profile.displayName
           }).save().then(newUser => {
             done(null, newUser);
@@ -79,11 +83,58 @@ passport.use(
   )
 );
 
-// needed for passport stuff, why? idk, is it really needed? idk
+// setup passport to use Facebook strategy
+passport.use(
+  new FacebookStrategy({
+      clientID: facebook_client_id,
+      clientSecret: facebook_client_secret,
+      callbackURL: '/auth/facebook/redirect',
+    }, (accessToken, refreshToken, profile, done) => {
+      // console.log(`facebook profile: ${JSON.stringify(profile)}`);
+      User.findOne({ siteId: profile.id }).then(currentUser => {
+        if (currentUser) {
+          done(null, currentUser);
+        } else {
+          new User({
+            siteId: profile.id,
+            name: profile.name
+          }).save().then(newUser => {
+            done(null, newUser);
+          })
+        }
+      })
+    }
+  )
+)
+
+// setup passport for local strategy
+// doesn't work, but would be ideal for faking auth and
+// still injecting user data into sockets
+// passport.use(
+//   new LocalStrategy((username, password, done) => {
+//     console.log('passport auth function');
+//     User.findOne({ username: username }, (err, user) => {
+//       if (err) { return done(err); }
+//       if (user) {
+//         done(null, user);
+//       } else {
+//         new User({
+//           name: username
+//         }).save().then(newUser => {
+//           done(null, newUser);
+//         })
+//       }
+//     })
+//   }
+// ))
+
+// needed for passport stuff, why? idk
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  // console.log(`serialize: ${JSON.stringify(user.id)}`);
+  done(null, user.id); // id or _id???
 });
 passport.deserializeUser((id, done) => {
+  // console.log(`deserialize: ${id}`);
   User.findById(id).then(user => {
     done(null, user);
   });
@@ -103,16 +154,19 @@ var sessionStore = new MongoStore({
   autoRemove: 'interval',
   autoRemoveInterval: 10
 });
-app.use(session({
+app.use(expressSession({
   store: sessionStore,
   secret: cookieKey,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  // cookie: {
+  //   secure: false
+  // }
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+// { secret: cookieKey, key: 'connect.sid', store: sessionStore }
 
 
 
@@ -123,11 +177,24 @@ app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => 
   res.redirect('/');
 });
 
+// app.post('/auth/login', passport.authenticate('local', { failureRedirect: '/failure' }), (req, res) => {
+//   console.log(`/auth/login user: ${req.user}`);
+//   manager.addUser(req.user);
+//   updateAllClients();
+// });
+
+app.get('/auth/facebook', passport.authenticate('facebook'));
+
+app.get('/auth/facebook/redirect', passport.authenticate('facebook'), (req, res) => {
+  res.redirect('/');
+});
+
 app.get('/auth/logout', (req, res) => {
   if (!req.user) { res.status(400).send('not logged in'); }
   else {
+    const user = req.user;
+    if (manager.isCurrentUser(user)) { resetMotors(null); }
     manager.userDisconnected(req.user);
-    resetMotors(null);
     req.logout();
     res.status(200).send('logged out');
     updateAllClients();
@@ -281,6 +348,7 @@ function resetMotorsAndClear(cb) {
  * @param {SocketIO.Socket} socket socket the information is being sent to
  */
 function updateClient(socket) {
+  // console.log(JSON.stringify(socket.request.user));
   let user;
   if (!socket.request.user.logged_in) {
     user = undefined;
@@ -317,9 +385,20 @@ function handleEnqueue(socket) {
  */
 function handleDisconnect(socket) {
   const user = socket.request.user;
+  if (manager.isCurrentUser(user)) {
+    resetMotorsAndClear(null);
+  }
   manager.userDisconnected(user);
-  resetMotors(null);
 }
+
+// inject user and session data from passport into sockets
+io.use(passportSocketIo.authorize({
+  cookieParser: cookieParser,
+  secret: cookieKey,
+  store: sessionStore,
+  success: onAuthorizeSuccess,
+  fail: onAuthorizeFail
+}));
 
 // where socket connections and events are handled
 io.on('connection', socket => {
@@ -358,15 +437,6 @@ function onAuthorizeFail(data, message, error, accept) {
   console.log('failed connection to socket.io: ', message);
   accept(null, false);
 }
-
-// inject user and session data from passport into sockets
-io.use(passportSocketIo.authorize({
-  cookieParser: cookieParser,
-  secret: cookieKey,
-  store: sessionStore,
-  success: onAuthorizeSuccess,
-  fail: onAuthorizeFail
-}));
 
 // go
 http.listen(port, () => {

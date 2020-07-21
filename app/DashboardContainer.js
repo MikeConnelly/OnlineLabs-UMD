@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import LoginPanel from './panels/LoginPanel';
 import NotQueuedPanel from './panels/NotQueuedPanel';
+// import EnterQueuePanel from './panels/EnterQueuePanel';
 import QueuedPanel from './panels/QueuedPanel';
 import ControlPanel from './panels/ControlPanel';
 
@@ -59,6 +60,9 @@ class DashboardContainer extends Component {
     } else { // login button
       panel.comp = (<LoginPanel />);
     }
+    // } else {
+    //   panel.comp = (<EnterQueuePanel />);
+    // }
     return panel;
   }
 

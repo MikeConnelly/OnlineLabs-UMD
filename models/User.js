@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const userSchema = new mongoose.Schema({
-  googleId: {
+  siteId: {
     type: String,
     required: true
   },
