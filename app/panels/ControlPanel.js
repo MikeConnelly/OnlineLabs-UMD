@@ -108,7 +108,7 @@ class ControlPanel extends Component {
 
         if (!this.state.validInput) { this.setState({ enableForm: false, validInput: true }); }
         else { this.setState({ enableForm: false }); }
-        this.sendCommand(xArr, yArr);
+        this.sendCommand(xArr, yArr, null);
       } catch (e) {
         this.setState({ validInput: false });
       }
@@ -123,12 +123,12 @@ class ControlPanel extends Component {
         const yArr = points.map(p => p.y);
 
         this.setState({ enableForm: false });
-        this.sendCommand(xArr, yArr);
+        this.sendCommand(xArr, yArr, points);
       }
     }
   }
 
-  sendCommand(xArr, yArr) {
+  sendCommand(xArr, yArr, pointsCopy) {
     axios.post('/api/moveArray', {
       'x': xArr,
       'y': yArr
@@ -141,7 +141,7 @@ class ControlPanel extends Component {
     })
     .then(res => {
       const sequence = this.state.sequence;
-      if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: sequence.concat(points) }); }
+      if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: sequence.concat(pointsCopy) }); }
       else { this.setState({ enableForm: true, commandSuccess: true }); }
       setTimeout(() => {
         this.setState({ commandSuccess: false });
