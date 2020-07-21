@@ -84,6 +84,7 @@ class UserManager {
   setCurrentUser(user) {
     if (this.currentUserInactiveInterval) {
       this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
+      this.refreshCurrentUserTimer();
     }
     this.currentUser = user;
     if (user) {
@@ -109,6 +110,7 @@ class UserManager {
     this.minutesIdle++;
     if (this.minutesIdle >= 4) {
       this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
+      this.refreshCurrentUserTimer();
       this.replaceCurrentUser();
     }
   }

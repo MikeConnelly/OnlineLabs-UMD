@@ -26,7 +26,6 @@ class ControlPanel extends Component {
     this.handleAddPoint = this.handleAddPoint.bind(this);
     this.handlePointUpdate = this.handlePointUpdate.bind(this);
     this.handleRemovePoint = this.handleRemovePoint.bind(this);
-    this.setUseJSON = this.setUseJSON.bind(this);
     this.handleClearSequence = this.handleClearSequence.bind(this);
     this.handleFillFormWithSequence = this.handleFillFormWithSequence.bind(this);
     this.changeAutofillSequence = this.changeAutofillSequence.bind(this);
@@ -182,11 +181,7 @@ class ControlPanel extends Component {
   changeAutofillSequence(b) {
     this.setState({ autofillSequence: b });
   }
-  
-  setUseJSON(event) {
-    this.setState({ useJSON: event.target.checked });
-  }
-  
+
   render() {
     return (
       <div className="control-panel-wrapper">
@@ -222,13 +217,17 @@ class ControlPanel extends Component {
               </div>
             </div>
             <label id="json-cb-label" htmlFor="json-cb">use JSON format</label>
-            <input id="json-cb" name="json-cb" type="checkbox" checked={this.state.useJSON} onChange={this.setUseJSON} />
+            <input
+              id="json-cb"
+              name="json-cb"
+              type="checkbox"
+              checked={this.state.useJSON}
+              onChange={event => this.setState({ useJSON: event.target.checked })}
+            />
             {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
             {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
             {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
           </form>
-         
-
         </div>
         <CommandSequence
           sequence={this.state.sequence}
