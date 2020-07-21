@@ -41,10 +41,6 @@ body {
   align-items: center;
 }
 
-#google-login, #facebook-login {
-  width: 100px;
-}
-
 .queue-info {
   text-align: center;
   font-size: medium;
@@ -214,28 +210,15 @@ body {
   height: 100px;
 }
 
-#customBtn {
-  display: inline-block;
+#google-login {
   background: white;
   color: #444;
   width: 190px;
   border-radius: 5px;
   border: thin solid #888;
   box-shadow: 1px 1px 1px grey;
-  white-space: nowrap;
-}
-#customBtn:hover {
-  cursor: pointer;
-}
-span.label {
-  font-family: serif;
-  font-weight: normal;
 }
 span.buttonText {
-  display: inline-block;
-  vertical-align: middle;
   font-size: 14px;
   font-weight: bold;
-  /* Use the Roboto font that is loaded in the <head> */
-  font-family: 'Roboto', sans-serif;
 }
