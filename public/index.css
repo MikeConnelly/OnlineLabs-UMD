@@ -71,6 +71,11 @@ body {
   font-size: large;
 }
 
+#json-cb-label {
+  font-size: small;
+  margin-bottom: 10px;
+}
+
 #remove-point {
   margin-left: 10px;
   font-size: large;
@@ -204,3 +209,7 @@ body {
   color: grey;
 }
 
+#json-input {
+  width: 180px;
+  height: 100px;
+}
