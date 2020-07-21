@@ -219,11 +219,15 @@ app.post('/api/movement', (req, res) => {
     res.status(403).send('Not authorized');
   } else {
     // motor input scheme is 0000,0000 to 9999,9999
-    const xDelta = parseInt(req.body.x);
-    const yDelta = parseInt(req.body.y);
+    let xDelta = parseInt(req.body.x);
+    let yDelta = parseInt(req.body.y);
     if (isNaN(xDelta) || isNaN(yDelta)) {
       res.status(400).send('error');
     }
+    if (xDelta > 20000) { xDelta = 20000; }
+    else if (xDelta < -20000) { xDelta = -20000; }
+    if (yDelta > 20000) { yDelta = 20000; }
+    else if (yDelta < -20000) { yDelta = -20000; }
     const data = {
       "methodName": "move",
       "responseTimeoutInSeconds": 60,
@@ -239,12 +243,20 @@ app.post('/api/movement', (req, res) => {
   }
 });
 
+function formatInputArray(arr) {
+  return arr.map(val => {
+      if (val > 20000) { return 20000; }
+      else if (val < -20000) { return -20000; }
+      else { return val; }
+  });
+}
+
 app.post('/api/moveArray', (req, res) => {
   if (!req.user || !manager.isCurrentUser(req.user)) {
     res.status(403).send('Not authorized');
   } else {
-    const xArr = req.body.x;
-    const yArr = req.body.y;
+    const xArr = formatInputArray(req.body.x);
+    const yArr = formatInputArray(req.body.y);
     const data = {
       "methodName": "moveArray",
       "responseTimeoutInSeconds": 60,
