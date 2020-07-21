@@ -500,8 +500,8 @@ function deviceMethod(data, cb) {
   });
 }
 
+// Reads device messages with ultrasonic sensor data and braodcasts it to all clients
 const eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
-
 (async () => {
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {

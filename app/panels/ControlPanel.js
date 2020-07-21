@@ -60,7 +60,7 @@ class ControlPanel extends Component {
         ))
       }
       </div>
-    )
+    );
   }
   
   handleResetPosition(_event) {
