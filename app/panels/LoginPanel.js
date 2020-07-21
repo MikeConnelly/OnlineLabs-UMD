@@ -7,15 +7,15 @@ class LoginPanel extends Component {
     window.location.pathname = path.join(window.location.pathname, '/auth/google');
   }
 
-  hanldeLoginFacebook(event) {
-    window.location.pathname = path.join(window.location.pathname, '/auth/facebook');
-  }
+  // hanldeLoginFacebook(event) {
+  //   window.location.pathname = path.join(window.location.pathname, '/auth/facebook');
+  // }
+  // <button id="facebook-login" onClick={this.hanldeLoginFacebook}>Login with Facebook</button>
 
   render() {
     return (
       <div className="login-panel">
         <button id="google-login" onClick={this.handleLoginGoogle}>Login with Google</button>
-        <button id="facebook-login" onClick={this.hanldeLoginFacebook}>Login with Facebook</button>
       </div>
     );
   }
