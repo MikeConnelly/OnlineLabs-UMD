@@ -1,5 +1,10 @@
 # enee101online-webapp
 
-Simple web app to send a request to the azure iot hub to invoke a direct method on the MXChip AZ3166
+Website created with the goal of moving University of Maryland lab classes online. Currently set up to send motor control commmands to an ESP32 microprocessor over the internet via the Microsoft Azure IOT Hub, and return ultrasonic sensor data to the user.
 
-to set up environment variables used to connect to the AZ3166, use the guide here: https://docs.microsoft.com/en-us/azure/iot-hub/quickstart-control-device-node#listen-for-direct-method-calls
+Live website: https://enee101online-webapp.herokuapp.com/
+Device code repo: https://github.com/mattinglyas/enee101-esp
+
+# Example
+
+![Demo gif](http://g.recordit.co/ViImlU5F3i.gif)
