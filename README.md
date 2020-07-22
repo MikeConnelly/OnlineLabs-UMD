@@ -7,4 +7,4 @@ Device code repo: https://github.com/mattinglyas/enee101-esp
 
 # Example
 
-![alt text](https://recordit.co/ViImlU5F3i "Demo gif")
+![Demo gif](http://g.recordit.co/ViImlU5F3i.gif)
