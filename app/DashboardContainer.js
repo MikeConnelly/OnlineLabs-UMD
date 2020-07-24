@@ -29,7 +29,7 @@ class DashboardContainer extends Component {
       this.props.setLoggedIn(res.data.loggedIn);
     });
 
-    this.props.socket.on('QueueState', data => {
+    this.props.socket.on('queueState', data => {
       this.setState({ queueState: data });
     });
   }

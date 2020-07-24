@@ -3,7 +3,9 @@
  */
 class UserManager {
 
-  constructor() {
+  constructor(io, iotClient) {
+    this.io = io;
+    this.iotClient = iotClient;
     this.queue = [];
     this.currentUser = null;
     this.currentUserInactiveInterval = null;
@@ -24,27 +26,7 @@ class UserManager {
    * @returns {boolean} true if user is in the queue
    */
   userInQueue(user) {
-    // return this.queue.some(u => u.googleId === user.googleId);
     return this.queue.some(u => u.siteId === user.siteId);
-  }
-
-  /**
-   * Checks if user is already in the queue and adds them if they are not.
-   * If they are the only user they skip the queue and are made the current user
-   * @param {User} user The user to enqueue
-   */
-  addUser(user) {
-    if (this.queue.length === 0 && !this.currentUser) { this.setCurrentUser(user); }
-    else if (!this.userInQueue(user)) { this.queue.push(user); }
-  }
-
-  /**
-   * Removes next user from the queue and replaces the current user with them
-   * @returns {Object} the user that was removed
-   */
-  replaceCurrentUser() {
-    const shifted = this.queue.shift();
-    this.setCurrentUser((shifted ? shifted : null));
   }
 
   /**
@@ -53,7 +35,6 @@ class UserManager {
    * @returns {number} user's place in queue or 0 if the user does not exist in the queue
    */
   getPlaceInQueue(user) {
-    // return (this.queue.findIndex(u => u.googleId === user.googleId) + 1);
     return (this.queue.findIndex(u => u.siteId === user.siteId) + 1);
   }
 
@@ -64,7 +45,6 @@ class UserManager {
    */
   isCurrentUser(user) {
     if (!this.currentUser) { return false; }
-    // return (this.currentUser.googleId === user.googleId);
     return (this.currentUser.siteId === user.siteId);
   }
 
@@ -77,8 +57,8 @@ class UserManager {
   }
 
   /**
-   * Set the current user.
-   * Begin a new inactivity timer for the current user.
+   * Set the current user and begin a new inactivity timer for the current user.
+   * Updates all clients when finished.
    * @param {User} user user or null
    */
   setCurrentUser(user) {
@@ -92,6 +72,30 @@ class UserManager {
         this.currentUserTimoutCheck();
       }, 1000*60); // 1 min
     }
+    this.updateAllClients();
+  }
+
+  /**
+   * Checks if user is already in the queue and adds them if they are not.
+   * If they are the only user they skip the queue and are made the current user.
+   * Updates all clients when finished.
+   * @param {User} user The user to enqueue
+   */
+  addUser(user) {
+    if (this.queue.length === 0 && !this.currentUser) {
+      this.setCurrentUser(user);
+    } else if (!this.userInQueue(user)) {
+      this.queue.push(user);
+      this.updateAllClients();
+    }
+  }
+
+  /**
+   * Removes next user from the queue and replaces the current user with them
+   */
+  replaceCurrentUser() {
+    const shifted = this.queue.shift();
+    this.setCurrentUser((shifted ? shifted : null));
   }
 
   /**
@@ -102,27 +106,27 @@ class UserManager {
   }
 
   /**
-   * Increments minutesIdle and calls replaceCurrentUser if >= 3.
-   * Does not yet clear and reset motor commands.
-   * Also needs to update all clients...
+   * Increments minutesIdle and calls replaceCurrentUser if >= 4.
    */
   currentUserTimoutCheck() {
     this.minutesIdle++;
     if (this.minutesIdle >= 4) {
       this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
       this.refreshCurrentUserTimer();
+      this.resetMotorsAndClear();
       this.replaceCurrentUser();
     }
   }
 
   /**
-   * Remove the disconnected user from the queue or current user position
+   * Remove the disconnected user from the queue or current user position.
+   * Updates all clients when finished.
    * @param {User} user the user that disconnected
    */
   userDisconnected(user) {
     if (this.userInQueue(user)) {
-      // this.queue = this.queue.filter(u => u.googleId !== user.googleId);
       this.queue = this.queue.filter(u => u.siteId !== user.siteId);
+      this.updateAllClients();
     } else if (this.isCurrentUser(user)) {
       this.replaceCurrentUser();
     }
@@ -147,6 +151,81 @@ class UserManager {
       'queueLength': queueLength,
       'currentUserName': currentUserName
     };
+  }
+
+  /**
+   * send queue state to clients
+   * @param {SocketIO.Socket} socket socket the information is being sent to
+   */
+  updateClient(socket) {
+    let user;
+    if (!socket.request.user.logged_in) {
+      user = undefined;
+    } else {
+      user = socket.request.user;
+    }
+  
+    const queueState = this.getQueueState(user);
+    socket.emit('queueState', queueState);
+  }
+
+  /**
+   * send queue state to all clients
+   */
+  updateAllClients() {
+    const self = this;
+    Object.keys(this.io.sockets.sockets).forEach(id => {
+      self.updateClient(this.io.sockets.connected[id]);
+    });
+  }
+
+  /**
+   * Calls device method to reset motor position
+   * Doesn't get used anymore in favor of resetMotorsAndClear
+   * @param {Function} cb optional callback function
+   */
+  resetMotors(cb) {
+    const data = {
+      "methodName": "reset",
+      "responseTimeoutInSeconds": 60,
+      "payload": {}
+    };
+    this.deviceMethod(data, cb);
+  }
+
+  /**
+   * Calls device method to reset motor position and clear motor queue.
+   * Should be called whenever a user clicks reset or is finished.
+   * @param {Function} cb optional callback function
+   */
+  resetMotorsAndClear(cb) {
+    const data = {
+      "methodName": "clearReset",
+      "responseTimeoutInSeconds": 60,
+      "payload": {}
+    };
+    this.deviceMethod(data, cb);
+  }
+  
+  /**
+   * Wrapper for getting SAS key and sending a post request to our device
+   * @param {Object} data direct method parameters
+   * @param {Function} cb optional callback function
+   * Device name should be MyNodeESP32 for Kang's esp or MyNodeDevice for Mike's AZ3166
+   */
+  deviceMethod(data, cb) {
+    this.iotClient.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
+      if (err && !(err instanceof SyntaxError)) {
+        // this gets called with a syntax error whenever invoking
+        // a device method, despite the device method actually working
+        // should look into this later but for now it can be ignored
+        console.log('failed to invoke device method...');
+        if (cb) { cb(err); }
+      } else {
+        console.log('successfully invoked device method');
+        if (cb) { cb(); }
+      }
+    });
   }
 }
 
