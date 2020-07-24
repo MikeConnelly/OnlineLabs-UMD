@@ -34,7 +34,6 @@ const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
 const facebook_client_id = process.env.FACEBOOK_CLIENT_ID;
 const facebook_client_secret = process.env.FACEBOOK_CLIENT_SECRET;
-const admin_pass = process.env.ADMIN_PASS;
 const port = process.env.PORT || 3000;
 
 // Used along with iotHubURL to manually send post requests to the device given an SAS key

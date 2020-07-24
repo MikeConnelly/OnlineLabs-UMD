@@ -14,7 +14,8 @@ module.exports = (app, manager) => {
   // admin route to replace the current user with the next in the queue
   app.get('/admin/kick/:pass', (req, res) => {
     const pass = req.params.pass;
-    if (pass === admin_pass) {
+    const admin_pass = process.env.ADMIN_PASS || null;
+    if (admin_pass && pass === admin_pass) {
       manager.replaceCurrentUser();
       res.sendStatus(200);
     } else {
