@@ -1,15 +1,4 @@
-module.exports = (app, manager) => {
-
-  app.get('/auth/logout', (req, res) => {
-    if (!req.user) { res.status(400).send('not logged in'); }
-    else {
-      const user = req.user;
-      if (manager.isCurrentUser(user)) { manager.resetMotorsAndClear(null); }
-      manager.userDisconnected(req.user);
-      req.logout();
-      res.sendStatus(200);
-    }
-  });
+module.exports = (app, manager, controller) => {
 
   // admin route to replace the current user with the next in the queue
   app.get('/admin/kick/:pass', (req, res) => {
@@ -48,15 +37,7 @@ module.exports = (app, manager) => {
         const LIMIT = 20000;
         xDelta = (Math.abs(xDelta) > LIMIT) ? (LIMIT * (xDelta / Math.abs(xDelta))) : xDelta;
         yDelta = (Math.abs(yDelta) > LIMIT) ? (LIMIT * (yDelta / Math.abs(yDelta))) : yDelta;
-        const data = {
-          "methodName": "move",
-          "responseTimeoutInSeconds": 60,
-          "payload": {
-            "x": xDelta,
-            "y": yDelta
-          }
-        };
-        manager.deviceMethod(data, err => res.sendStatus(200));
+        controller.move(xDelta, yDelta, err => res.sendStatus(200));
       }
     }
   });
@@ -74,26 +55,18 @@ module.exports = (app, manager) => {
       } else {
         const xArrFormatted = formatInputArray(xArrValid);
         const yArrFormatted = formatInputArray(yArrValid);
-        const data = {
-          "methodName": "moveArray",
-          "responseTimeoutInSeconds": 60,
-          "payload": {
-            "x": xArrFormatted,
-            "y": yArrFormatted
-          }
-        };
-        manager.deviceMethod(data, err => res.sendStatus(200));
+        controller.moveArray(xArrFormatted, yArrFormatted, err => res.sendStatus(200));
       }
     }
   });
 
-  // Route is not be called from UI, /api/clearReset used instead
+  // Route is not called from UI, /api/clearReset used instead
   app.post('/api/reset', (req, res) => {
     if (!req.user || !manager.isCurrentUser(req.user)) {
       res.sendStatus(403);
     } else {
       manager.refreshCurrentUserTimer();
-      manager.resetMotors(err => res.sendStatus(200));
+      controller.resetMotors(err => res.sendStatus(200));
     }
   });
 
@@ -103,7 +76,7 @@ module.exports = (app, manager) => {
       res.sendStatus(403);
     } else {
       manager.refreshCurrentUserTimer();
-      manager.resetMotorsAndClear(err => res.sendStatus(200));
+      controller.resetMotorsAndClear(err => res.sendStatus(200));
     }
   });
 
@@ -112,24 +85,9 @@ module.exports = (app, manager) => {
       res.sendStatus(403);
     } else {
       manager.replaceCurrentUser();
-      manager.resetMotorsAndClear(err => res.sendStatus(200));
+      controller.resetMotorsAndClear(err => res.sendStatus(200));
     }
   });
-
-  // This route is handled by socket.on('enqueue') instead
-  /*
-  app.post('/api/enqueue', (req, res) => {
-    if (!req.user) {
-      res.redirect('/auth/google');
-    } else {
-      const user = req.user;
-      manager.addUser(user);
-      
-      const queueState = manager.getQueueState(user);
-      res.status(200).json(queueState);
-    }
-  });
-  */
 }
 
 /**

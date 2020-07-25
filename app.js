@@ -19,6 +19,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var Client = require('azure-iothub').Client;
 var EventHubReader = require('./scripts/event-hub-reader');
 var User = require('./models/User');
+var MotorController = require('./utils/MotorController');
 var UserManager = require('./utils/UserManager');
 var routes = require('./routes/routes');
 
@@ -48,7 +49,8 @@ const iotHubConfig = {
 */
 var client = Client.fromConnectionString(iotHubConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
-var manager = new UserManager(io, client);
+var controller = new MotorController(client);
+var manager = new UserManager(io, controller); // replace client with controller, also put in routes
 
 
 // setup mongo connection
@@ -166,7 +168,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 // { secret: cookieKey, key: 'connect.sid', store: sessionStore }
 
-routes(app, manager);
+routes(app, manager, controller);
+
+
 
 // auth routes
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
@@ -187,6 +191,16 @@ app.get('/auth/facebook/redirect', passport.authenticate('facebook'), (req, res)
 //   manager.updateAllClients();
 // });
 
+app.get('/auth/logout', (req, res) => {
+  if (!req.user) { res.sendStatus(400); }
+  else {
+    const user = req.user;
+    if (manager.isCurrentUser(user)) { controller.resetMotorsAndClear(null); }
+    manager.userDisconnected(req.user);
+    req.logout();
+    res.sendStatus(200);
+  }
+});
 
 
 /**
@@ -206,7 +220,7 @@ function handleEnqueue(socket) {
 function handleDisconnect(socket) {
   const user = socket.request.user;
   if (manager.isCurrentUser(user)) {
-    manager.resetMotorsAndClear(null);
+    controller.resetMotorsAndClear(null);
   }
   manager.userDisconnected(user);
 }

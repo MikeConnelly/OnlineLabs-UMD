@@ -3,15 +3,15 @@
  */
 class UserManager {
 
-  constructor(io, iotClient) {
+  constructor(io, controller) {
     this.io = io;
-    this.iotClient = iotClient;
+    this.controller = controller;
     this.queue = [];
     this.currentUser = null;
     this.currentUserInactiveInterval = null;
     this.minutesIdle = 0;
   }
-    
+
   /**
    * Get length of the queue
    * @returns {number} queue length
@@ -112,8 +112,8 @@ class UserManager {
     this.minutesIdle++;
     if (this.minutesIdle >= 4) {
       this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
+      this.controller.resetMotorsAndClear();
       this.refreshCurrentUserTimer();
-      this.resetMotorsAndClear();
       this.replaceCurrentUser();
     }
   }
@@ -160,11 +160,10 @@ class UserManager {
   updateClient(socket) {
     let user;
     if (!socket.request.user.logged_in) {
-      user = undefined;
+      user = null;
     } else {
       user = socket.request.user;
     }
-  
     const queueState = this.getQueueState(user);
     socket.emit('queueState', queueState);
   }
@@ -175,56 +174,7 @@ class UserManager {
   updateAllClients() {
     const self = this;
     Object.keys(this.io.sockets.sockets).forEach(id => {
-      self.updateClient(this.io.sockets.connected[id]);
-    });
-  }
-
-  /**
-   * Calls device method to reset motor position
-   * Doesn't get used anymore in favor of resetMotorsAndClear
-   * @param {Function} cb optional callback function
-   */
-  resetMotors(cb) {
-    const data = {
-      "methodName": "reset",
-      "responseTimeoutInSeconds": 60,
-      "payload": {}
-    };
-    this.deviceMethod(data, cb);
-  }
-
-  /**
-   * Calls device method to reset motor position and clear motor queue.
-   * Should be called whenever a user clicks reset or is finished.
-   * @param {Function} cb optional callback function
-   */
-  resetMotorsAndClear(cb) {
-    const data = {
-      "methodName": "clearReset",
-      "responseTimeoutInSeconds": 60,
-      "payload": {}
-    };
-    this.deviceMethod(data, cb);
-  }
-  
-  /**
-   * Wrapper for getting SAS key and sending a post request to our device
-   * @param {Object} data direct method parameters
-   * @param {Function} cb optional callback function
-   * Device name should be MyNodeESP32 for Kang's esp or MyNodeDevice for Mike's AZ3166
-   */
-  deviceMethod(data, cb) {
-    this.iotClient.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
-      if (err && !(err instanceof SyntaxError)) {
-        // this gets called with a syntax error whenever invoking
-        // a device method, despite the device method actually working
-        // should look into this later but for now it can be ignored
-        console.log('failed to invoke device method...');
-        if (cb) { cb(err); }
-      } else {
-        console.log('successfully invoked device method');
-        if (cb) { cb(); }
-      }
+      self.updateClient(self.io.sockets.connected[id]);
     });
   }
 }
