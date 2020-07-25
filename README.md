@@ -7,7 +7,7 @@ Device code repo: https://github.com/mattinglyas/enee101-esp
 
 # Example
 
-![Demo gif](demo/demo.gif)
+![Demo gif](../assets/demo.gif?raw=true)
 
 # Setup
 
