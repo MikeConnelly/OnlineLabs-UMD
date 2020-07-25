@@ -17,7 +17,7 @@ Clone the repo and create a file named ".env" in the base directory.
 #### IOT Hub Connection
 Create and IOT Hub instance on Microsoft Azure and add the following variables:  
 CONNECTIONSTRING=[Your primary connection string]  
-CONSUMERGROUP=[Your consumer group, probable $Default]  
+CONSUMERGROUP=[Your consumer group, probably $Default]  
 
 #### MongoDB Connection
 Create a mongodb instance on Azure CosmosDB or another database provider and enter the variable:  
@@ -33,9 +33,12 @@ AUTHID=[Your app id]
 AUTHSECRET=[Your app secret]  
 
 
-### Running the app
+### Running the app locally
 Ensure [Node.js and npm](https://nodejs.org/en/) are installed and enter the following commands.
 ```
 npm install
 npm run build && npm start
 ```
+
+### Deploying
+To deploy to an Azure App Service follow the instructions [here](https://docs.microsoft.com/en-us/azure/app-service/app-service-web-get-started-nodejs)
