@@ -8,7 +8,7 @@ class MotorController {
   }
 
   /**
-   * Moves the motors by a single xy vector, not used in favor of moveArray
+   * Moves the motors by a single xy vector, not used in favor of moveArray.
    * @param {number} x x distance
    * @param {number} y y distance
    * @param {Function} cb optional callback function
@@ -19,9 +19,9 @@ class MotorController {
   }
 
   /**
-   * Adds an array of xy vectors to the device's motor queue
-   * @param {[number]} xArr array of x vectors
-   * @param {[number]} yArr array of y vectors
+   * Adds an array of xy vectors to the device's motor queue.
+   * @param {[number]} xArr array of x distances
+   * @param {[number]} yArr array of y distances
    * @param {Function} cb optional callback function
    */
   moveArray(xArr, yArr, cb) {
@@ -30,8 +30,8 @@ class MotorController {
   }
   
   /**
-   * Calls device method to reset motor position
-   * Doesn't get used anymore in favor of resetMotorsAndClear
+   * Calls device method to reset motor position.
+   * Doesn't get used anymore in favor of resetMotorsAndClear.
    * @param {Function} cb optional callback function
    */
   resetMotors(cb) {

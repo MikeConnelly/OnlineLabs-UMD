@@ -158,12 +158,7 @@ class UserManager {
    * @param {SocketIO.Socket} socket socket the information is being sent to
    */
   updateClient(socket) {
-    let user;
-    if (!socket.request.user.logged_in) {
-      user = null;
-    } else {
-      user = socket.request.user;
-    }
+    const user = !socket.request.user.logged_in ? null : socket.request.user;
     const queueState = this.getQueueState(user);
     socket.emit('queueState', queueState);
   }
