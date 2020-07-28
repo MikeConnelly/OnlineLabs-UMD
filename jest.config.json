@@ -1,0 +1,8 @@
+{
+  "testRegex": "((\\.|/*.)(test))\\.js?$",
+  "globalSetup": "<rootDir>/setupTest.js",
+  "moduleNameMapper": {
+    "\\.(jpg|jpeg|png)$": "../mocks/fileMock.js"
+  },
+  "enzymeAdapter": "react16"
+}
