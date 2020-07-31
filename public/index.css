@@ -1,4 +1,16 @@
+input {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  width: 15%;
+  border: 2px;
+  border-radius: 4px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
 body {
+  color: #fff;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -54,7 +66,8 @@ body {
   margin: 10px;
 }
 
-#queue-length-text, #current-user-text {
+#queue-length-text,
+#current-user-text {
   margin: 10px;
   display: inline;
 }
@@ -73,11 +86,23 @@ body {
 }
 
 #remove-point {
+  display: inline-block;
   margin-left: 10px;
   font-size: large;
-  width: 25px;
-  height: 25px;
-  vertical-align: top;
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+  background: #C4112D;
+  border-radius: 100%;
+  text-align: center;
+  color: white;
+
+}
+
+#remove-point > p{
+  position: relative;
+  top: -22px;
+  font-weight: bolder;
 }
 
 #add-point {
@@ -104,7 +129,7 @@ body {
   font-size: large;
 }
 
-#submit-form  {
+#submit-form {
   width: 75px;
   height: 40px;
   margin: 5px;
@@ -120,27 +145,59 @@ body {
   font-size: large;
 }
 
+.instructions {
+  background-color:grey;
+  text-align: center;
+  margin-right: 10px;
+  width: 30%;
+  border-radius: 10px;
+  border-color: #444;
+}
+
 .instructions li {
   text-align: left;
   flex-grow: 1;
+  padding-left: 3%;
 }
 
-@media(max-width: 1200px) {
-  .instructions {
+.instructions-Act1 li {
+  color: #ffffff;
+  text-align: left;
+  flex-grow: 1;
+  padding-left: 3%;
+}
+
+@media(max-width: 1000px) {
+
+  .instructions,
+  .instructions-Act1 {
     display: none;
   }
 }
 
+.form-control {
+  background-color: #444;
+  width: 40%;
+}
+
+.form-prompts {
+  display: flex;
+  justify-content: space-around;
+}
+
 #control-form {
+  text-align: center;
   flex-grow: 2;
 }
 
-.x-input, .y-input {
+.x-input,
+.y-input {
   margin-left: 5px;
   margin-right: 5px;
   width: 80px;
   height: 20px;
 }
+
 /*
 #other-controls {
   display: flex;
@@ -149,7 +206,8 @@ body {
 }
 */
 
-#invalid-input, #command-error {
+#invalid-input,
+#command-error {
   color: red;
 }
 
@@ -175,7 +233,12 @@ body {
   align-items: center;
 }
 
-.control-panel, .command-sequence {
+.command-sequence {
+  width: 30%;
+}
+
+.control-panel,
+.command-sequence {
   background-color: #aaa;
   border-radius: 15px;
   margin-top: 10px;
@@ -218,7 +281,27 @@ body {
   border: thin solid #888;
   box-shadow: 1px 1px 1px grey;
 }
+
 span.buttonText {
   font-size: 14px;
   font-weight: bold;
+}
+
+.activity-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.activity {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  text-align: center;
+  font-size: large;
+  flex-grow: 2;
+  background-color: #818181;
+  border-radius: 7px;
 }

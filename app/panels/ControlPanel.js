@@ -10,7 +10,7 @@ class ControlPanel extends Component {
     this.state = {
       validInput: true,
       enableForm: true,
-      points: [ { x: 0, y: 0 } ],
+      points: [{ x: 0, y: 0 }],
       commandSuccess: false,
       commandError: false,
       useJSON: false,
@@ -57,26 +57,26 @@ class ControlPanel extends Component {
             <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} value="-" />
           </div>
         ))
-      }
+        }
       </div>
     );
   }
-  
+
   handleResetPosition(_event) {
     this.setState({ enableForm: false });
     axios.post('/api/clearReset')
-    .catch(err => {
-      this.setState({ enableForm: true, commandError: true });
-      setTimeout(() => {
-        this.setState({ commandError: false });
-      }, RESPONSE_TEXT_DELAY);
-    })
-    .then(res => {
-      this.setState({ enableForm: true, commandSuccess: true });
-      setTimeout(() => {
-        this.setState({ commandSuccess: false });
-      }, RESPONSE_TEXT_DELAY);
-    })
+      .catch(err => {
+        this.setState({ enableForm: true, commandError: true });
+        setTimeout(() => {
+          this.setState({ commandError: false });
+        }, RESPONSE_TEXT_DELAY);
+      })
+      .then(res => {
+        this.setState({ enableForm: true, commandSuccess: true });
+        setTimeout(() => {
+          this.setState({ commandSuccess: false });
+        }, RESPONSE_TEXT_DELAY);
+      })
   }
 
   handleFinish(_event) {
@@ -130,24 +130,24 @@ class ControlPanel extends Component {
       'x': xArr,
       'y': yArr
     })
-    .catch(err => {
-      console.log(err);
-      this.setState({ enableForm: true, commandError: true });
-      setTimeout(() => {
-        this.setState({ commandError: false });
-      }, RESPONSE_TEXT_DELAY);
-    })
-    .then(res => {
-      if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: this.state.sequence.concat(pointsCopy) }); }
-      else { this.setState({ enableForm: true, commandSuccess: true }); }
-      setTimeout(() => {
-        this.setState({ commandSuccess: false });
-      }, RESPONSE_TEXT_DELAY);
-    })
+      .catch(err => {
+        console.log(err);
+        this.setState({ enableForm: true, commandError: true });
+        setTimeout(() => {
+          this.setState({ commandError: false });
+        }, RESPONSE_TEXT_DELAY);
+      })
+      .then(res => {
+        if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: this.state.sequence.concat(pointsCopy) }); }
+        else { this.setState({ enableForm: true, commandSuccess: true }); }
+        setTimeout(() => {
+          this.setState({ commandSuccess: false });
+        }, RESPONSE_TEXT_DELAY);
+      })
   }
 
   handleAddPoint() {
-    this.setState({ points: this.state.points.concat([{ x: 0, y: 0 }])});
+    this.setState({ points: this.state.points.concat([{ x: 0, y: 0 }]) });
   }
 
   handlePointUpdate(event, dimension, index) {
@@ -185,48 +185,118 @@ class ControlPanel extends Component {
   render() {
     return (
       <div className="control-panel-wrapper">
-        <div className="control-panel">
-          <div className="instructions">
-            <h3 id="instruction-header">Instructions:</h3>
-            <ul>
-              <li>Input values to control motor movement in the x and y directions</li>
-              <li>Hit submit to send your command to the device</li>
-              <li>The + and - buttons allow you to send multiple points at once</li>
-              <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li>
-            </ul>
-          </div>
+        {/* <div className="control-panel"> */}
+        <div className="instructions">
+          <h3 id="instruction-header">Instructions:</h3>
+          <ul>
+            <li>Input values to control motor movement in the x and y directions</li>
+            <li>Hit submit to send your command to the device</li>
+            <li>The + and - buttons allow you to send multiple points at once</li>
+            <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li>
+          </ul>
+        </div>
+        <div className="form-control">
           <form id="control-form" onSubmit={this.handleSubmit}>
-            {!this.state.useJSON ? this.getInputForm() : (
-              <div className="json-form">
-                <textarea
-                  id="json-input"
-                  name="json-input"
-                  type="textarea"
-                  autoComplete="off"
-                  value={this.state.jsonInput}
-                  onChange={event => this.setState({ jsonInput: event.target.value })}
-                />
+            <h3> SET INPUT XY</h3>
+            <div className="form-prompts">
+              <div className="column-left">
+                <p> Choose a Coordinate System: </p>
+                <select>
+                  <option>
+                    M Pattern Wave
+                    </option>
+                  <option>
+                    Triangle Wave
+                    </option>
+                </select>
+                <p> OR </p>
+                <p> Enter JSON: </p>
+                <div className="json-form">
+                  <textarea
+                    id="json-input"
+                    name="json-input"
+                    type="textarea"
+                    autoComplete="off"
+                    value={this.state.jsonInput}
+                    onChange={event => this.setState({ jsonInput: event.target.value })}
+                  />
+                </div>
               </div>
-            )}
-            <div className="button-col">
-              {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
-              <div className="bottomRowOfControls">
-                <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
-                <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
-                <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
+              <div className="column-right">
+                <div className="points">
+                  {this.state.points.map((point, index) => (
+                    <div className="point" key={index}>
+                      <label id="x-input-label" htmlFor="x">X{index + 1}</label>
+                      <input
+                        className="x-input"
+                        name="x"
+                        type="number"
+                        value={point.x}
+                        autoComplete="off"
+                        onChange={event => this.handlePointUpdate(event, 'x', index)}
+                      />
+                      <label id="y-input-label" htmlFor="y">Y{index + 1}</label>
+                      <input
+                        className="y-input"
+                        name="y"
+                        type="number"
+                        value={point.y}
+                        autoComplete="off"
+                        onChange={event => this.handlePointUpdate(event, 'y', index)}
+                      />
+                      <div id="remove-point" onClick={event => this.handleRemovePoint(index)} >
+                        <p>-</p>
+                      </div>
+                      {/* <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} 
+  
+                      /> */}
+                    
+                    </div>
+                  ))
+
+                  }
+                  <div className="button-col">
+                    {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
+                    <div className="bottomRowOfControls">
+                      <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
+                      <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
+                      <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <label id="json-cb-label" htmlFor="json-cb">use JSON format</label>
-            <input
-              id="json-cb"
-              name="json-cb"
-              type="checkbox"
-              checked={this.state.useJSON}
-              onChange={event => this.setState({ useJSON: event.target.checked })}
-            />
-            {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
-            {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
-            {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
+            {/* {!this.state.useJSON ? this.getInputForm() : (
+                <div className="json-form">
+                  <textarea
+                    id="json-input"
+                    name="json-input"
+                    type="textarea"
+                    autoComplete="off"
+                    value={this.state.jsonInput}
+                    onChange={event => this.setState({ jsonInput: event.target.value })}
+                  />
+                </div>
+              )} */}
+            {/* <div className="button-col">
+                {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
+                <div className="bottomRowOfControls">
+                  <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
+                  <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
+                  <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
+                </div>
+              </div>
+              <label id="json-cb-label" htmlFor="json-cb">use JSON format</label>
+              <input
+                id="json-cb"
+                name="json-cb"
+                type="checkbox"
+                checked={this.state.useJSON}
+                onChange={event => this.setState({ useJSON: event.target.checked })}
+              />
+              {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
+              {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
+              {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>} */}
           </form>
         </div>
         <CommandSequence
@@ -234,11 +304,12 @@ class ControlPanel extends Component {
           clearSequence={this.handleClearSequence}
           fillFormWithSequence={this.handleFillFormWithSequence}
           autofillSequence={this.state.autofillSequence}
-          changeAutofillSequence={this.changeAutofillSequence}
-        />
+          changeAutofillSequence={this.changeAutofillSequence} />
+        {/* </div> */}
       </div>
     );
   }
+
 }
 
 export default ControlPanel;

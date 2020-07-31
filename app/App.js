@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header';
+import Activity1 from './activity/Activity1'
 // import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
 import GraphWrapper from './GraphWrapper';
@@ -37,7 +38,8 @@ class App extends Component {
           setLoggedIn={this.setLoggedIn}
           socket={socket}
         />
-        <GraphWrapper socket={socket} />
+        {/* <GraphWrapper socket={socket} /> */}
+        <Activity1 socket={socket}/>
       </div>
     );
   }

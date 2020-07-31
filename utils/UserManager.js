@@ -110,7 +110,7 @@ class UserManager {
    */
   currentUserTimoutCheck() {
     this.minutesIdle++;
-    if (this.minutesIdle >= 4) {
+    if (this.minutesIdle >= 100) {
       this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
       this.controller.resetMotorsAndClear();
       this.refreshCurrentUserTimer();
