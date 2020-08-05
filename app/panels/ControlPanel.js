@@ -187,7 +187,7 @@ class ControlPanel extends Component {
       <div className="control-panel-wrapper">
         {/* <div className="control-panel"> */}
         <div className="instructions">
-          <h3 id="instruction-header">Instructions:</h3>
+          <h3 id="instruction-header">INSTRUCTIONS</h3>
           <ul>
             <li>Input values to control motor movement in the x and y directions</li>
             <li>Hit submit to send your command to the device</li>
@@ -200,17 +200,12 @@ class ControlPanel extends Component {
             <h3> SET INPUT XY</h3>
             <div className="form-prompts">
               <div className="column-left">
-                <p> Choose a Coordinate System: </p>
-                <select>
-                  <option>
-                    M Pattern Wave
-                    </option>
-                  <option>
-                    Triangle Wave
-                    </option>
-                </select>
-                <p> OR </p>
-                <p> Enter JSON: </p>
+                <p> Choose a Coordinate System: </p>       
+                  <select id = "coordinate-input">
+                    <option>M Pattern Wave</option>
+                    <option>Triangle Wave</option>
+                  </select>    
+                <p id = "text-JSON"> Enter JSON: </p>
                 <div className="json-form">
                   <textarea
                     id="json-input"
@@ -255,15 +250,16 @@ class ControlPanel extends Component {
                   ))
 
                   }
+                
+                </div>
                   <div className="button-col">
                     {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
                     <div className="bottomRowOfControls">
                       <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
                       <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
-                      <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
+                     
                     </div>
                   </div>
-                </div>
               </div>
             </div>
             {/* {!this.state.useJSON ? this.getInputForm() : (

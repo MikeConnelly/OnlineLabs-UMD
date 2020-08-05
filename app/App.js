@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header';
-import Activity1 from './activity/Activity1'
+import Footer from './Footer';
+import Activity1 from './activity/Activity1';
+import Activity2 from './activity/Activity2';
 // import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
 import GraphWrapper from './GraphWrapper';
@@ -31,15 +33,19 @@ class App extends Component {
     const loggedIn = this.state.loggedIn;
     return (
       <div id="app-container">
-        {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
         <Header />
+        <GraphWrapper socket={socket} />
+        {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
+        
         <DashboardContainer
           loggedIn={loggedIn}
           setLoggedIn={this.setLoggedIn}
           socket={socket}
         />
-        {/* <GraphWrapper socket={socket} /> */}
+        
         <Activity1 socket={socket}/>
+        <Activity2 socket={socket}/>
+        <Footer/>
       </div>
     );
   }
