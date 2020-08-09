@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import CommandSequence from './CommandSequence';
+import Vnc from './Vnc';
 const RESPONSE_TEXT_DELAY = 3000;
 
 class ControlPanel extends Component {
@@ -131,15 +132,17 @@ class ControlPanel extends Component {
       'y': yArr
     })
     .catch(err => {
-      console.log(err);
       this.setState({ enableForm: true, commandError: true });
       setTimeout(() => {
         this.setState({ commandError: false });
       }, RESPONSE_TEXT_DELAY);
     })
     .then(res => {
-      if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: this.state.sequence.concat(pointsCopy) }); }
-      else { this.setState({ enableForm: true, commandSuccess: true }); }
+      if (this.state.autofillSequence && !this.state.useJSON) {
+        this.setState({ enableForm: true, commandSuccess: true, sequence: this.state.sequence.concat(pointsCopy) });
+      } else {
+        this.setState({ enableForm: true, commandSuccess: true });
+      }
       setTimeout(() => {
         this.setState({ commandSuccess: false });
       }, RESPONSE_TEXT_DELAY);
@@ -147,7 +150,7 @@ class ControlPanel extends Component {
   }
 
   handleAddPoint() {
-    this.setState({ points: this.state.points.concat([{ x: 0, y: 0 }])});
+    this.setState({ points: this.state.points.concat([{ x: 0, y: 0 }]) });
   }
 
   handlePointUpdate(event, dimension, index) {
@@ -184,59 +187,7 @@ class ControlPanel extends Component {
 
   render() {
     return (
-      <div className="control-panel-wrapper">
-        <div className="control-panel">
-          <div className="instructions">
-            <h3 id="instruction-header">Instructions:</h3>
-            <ul>
-              <li>Input values to control motor movement in the x and y directions</li>
-              <li>Hit submit to send your command to the device</li>
-              <li>The + and - buttons allow you to send multiple points at once</li>
-              <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li>
-            </ul>
-          </div>
-          <form id="control-form" onSubmit={this.handleSubmit}>
-            {!this.state.useJSON ? this.getInputForm() : (
-              <div className="json-form">
-                <textarea
-                  id="json-input"
-                  name="json-input"
-                  type="textarea"
-                  autoComplete="off"
-                  value={this.state.jsonInput}
-                  onChange={event => this.setState({ jsonInput: event.target.value })}
-                />
-              </div>
-            )}
-            <div className="button-col">
-              {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
-              <div className="bottomRowOfControls">
-                <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
-                <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
-                <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
-              </div>
-            </div>
-            <label id="json-cb-label" htmlFor="json-cb">use JSON format</label>
-            <input
-              id="json-cb"
-              name="json-cb"
-              type="checkbox"
-              checked={this.state.useJSON}
-              onChange={event => this.setState({ useJSON: event.target.checked })}
-            />
-            {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
-            {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
-            {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
-          </form>
-        </div>
-        <CommandSequence
-          sequence={this.state.sequence}
-          clearSequence={this.handleClearSequence}
-          fillFormWithSequence={this.handleFillFormWithSequence}
-          autofillSequence={this.state.autofillSequence}
-          changeAutofillSequence={this.changeAutofillSequence}
-        />
-      </div>
+      <Vnc />
     );
   }
 }

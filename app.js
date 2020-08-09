@@ -22,6 +22,8 @@ var User = require('./models/User');
 var MotorController = require('./utils/MotorController');
 var UserManager = require('./utils/UserManager');
 var routes = require('./routes/routes');
+//var websockify = require('node-websockify');
+//websockify({ source: '127.0.0.1:8080', target: '192.168.1.24:5900' });
 
 dotenv.config();
 // const mode = process.env.MODE;
@@ -50,7 +52,7 @@ const iotHubConfig = {
 var client = Client.fromConnectionString(iotHubConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 var controller = new MotorController(client);
-var manager = new UserManager(io, controller); // replace client with controller, also put in routes
+var manager = new UserManager(io, controller);
 
 
 // setup mongo connection
