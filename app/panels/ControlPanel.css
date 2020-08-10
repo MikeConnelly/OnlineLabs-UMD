@@ -1,0 +1,134 @@
+#json-cb-label {
+  font-size: small;
+  margin-bottom: 10px;
+}
+
+#json-cb {
+  height: 15px;
+  width: 15px;
+  border: #ffffff;
+  border-radius: 1px;
+  margin: 0 0 0 5px;
+}
+
+#remove-point {
+  display: inline-block;
+  margin-left: 10px;
+  width: 15px;
+  height: 15px;
+  align-items: center;
+  justify-content: center;
+  background-color: #C4112D;
+  border-radius: 100%;
+  color: white;
+}
+
+#remove-point > p {
+  position: relative;
+  top: -22px;
+}
+
+#add-point {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: large;
+  width: 25px;
+  height: 25px;
+}
+
+#reset-position {
+  background: #219653;
+  color: white;
+  width: 75px;
+  height: 35px;
+  border-radius: 5px;
+  font-size: medium;
+}
+
+#finish {
+  width: 75px;
+  height: 35px;
+  background-color: #C4112E;
+  border-style: solid;
+  font-size: large;
+}
+
+#submit-form {
+  width: 75px;
+  height: 35px;
+  margin: 5px;
+  color: white;
+  background: #C4112E;
+  /* border-style: solid; */
+  font-size: medium;
+}
+
+.control-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  font-size: large;
+  flex-grow: 3;
+  margin-right: 10px;
+  padding-top: 20px;
+}
+
+.instructions {
+  background-color: #E0E0E0;
+  text-align: center;
+  margin-right: 10px;
+  width: 30%;
+  border-radius: 10px;
+  border-color: #444;
+}
+
+.instructions li {
+  text-align: left;
+  flex-grow: 1;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 3%;
+  padding-right: 3%;
+}
+
+.form-control {
+  background-color: #E0E0E0;
+  width: 40%;
+  border-radius: 10px;
+}
+
+#control-form {
+  padding-left: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  flex-grow: 2;
+}
+
+.x-input, .y-input {
+  padding-left: 8px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 80px;
+  height: 35px;
+}
+
+.x-input, .y-input :focus{
+  outline-color: #720012;
+}
+
+#invalid-input, #command-error {
+  color: red;
+  font-size: large;
+}
+
+#command-success {
+  color: rgb(26, 172, 0);
+  font-size: large;
+}
+
+.control-panel-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
