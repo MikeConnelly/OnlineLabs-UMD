@@ -1,7 +1,28 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import CommandSequence from './CommandSequence';
+import './ControlPanel.css';
 const RESPONSE_TEXT_DELAY = 3000;
+const MShapeJson = [
+  {"x": 0, "y": 100},
+  {"x": 75, "y": -75},
+  {"x": 75, "y": 75},
+  {"x": 0, "y": -100},
+  {"x": 0, "y": 100},
+  {"x": -75, "y": -75},
+  {"x": -75, "y": 75},
+  {"x": 0, "y": -100}
+];
+const TriangleWaveJson = [
+  {"x": 100, "y": 100},
+  {"x": 100, "y": -100},
+  {"x": 100, "y": 100},
+  {"x": 100, "y": -100},
+  {"x": -100, "y": 100},
+  {"x": -100, "y": -100},
+  {"x": -100, "y": 100},
+  {"x": -100, "y": -100}
+];
 
 class ControlPanel extends Component {
 
@@ -29,6 +50,7 @@ class ControlPanel extends Component {
     this.handleClearSequence = this.handleClearSequence.bind(this);
     this.handleFillFormWithSequence = this.handleFillFormWithSequence.bind(this);
     this.changeAutofillSequence = this.changeAutofillSequence.bind(this);
+    this.fillJsonWithTemplate = this.fillJsonWithTemplate.bind(this);
   }
 
   getInputForm() {
@@ -57,7 +79,7 @@ class ControlPanel extends Component {
             <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} value="-" />
           </div>
         ))
-        }
+      }
       </div>
     );
   }
@@ -182,6 +204,14 @@ class ControlPanel extends Component {
     this.setState({ autofillSequence: b });
   }
 
+  fillJsonWithTemplate(template) {
+    if (template === 'm') {
+      this.setState({ jsonInput: JSON.stringify(MShapeJson) });
+    } else {
+      this.setState({ jsonInput: JSON.stringify(TriangleWaveJson) });
+    }
+  }
+
   render() {
     return (
       <div className="control-panel-wrapper">
@@ -197,15 +227,21 @@ class ControlPanel extends Component {
         </div>
         <div className="form-control">
           <form id="control-form" onSubmit={this.handleSubmit}>
+
+
+            {/*
             <h3> SET INPUT XY</h3>
             <div className="form-prompts">
+
+
+
               <div className="column-left">
                 <p> Choose a Coordinate System: </p>       
-                  <select id = "coordinate-input">
+                  <select id="coordinate-input">
                     <option>M Pattern Wave</option>
                     <option>Triangle Wave</option>
                   </select>    
-                <p id = "text-JSON"> Enter JSON: </p>
+                <p id="text-JSON"> Enter JSON: </p>
                 <div className="json-form">
                   <textarea
                     id="json-input"
@@ -217,6 +253,9 @@ class ControlPanel extends Component {
                   />
                 </div>
               </div>
+
+
+
               <div className="column-right">
                 <div className="points">
                   {this.state.points.map((point, index) => (
@@ -242,57 +281,70 @@ class ControlPanel extends Component {
                       <div id="remove-point" onClick={event => this.handleRemovePoint(index)} >
                         <p>-</p>
                       </div>
-                      {/* <input id="remove-point" type="button" onClick={event => this.handleRemovePoint(index)} 
-  
-                      /> */}
-                    
                     </div>
-                  ))
-
-                  }
-                
+                  ))}
                 </div>
-                  <div className="button-col">
-                    {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
-                    <div className="bottomRowOfControls">
-                      <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
-                      <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
-                     
-                    </div>
+
+
+                <div className="button-col">
+                  {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
+                  <div className="bottomRowOfControls">
+                    <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
+                    <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
+                    <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
                   </div>
+                </div>
               </div>
-            </div>
-            {/* {!this.state.useJSON ? this.getInputForm() : (
-                <div className="json-form">
-                  <textarea
-                    id="json-input"
-                    name="json-input"
-                    type="textarea"
-                    autoComplete="off"
-                    value={this.state.jsonInput}
-                    onChange={event => this.setState({ jsonInput: event.target.value })}
+                  */}
+
+
+            <h3> SET INPUT XY</h3>
+            <label id="json-cb-label" htmlFor="json-cb">use JSON</label>
+            <input
+              id="json-cb"
+              name="json-cb"
+              type="checkbox"
+              checked={this.state.useJSON}
+              onChange={event => this.setState({ useJSON: event.target.checked })}
+            />
+            {!this.state.useJSON ? this.getInputForm() : (
+              <div className="json-form">
+                <div className="template-row">
+                  <p>Fill With Template:</p>
+                  <input
+                    id="m-shape-template-button"
+                    type="button"
+                    value="M Shape"
+                    onClick={() => this.fillJsonWithTemplate('m')}
+                  />
+                  <input
+                    id="triangle-wave-template-button"
+                    type="button"
+                    value="Trianlge Wave"
+                    onClick={() => this.fillJsonWithTemplate('triangle')}
                   />
                 </div>
-              )} */}
-            {/* <div className="button-col">
-                {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
-                <div className="bottomRowOfControls">
-                  <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
-                  <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
-                  <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
-                </div>
+                <textarea
+                  id="json-input"
+                  name="json-input"
+                  type="textarea"
+                  autoComplete="off"
+                  value={this.state.jsonInput}
+                  onChange={event => this.setState({ jsonInput: event.target.value })}
+                />
               </div>
-              <label id="json-cb-label" htmlFor="json-cb">use JSON format</label>
-              <input
-                id="json-cb"
-                name="json-cb"
-                type="checkbox"
-                checked={this.state.useJSON}
-                onChange={event => this.setState({ useJSON: event.target.checked })}
-              />
-              {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
-              {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
-              {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>} */}
+            )}
+            <div className="button-col">
+              {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
+              <div className="bottomRowOfControls">
+                <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
+                <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
+                <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
+              </div>
+            </div>
+            {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
+            {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
+            {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
           </form>
         </div>
         <CommandSequence
@@ -300,12 +352,11 @@ class ControlPanel extends Component {
           clearSequence={this.handleClearSequence}
           fillFormWithSequence={this.handleFillFormWithSequence}
           autofillSequence={this.state.autofillSequence}
-          changeAutofillSequence={this.changeAutofillSequence} />
-        {/* </div> */}
+          changeAutofillSequence={this.changeAutofillSequence}
+        />
       </div>
     );
   }
-
 }
 
 export default ControlPanel;
