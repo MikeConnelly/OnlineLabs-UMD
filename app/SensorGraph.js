@@ -16,7 +16,9 @@ const chartOptions = {
         stepsize: 1
       }
     }]
-  }
+  },
+  tooltips: { enabled: false },
+  hover: { mode: null }
 };
 
 class SensorGraph extends Component {
