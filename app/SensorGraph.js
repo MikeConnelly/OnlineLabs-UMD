@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
-// import { Line } from 'react-chartjs-2';
 const chartOptions = {
   scales: {
     yAxes: [{
@@ -72,7 +71,10 @@ class SensorGraph extends Component {
 
   render() {
     return (
-      <div className="chart-container">
+      <div
+        className="chart-container"
+        style={{ position: 'relative', height: '30%', width: '50%' }}
+      >
         <canvas ref={this.chartRef} />
       </div>
     );

@@ -4,7 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Activity1 from './activity/Activity1';
 import Activity2 from './activity/Activity2';
-// import VideoContainer from './VideoContainer';
+import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
 import GraphWrapper from './GraphWrapper';
 import io from 'socket.io-client';
@@ -34,15 +34,16 @@ class App extends Component {
     return (
       <div id="app-container">
         <Header />
-        <GraphWrapper socket={socket} />
+        <div className="graph-stream">
+          <GraphWrapper socket={socket} />
+          <VideoContainer />
+        </div>
         {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
-        
         <DashboardContainer
           loggedIn={loggedIn}
           setLoggedIn={this.setLoggedIn}
           socket={socket}
         />
-        
         <Activity1 />
         <Activity2 />
         <Footer/>

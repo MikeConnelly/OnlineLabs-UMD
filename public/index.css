@@ -53,6 +53,11 @@ body {
   align-self: center;
 }
 
+.graph-stream {
+  display: flex;
+  flex-direction: row;
+}
+
 .dashboard-container {
   background-color: #E0E0E0;
   border-radius: 15px;
