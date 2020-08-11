@@ -320,7 +320,7 @@ class ControlPanel extends Component {
                   <input
                     id="triangle-wave-template-button"
                     type="button"
-                    value="Trianlge Wave"
+                    value="Triangle Wave"
                     onClick={() => this.fillJsonWithTemplate('triangle')}
                   />
                 </div>
