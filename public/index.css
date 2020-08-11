@@ -165,6 +165,8 @@ body {
 }
 
 .results input{
+  margin-right: 30px;
+  margin-left: 10px;
   height: 35px;
   width: 80px;
 }
@@ -225,9 +227,9 @@ body {
   border-radius: 10px;
 }
 
-/* .results{
-  padding-left: 15px;
-} */
+.results{
+  width: 90%;
+}
 
 .head{
   text-align: center;
@@ -277,6 +279,7 @@ body {
 }
 
 .control-panel-wrapper {
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -288,12 +291,13 @@ body {
   align-items: center;
 }
 
-.bottomRowOfControls, .row-footer, .activity1, .activity2 {
-  flex-direction: row;
+.bottomRowOfControls, .row-footer {
+  margin-bottom: 15px;
   align-items: center;
 }
 
 .bottomRowOfControls, .activity1, .activity2{
+  flex-direction: row;
   display: flex;
 }
 

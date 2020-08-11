@@ -28,21 +28,21 @@ class Activity1 extends Component {
                                     <div className="results">
                                         <div className="bottomRowOfControls">
                                             <form>
-                                                <label>Calibration Avg. (in/step) for X: </label>
+                                                <label>Enter Calibration Avg. (in/step) for X: </label>
                                                 <input type="number" id="CalibrationX" name="CalibrationX"></input>
                                             </form>
                                             <form>
-                                                <label>Calibration Avg. (in/step) for Y: </label>
+                                                <label>Enter Calibration Avg. (in/step) for Y: </label>
                                                 <input type="number" id="CalibrationY" name="CalibrationY"></input>
                                             </form>
                                         </div>
                                         <div className="bottomRowOfControls">
                                             <form>
-                                                <label>Enter your calculated Standard Deviation for X: </label>
+                                                <label>Enter Standard Deviation for X: </label>
                                                 <input type="number" id="StndX" name="StndX"></input>
                                             </form>
                                             <form>
-                                                <label>Enter your calculated Standard Deviation for Y: </label>
+                                                <label>Enter Standard Deviation for Y: </label>
                                                 <input type="number" id="StndY" name="StndY"></input>
                                             </form>
                                         </div>
