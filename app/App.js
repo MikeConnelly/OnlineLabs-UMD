@@ -43,8 +43,8 @@ class App extends Component {
           socket={socket}
         />
         
-        <Activity1 socket={socket}/>
-        <Activity2 socket={socket}/>
+        <Activity1 />
+        <Activity2 />
         <Footer/>
       </div>
     );

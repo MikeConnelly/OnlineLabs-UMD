@@ -16,7 +16,7 @@ class LoginPanel extends Component {
     return (
       <div className="login-panel">
         <button id="google-login" onClick={this.handleLoginGoogle}>
-          <span class="buttonText">Login with Google</span>
+          <span className="buttonText">Login with Google</span>
         </button>
       </div>
     );

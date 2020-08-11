@@ -13,11 +13,11 @@ class Footer extends Component {
                     <div className="underline"></div>
                     <p>ENEE 101</p>
                     <p>Department of Electrical and Computer Engineering</p>
-                    <div className = "row-footer">
+                    {/* <div className = "row-footer">
                         <img id="header-img" src={Youtube} alt="logo" width="40" height="40" />
                         <img id="header-img" src={Insta} alt="logo" width="40" height="40" />
                         <img id="header-img" src={Twitter} alt="logo" width="40" height="40" />
-                    </div>
+                    </div> */}
                 </div>
                 
             </div>
