@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import CommandSequence from './CommandSequence';
-import Vnc from './Vnc';
 const RESPONSE_TEXT_DELAY = 3000;
 
 class ControlPanel extends Component {
@@ -187,7 +186,7 @@ class ControlPanel extends Component {
 
   render() {
     return (
-      <Vnc />
+      <p>control panel</p>
     );
   }
 }

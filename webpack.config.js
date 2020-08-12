@@ -5,7 +5,8 @@ module.exports = {
   entry : './app/index.js',
   output : {
     path : path.resolve(__dirname , 'build'),
-    filename: 'index_bundle.js'
+    filename: 'index_bundle.js',
+    publicPath: '/'
   },
   module : {
     rules : [
@@ -13,6 +14,9 @@ module.exports = {
       {test: /\.css$/, use: ['style-loader', 'css-loader']},
       {test: /\.(png|svg|jpg|gif)$/, use: ['file-loader']}
     ]
+  },
+  devServer: {
+    historyApiFallback: true
   },
   mode:'development',
   plugins : [
