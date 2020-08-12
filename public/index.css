@@ -53,6 +53,12 @@ body {
   align-self: center;
 }
 
+.vnc-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .graph-stream {
   display: flex;
   flex-direction: row;

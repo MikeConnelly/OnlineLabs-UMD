@@ -7,6 +7,7 @@ import Activity2 from './activity/Activity2';
 import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
 import GraphWrapper from './GraphWrapper';
+import Vnc from './panels/Vnc';
 import io from 'socket.io-client';
 const socket = io();
 
@@ -19,6 +20,7 @@ class App extends Component {
     };
     this.setLoggedIn = this.setLoggedIn.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.toggleUseVNC = this.toggleUseVNC.bind(this);
   }
 
   setLoggedIn(b) {
@@ -29,21 +31,33 @@ class App extends Component {
     axios.get('/auth/logout').then(res => this.setLoggedIn(false));
   }
 
+  toggleUseVNC() {
+    this.setState({ useVNC: !this.state.useVNC });
+  }
+
   render() {
     const loggedIn = this.state.loggedIn;
+
     return (
       <div id="app-container">
         <Header />
-        <div className="graph-stream">
-          <GraphWrapper socket={socket} />
-          <VideoContainer />
-        </div>
-        {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
-        <DashboardContainer
-          loggedIn={loggedIn}
-          setLoggedIn={this.setLoggedIn}
-          socket={socket}
-        />
+        <button onClick={this.toggleUseVNC}>
+          {this.state.useVNC ? '101' : '205'}
+        </button>
+        {this.state.useVNC ? <Vnc /> : (
+          <div>
+            <div className="graph-stream">
+              <GraphWrapper socket={socket} />
+              <VideoContainer />
+            </div>
+            {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
+            <DashboardContainer
+              loggedIn={loggedIn}
+              setLoggedIn={this.setLoggedIn}
+              socket={socket}
+            />
+          </div>
+        )}
         <Activity1 />
         <Activity2 />
         <Footer/>

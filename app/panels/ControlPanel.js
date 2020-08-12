@@ -152,20 +152,22 @@ class ControlPanel extends Component {
       'x': xArr,
       'y': yArr
     })
-      .catch(err => {
-        console.log(err);
-        this.setState({ enableForm: true, commandError: true });
-        setTimeout(() => {
-          this.setState({ commandError: false });
-        }, RESPONSE_TEXT_DELAY);
-      })
-      .then(res => {
-        if (this.state.autofillSequence && !this.state.useJSON) { this.setState({ enableForm: true, commandSuccess: true, sequence: this.state.sequence.concat(pointsCopy) }); }
-        else { this.setState({ enableForm: true, commandSuccess: true }); }
-        setTimeout(() => {
-          this.setState({ commandSuccess: false });
-        }, RESPONSE_TEXT_DELAY);
-      })
+    .catch(err => {
+      this.setState({ enableForm: true, commandError: true });
+      setTimeout(() => {
+        this.setState({ commandError: false });
+      }, RESPONSE_TEXT_DELAY);
+    })
+    .then(res => {
+      if (this.state.autofillSequence && !this.state.useJSON) {
+        this.setState({ enableForm: true, commandSuccess: true, sequence: this.state.sequence.concat(pointsCopy) });
+      } else {
+        this.setState({ enableForm: true, commandSuccess: true });
+      }
+      setTimeout(() => {
+        this.setState({ commandSuccess: false });
+      }, RESPONSE_TEXT_DELAY);
+    })
   }
 
   handleAddPoint() {
