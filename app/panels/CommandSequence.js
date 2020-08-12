@@ -5,7 +5,7 @@ class CommandSequence extends Component {
     const emptyList = (this.props.sequence.length === 0);
     return (
       <div className="command-sequence">
-        <p id="cs-title">Previous Commands</p>
+        <h3 id="cs-title">RECENT STEPS</h3>
         <div className="cs-border">
           <label htmlFor="cs-checkbox">add commands on submit</label>
           <input id="cs-checkbox" name="cs-checkbox" type="checkbox" checked={this.props.autofillSequence} onChange={() => this.props.changeAutofillSequence(!this.props.autofillSequence)} />

@@ -1,4 +1,18 @@
+input {
+  height: 25px;
+  width: 15%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  border: 2px;
+  border-radius: 4px;
+  margin: 8px 0;
+  box-sizing: border-box;  
+  outline-color: #720012;
+}
+
 body {
+  color:black;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -10,13 +24,27 @@ body {
   flex-direction: row;
 }
 
-.inner-header {
+.footer{
+  width: 100%;
+  margin-bottom: 5px;
+  display: flex;
+}
+
+.inner-header , .inner-footer {
   display: flex;
   flex-direction: column;
   flex-grow: 6;
 }
 
-.inner-header .underline {
+.inner-footer{
+  font-weight: lighter;
+  font-style: italic;
+  padding-top: 30px;
+  text-align: center;
+}
+
+
+.inner-header .underline , .inner-footer .underline {
   background-color: #720012;
   height: 10px;
 }
@@ -31,8 +59,13 @@ body {
   align-items: center;
 }
 
+.graph-stream {
+  display: flex;
+  flex-direction: row;
+}
+
 .dashboard-container {
-  background-color: #aaa;
+  background-color: #E0E0E0;
   border-radius: 15px;
   margin-top: 10px;
   padding-bottom: 20px;
@@ -69,104 +102,46 @@ body {
   font-size: medium;
 }
 
+#cs-checkbox {
+  height: 15px;
+  width: 15px;
+  border: #ffffff;
+  border-radius: 1px;
+  margin: 0 0 0 5px;
+}
+
+
+
 .queued-panel {
   font-size: large;
 }
 
-#json-cb-label {
-  font-size: small;
-  margin-bottom: 10px;
+.results input {
+  height: 35px;
+  width: 80px;
 }
 
-#remove-point {
-  margin-left: 10px;
-  font-size: large;
-  width: 25px;
-  height: 25px;
-  vertical-align: top;
+.instructions-Act1{
+  width: 40%;
 }
 
-#add-point {
-  margin-top: 10px;
-  margin-bottom: 30px;
-  font-size: large;
-  width: 25px;
-  height: 25px;
-}
-
-#reset-position {
-  width: 75px;
-  height: 40px;
-  background-color: rgb(0, 255, 0);
-  border-style: solid;
-  font-size: large;
-}
-
-#finish {
-  width: 75px;
-  height: 40px;
-  background-color: red;
-  border-style: solid;
-  font-size: large;
-}
-
-#submit-form  {
-  width: 75px;
-  height: 40px;
-  margin: 5px;
-  border-style: solid;
-  font-size: large;
-}
-
-.control-panel {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  text-align: center;
-  font-size: large;
-}
-
-.instructions li {
+.instructions-Act1 li , .instructions-Act2 li{
+  padding-bottom: 10px;
+  padding-top: 5px;
+  color: #ffffff;
   text-align: left;
   flex-grow: 1;
+  padding-left: 3%;
 }
 
-@media(max-width: 1200px) {
-  .instructions {
+@media(max-width: 1000px) {
+  .instructions, .instructions-Act1, .instructions-Act2 {
     display: none;
   }
 }
 
-#control-form {
-  flex-grow: 2;
-}
-
-.x-input, .y-input {
-  margin-left: 5px;
-  margin-right: 5px;
-  width: 80px;
-  height: 20px;
-}
-/*
-#other-controls {
-  display: flex;
-  flex-direction: column;
-  margin-left: 10px;
-}
-*/
-
-#invalid-input, #command-error {
-  color: red;
-}
-
-#command-success {
-  color: rgb(38, 255, 0);
-}
-
-.control-panel-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+.head {
+  text-align: center;
 }
 
 .button-col {
@@ -175,32 +150,46 @@ body {
   align-items: center;
 }
 
-.bottomRowOfControls {
-  display: flex;
-  flex-direction: row;
+#queue-button{
+  border-radius: 7.5px;
+  height: 35px;
+  color: white;
+  background: #C4112E;
+  border-color: #C4112E;
+  font-weight: bold;
+  border-style: solid;
+}
+
+.bottomRowOfControls, .row-footer {
+  margin-bottom: 15px;
   align-items: center;
 }
 
+.bottomRowOfControls, .activity1, .activity2{
+  flex-direction: row;
+  display: flex;
+}
+
+.row-footer{
+  padding: 10px;
+  text-align: center;
+}
+
 .control-panel, .command-sequence {
-  background-color: #aaa;
-  border-radius: 15px;
-  margin-top: 10px;
+  background-color: #E0E0E0;
+  border-radius: 10px;
   padding-bottom: 20px;
 }
 
-.control-panel {
-  flex-grow: 3;
-  margin-right: 10px;
-  padding-top: 20px;
-}
-
 .command-sequence {
+  color: black;
   flex-grow: 1;
   margin-left: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  width: 30%;
 }
 
 .command-sequence #cs-title {
@@ -211,20 +200,77 @@ body {
   color: grey;
 }
 
-#json-input {
+#text-JSON{
+  padding-top: 20px;
+}
+
+
+#coordinate-input{
+  padding-left: 5px;
+  padding-right: 15px;
+  /* position: absolute; */
+  width: 180px;
+  height: 35px;
+  border-radius: 5px;
+  /* font-family: Roboto; */
+  font-style: normal;
+  font-weight: normal;
+  font-size: 11px;
+  text-align: center;
+  border-color: white;
+}
+
+#json-input, #results-input {
   width: 180px;
   height: 100px;
+  border-color: white;
+  border-radius: 7.5px;
+  outline-color: #720012;
 }
 
 #google-login {
   background: white;
   color: #444;
   width: 190px;
+  height: 35px;
+  border-color: #ffffff;
   border-radius: 5px;
-  border: thin solid #888;
-  box-shadow: 1px 1px 1px grey;
+  border: solid;
 }
+
 span.buttonText {
   font-size: 14px;
   font-weight: bold;
+}
+
+.activity-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.activity {
+  color: white;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  text-align: center;
+  font-size: large;
+  flex-grow: 2;
+  background-color: #818181;
+  border-radius: 7px;
+}
+
+.activity1 .column-left{
+  width: 40%;
+}
+
+.activity1 .column-right{
+  padding-left: 30px;
+}
+
+.activity2 .column-left, .activity2 .column-center, .activity2 .column-right{
+  width: 33%;
 }

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header';
+import Footer from './Footer';
+import Activity1 from './activity/Activity1';
+import Activity2 from './activity/Activity2';
+import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
 import GraphWrapper from './GraphWrapper';
 import Vnc from './panels/Vnc';
@@ -36,21 +40,27 @@ class App extends Component {
 
     return (
       <div id="app-container">
-        {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
         <Header />
         <button onClick={this.toggleUseVNC}>
           {this.state.useVNC ? '101' : '205'}
         </button>
         {this.state.useVNC ? <Vnc /> : (
           <div>
+            <div className="graph-stream">
+              <GraphWrapper socket={socket} />
+              <VideoContainer />
+            </div>
+            {/*loggedIn ? (<button onClick={this.handleLogout}>logout</button>) : <></>*/}
             <DashboardContainer
               loggedIn={loggedIn}
               setLoggedIn={this.setLoggedIn}
               socket={socket}
             />
-            <GraphWrapper socket={socket} />
           </div>
         )}
+        <Activity1 />
+        <Activity2 />
+        <Footer/>
       </div>
     );
   }

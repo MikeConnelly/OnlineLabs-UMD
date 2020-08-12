@@ -80,7 +80,7 @@ class DashboardContainer extends Component {
           <div className="dashboard-container">
             <div className="queue-info">
               <p id="queue-length-text">{`${queueLength} ${personWord} in the queue`}</p>
-              <p id="current-user-text">{`current user: ${currentUserName}`}</p>
+              <p id="current-user-text">{`Current User: ${currentUserName}`}</p>
             </div>
             <div className="dashboard">
               {comp}

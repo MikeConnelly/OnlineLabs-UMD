@@ -40,9 +40,7 @@ export class GraphWrapper extends Component {
 
   render() {
     return (
-      <div className="graph-wrapper">
-        <SensorGraph xData={this.state.xData} yData={this.state.yData} labels={this.state.labels} />
-      </div>
+      <SensorGraph xData={this.state.xData} yData={this.state.yData} labels={this.state.labels} />
     )
   }
 }
