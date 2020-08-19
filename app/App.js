@@ -4,6 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Activity1 from './activity/Activity1';
 import Activity2 from './activity/Activity2';
+import Welcome from './Welcome';
 import VideoContainer from './VideoContainer';
 import DashboardContainer from './DashboardContainer';
 import GraphWrapper from './GraphWrapper';

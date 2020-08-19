@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 
 class Activity2 extends Component {
+   
+
     render() {
         return (
             <div className="activity-wrapper">
@@ -20,6 +22,27 @@ class Activity2 extends Component {
                                             <li>All coordinate pairs are wrapped in curly braces and are seperated by commas</li>
                                             <li>For example an 8-step “M” pattern:</li>
                                         </ul>
+                                        <div className="example-box">
+                                            {/* <p>"{"{\"x\": 0, \"y\": 100},"}" */}
+                                            <p>&#91;
+                                                <br>&#123;&#34;x&#34;&#58;0 &#34;y&#34;&#58;100&#125;</br>
+                                            </p>
+                                            {/* </p> */}
+                                            
+                                               {/* <br>[</br>  */}
+                                               {/* <br>{{"x": 0, "y": 100}},</br> */}
+                                               
+                                                    {/* {{"x": 0, "y": 100}},
+                                                    {{"x": 75, "y": -75}},
+                                                    {{"x": 75, "y": 75}},
+                                                    {{"x": 0, "y": -100}},
+                                                    {{"x": 0, "y": 100}},
+                                                    {{"x": -75, "y": -75}},
+                                                    {{"x": -75, "y": 75}},
+                                                    {{"x": 0, "y": -100}} */}
+                                              {/* ] */}
+                                           
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="column-center">
@@ -33,11 +56,11 @@ class Activity2 extends Component {
                                             autoComplete="off"
                                         />
                                     </div>
-                                    <input id="submit-form" type="submit" value="Submit"/>
+                                    <input id="submit-form" type="submit" value="Submit" />
                                 </div>
                                 <div className="column-right">
                                     <h3 id="instruction-header">RESULTS</h3>
-                                    <p>Describe the pattern you generated and 
+                                    <p>Describe the pattern you generated and
                                         the approximate range in the X and Y axis:</p>
                                     <div className="act2-results">
                                         <textarea
@@ -48,7 +71,7 @@ class Activity2 extends Component {
                                         />
                                     </div>
 
-                                    <input id="submit-form" type="submit" value="Submit"/>
+                                    <input id="submit-form" type="submit" value="Submit" />
                                 </div>
                             </div>
                         </div>

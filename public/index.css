@@ -7,12 +7,12 @@ input {
   border: 2px;
   border-radius: 4px;
   margin: 8px 0;
-  box-sizing: border-box;  
+  box-sizing: border-box;
   outline-color: #720012;
 }
 
 body {
-  color:black;
+  color: black;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -24,19 +24,20 @@ body {
   flex-direction: row;
 }
 
-.footer{
+.footer {
   width: 100%;
   margin-bottom: 5px;
   display: flex;
 }
 
-.inner-header , .inner-footer {
+.inner-header,
+.inner-footer {
   display: flex;
   flex-direction: column;
   flex-grow: 6;
 }
 
-.inner-footer{
+.inner-footer {
   font-weight: lighter;
   font-style: italic;
   padding-top: 30px;
@@ -44,7 +45,8 @@ body {
 }
 
 
-.inner-header .underline , .inner-footer .underline {
+.inner-header .underline,
+.inner-footer .underline {
   background-color: #720012;
   height: 10px;
 }
@@ -95,7 +97,8 @@ body {
   margin: 10px;
 }
 
-#queue-length-text, #current-user-text {
+#queue-length-text,
+#current-user-text {
   margin: 10px;
   display: inline;
 }
@@ -123,11 +126,12 @@ body {
   width: 80px;
 }
 
-.instructions-Act1{
+.instructions-Act1 {
   width: 40%;
 }
 
-.instructions-Act1 li , .instructions-Act2 li{
+.instructions-Act1 li,
+.instructions-Act2 li {
   padding-bottom: 10px;
   padding-top: 5px;
   color: #ffffff;
@@ -137,7 +141,10 @@ body {
 }
 
 @media(max-width: 1000px) {
-  .instructions, .instructions-Act1, .instructions-Act2 {
+
+  .instructions,
+  .instructions-Act1,
+  .instructions-Act2 {
     display: none;
   }
 }
@@ -152,7 +159,7 @@ body {
   align-items: center;
 }
 
-#queue-button{
+#queue-button {
   border-radius: 7.5px;
   height: 35px;
   color: white;
@@ -162,22 +169,26 @@ body {
   border-style: solid;
 }
 
-.bottomRowOfControls, .row-footer {
+.bottomRowOfControls,
+.row-footer {
   margin-bottom: 15px;
   align-items: center;
 }
 
-.bottomRowOfControls, .activity1, .activity2{
+.bottomRowOfControls,
+.activity1,
+.activity2 {
   flex-direction: row;
   display: flex;
 }
 
-.row-footer{
+.row-footer {
   padding: 10px;
   text-align: center;
 }
 
-.control-panel, .command-sequence {
+.control-panel,
+.command-sequence {
   background-color: #E0E0E0;
   border-radius: 10px;
   padding-bottom: 20px;
@@ -202,12 +213,12 @@ body {
   color: grey;
 }
 
-#text-JSON{
+#text-JSON {
   padding-top: 20px;
 }
 
 
-#coordinate-input{
+#coordinate-input {
   padding-left: 5px;
   padding-right: 15px;
   /* position: absolute; */
@@ -222,7 +233,8 @@ body {
   border-color: white;
 }
 
-#json-input, #results-input {
+#json-input,
+#results-input {
   width: 180px;
   height: 100px;
   border-color: white;
@@ -265,14 +277,66 @@ span.buttonText {
   border-radius: 7px;
 }
 
-.activity1 .column-left{
+.activity1 .column-left {
   width: 40%;
 }
 
-.activity1 .column-right{
+.activity1 .column-right {
   padding-left: 30px;
 }
 
-.activity2 .column-left, .activity2 .column-center, .activity2 .column-right{
+.activity2 .column-left,
+.activity2 .column-center,
+.activity2 .column-right {
   width: 33%;
 }
+.example-box{
+  height: 140px;
+  width: 200px;
+  background-color: black;
+  margin: 15px 28%;
+}
+.container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  height: 97vh;
+}
+
+.box {
+  position: relative;
+  box-shadow: 0px 0px 10px;
+  width: 30%;
+  height: 300px;
+  border-radius: 10px;
+  background-color: #AEAEAE;
+  margin: 20px;
+  transition: .3s all ease-in-out;
+}
+
+
+.boxContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 15px;
+}
+
+/* Link */
+a {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.box:hover {
+  color: white;
+  background-color: #720012;
+  box-shadow: none;
+}
+
