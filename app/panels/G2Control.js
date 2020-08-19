@@ -30,14 +30,14 @@ class G2Control extends Component {
     return (
       <div className="photo-control">
         <form>
-          <label for="resistance">Choose a resistance:</label>
+          <label htmlFor="resistance" id="resistance-label">Choose a resistance:</label>
           <select id="resistance" name="resistance">
             <option value="100" onChange={this.setResistance}>100</option>
             <option value="1000" onChange={this.setResistance}>1000</option>
             <option value="10000" onChange={this.setResistance}>10000</option>
             <option value="100000" onChange={this.setResistance}>100000</option>
           </select>
-          <input type="button" value="send" onClick={this.sendResistance}></input>
+          <input id="resistance-submit" type="button" value="send" onClick={this.sendResistance}></input>
         </form>
       </div>
     );
