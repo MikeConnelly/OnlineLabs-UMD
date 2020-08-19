@@ -107,11 +107,12 @@ module.exports = (app, manager, controller, g2Controller) => {
     if (!req.user || !manager.isCurrentUser(req.user)) {
       res.sendStatus(403);
     } else {
+      console.log(JSON.stringify(req.body));
       manager.refreshCurrentUserTimer();
-      if (!req.body.resistance || isNaN(req.body.resistance)) {
+      if ((req.body.resistance == undefined) || (req.body.resistance == null) || isNaN(req.body.resistance)) {
         res.sendStatus(400);
       } else {
-        g2Controller.sendResistance(req.body, err =>  res.sendStatus(200));
+        g2Controller.sendResistance({ "resistance": parseFloat(req.body.resistance) }, err =>  res.sendStatus(200));
       }
     }
   });
