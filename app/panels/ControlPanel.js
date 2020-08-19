@@ -41,7 +41,6 @@ class ControlPanel extends Component {
     };
     this.getInputForm = this.getInputForm.bind(this);
     this.handleResetPosition = this.handleResetPosition.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendCommand = this.sendCommand.bind(this);
     this.handleAddPoint = this.handleAddPoint.bind(this);
@@ -178,14 +177,10 @@ class ControlPanel extends Component {
     const points = this.state.points;
     if (dimension === 'x') {
       points[index].x = event.target.value;
-      this.setState({
-        points: points
-      });
+      this.setState({ points: points });
     } else {
       points[index].y = event.target.value;
-      this.setState({
-        points: points
-      });
+      this.setState({ points: points });
     }
   }
 
@@ -224,7 +219,7 @@ class ControlPanel extends Component {
             <li>Input values to control motor movement in the x and y directions</li>
             <li>Hit submit to send your command to the device</li>
             <li>The + and - buttons allow you to send multiple points at once</li>
-            <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li>
+            {/* <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li> */}
           </ul>
         </div>
         <div className="form-control">

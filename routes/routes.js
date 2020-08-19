@@ -1,4 +1,16 @@
-module.exports = (app, manager, controller) => {
+module.exports = (app, manager, controller, g2Controller) => {
+
+  app.get('/101', (req, res) => {
+    res.redirect('/');
+  });
+
+  app.get('/205', (req, res) => {
+    res.redirect('/');
+  });
+
+  app.get('/g2', (req, res) => {
+    res.redirect('/');
+  });
 
   // admin route to replace the current user with the next in the queue
   app.get('/admin/kick/:pass', (req, res) => {
@@ -86,6 +98,21 @@ module.exports = (app, manager, controller) => {
     } else {
       manager.replaceCurrentUser();
       controller.resetMotorsAndClear(err => res.sendStatus(200));
+    }
+  });
+
+
+
+  app.post('/g2/resistance', (req, res) => {
+    if (!req.user || !manager.isCurrentUser(req.user)) {
+      res.sendStatus(403);
+    } else {
+      manager.refreshCurrentUserTimer();
+      if (!req.body.resistance || isNaN(req.body.resistance)) {
+        res.sendStatus(400);
+      } else {
+        g2Controller.sendResistance(req.body, err =>  res.sendStatus(200));
+      }
     }
   });
 }

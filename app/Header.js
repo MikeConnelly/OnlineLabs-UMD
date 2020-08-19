@@ -1,13 +1,30 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import Logo from '../public/img/circle-logo.jpg';
+import './Header.css';
 
 class Header extends Component {
+  
+  homeDisconnect() {
+    axios.post('/api/finish', (req, res) => {
+      console.log('home');
+    });
+  }
+
   render() {
+    const { text, marginLeft } = this.props;
+
     return (
       <div className="header">
         <img id="header-img" src={Logo} alt="logo" width="75" height="75" />
         <div className="inner-header">
-          <h3 className="header-text">Gizmo-1 Demo</h3>
+          <div>
+            <Link to="/" onClick={this.homeDisconnect}>
+              <h3 className="link-home">Back To Home</h3>
+            </Link>
+            <h3 className="header-text" style={{ marginLeft: marginLeft }}>{text}</h3>
+          </div>
           <div className="underline"></div>
         </div>
       </div>

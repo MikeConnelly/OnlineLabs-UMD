@@ -17,6 +17,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+<<<<<<< HEAD
 .header {
   width: 100%;
   margin-bottom: 5px;
@@ -25,13 +26,20 @@ body {
 }
 
 .footer {
+=======
+.footer{
+>>>>>>> 116cdee4ae34a4f86dad9f347524319fa2fafecc
   width: 100%;
   margin-bottom: 5px;
   display: flex;
 }
 
+<<<<<<< HEAD
 .inner-header,
 .inner-footer {
+=======
+.inner-header, .inner-footer {
+>>>>>>> 116cdee4ae34a4f86dad9f347524319fa2fafecc
   display: flex;
   flex-direction: column;
   flex-grow: 6;
@@ -49,10 +57,6 @@ body {
 .inner-footer .underline {
   background-color: #720012;
   height: 10px;
-}
-
-.inner-header .header-text {
-  align-self: center;
 }
 
 .vnc-wrapper {
@@ -290,6 +294,7 @@ span.buttonText {
 .activity2 .column-right {
   width: 33%;
 }
+<<<<<<< HEAD
 .example-box{
   height: 140px;
   width: 200px;
@@ -340,3 +345,24 @@ a {
   box-shadow: none;
 }
 
+=======
+
+.photo-control {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #E0E0E0;
+  border-radius: 5px;
+  margin-top: 10px;
+  padding-bottom: 20px;
+}
+
+#resistance-label {
+  margin-right: 5px;
+}
+
+#resistance-submit {
+  margin-left: 10px;
+}
+>>>>>>> 116cdee4ae34a4f86dad9f347524319fa2fafecc

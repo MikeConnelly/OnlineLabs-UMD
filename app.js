@@ -14,12 +14,13 @@ var MongoStore = require('connect-mongo')(expressSession);
 var passport = require('passport');
 var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-var FacebookStrategy = require('passport-facebook').Strategy;
+// var FacebookStrategy = require('passport-facebook').Strategy;
 // var LocalStrategy = require('passport-local').Strategy;
 var Client = require('azure-iothub').Client;
 var EventHubReader = require('./scripts/event-hub-reader');
 var User = require('./models/User');
 var MotorController = require('./utils/MotorController');
+var G2Controller = require('./utils/G2Controller');
 var UserManager = require('./utils/UserManager');
 var routes = require('./routes/routes');
 //var websockify = require('node-websockify');
@@ -35,8 +36,9 @@ const auth_client_secret = process.env.AUTHSECRET;
 const cookieKey = process.env.COOKIEKEY;
 const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
-const facebook_client_id = process.env.FACEBOOK_CLIENT_ID;
-const facebook_client_secret = process.env.FACEBOOK_CLIENT_SECRET;
+// const facebook_client_id = process.env.FACEBOOK_CLIENT_ID;
+// const facebook_client_secret = process.env.FACEBOOK_CLIENT_SECRET;
+const vConnectionString = process.env.VCONNECTIONSTRING;
 const port = process.env.PORT || 3000;
 
 // Used along with iotHubURL to manually send post requests to the device given an SAS key
@@ -50,8 +52,10 @@ const iotHubConfig = {
 }
 */
 var client = Client.fromConnectionString(iotHubConnectionString);
+var g2Client = Client.fromConnectionString(vConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 var controller = new MotorController(client);
+var g2Controller = new G2Controller(g2Client);
 var manager = new UserManager(io, controller);
 
 
@@ -90,26 +94,26 @@ passport.use(
 );
 
 // setup passport to use Facebook strategy
-passport.use(
-  new FacebookStrategy({
-    clientID: facebook_client_id,
-    clientSecret: facebook_client_secret,
-    callbackURL: '/auth/facebook/redirect',
-  }, (accessToken, refreshToken, profile, done) => {
-    User.findOne({ siteId: profile.id }).then(currentUser => {
-      if (currentUser) {
-        done(null, currentUser);
-      } else {
-        new User({
-          siteId: profile.id,
-          name: profile.name
-        }).save().then(newUser => {
-          done(null, newUser);
-        })
-      }
-    })
-  })
-);
+// passport.use(
+//   new FacebookStrategy({
+//     clientID: facebook_client_id,
+//     clientSecret: facebook_client_secret,
+//     callbackURL: '/auth/facebook/redirect',
+//   }, (accessToken, refreshToken, profile, done) => {
+//     User.findOne({ siteId: profile.id }).then(currentUser => {
+//       if (currentUser) {
+//         done(null, currentUser);
+//       } else {
+//         new User({
+//           siteId: profile.id,
+//           name: profile.name
+//         }).save().then(newUser => {
+//           done(null, newUser);
+//         })
+//       }
+//     })
+//   })
+// );
 
 // setup passport for local strategy
 // doesn't work, but would be ideal for faking auth and
@@ -170,21 +174,31 @@ app.use(passport.initialize());
 app.use(passport.session());
 // { secret: cookieKey, key: 'connect.sid', store: sessionStore }
 
-routes(app, manager, controller);
 
 
+routes(app, manager, controller, g2Controller);
 
 // auth routes
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
-
-app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
-  res.redirect('/');
+app.use('/:page/auth/google', (req, res, next) => {
+  req.session.returnTo = req.params.page;
+  next();
 });
 
-app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/:page/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+
+app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
+  res.redirect(req.session.returnTo ? `/${req.session.returnTo}` : '/');
+  req.session.returnTo = null;
+});
+
+app.get('/:page/auth/facebook', (req, res) => {
+  req.session.returnTo = req.params.page;
+  passport.authenticate('facebook')
+});
 
 app.get('/auth/facebook/redirect', passport.authenticate('facebook'), (req, res) => {
-  res.redirect('/');
+  res.redirect(req.session.returnTo ? `/${req.session.returnTo}` : '/');
+  req.session.returnTo = null;
 });
 
 // app.post('/auth/login', passport.authenticate('local', { failureRedirect: '/failure' }), (req, res) => {

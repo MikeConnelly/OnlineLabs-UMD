@@ -4,7 +4,7 @@ import LoginPanel from './panels/LoginPanel';
 import NotQueuedPanel from './panels/NotQueuedPanel';
 // import EnterQueuePanel from './panels/EnterQueuePanel';
 import QueuedPanel from './panels/QueuedPanel';
-import ControlPanel from './panels/ControlPanel';
+// import ControlPanel from './panels/ControlPanel';
 
 class DashboardContainer extends Component {
   
@@ -52,7 +52,7 @@ class DashboardContainer extends Component {
     };
     if (this.state.queueState.isCurrentUser) {
       panel.isControl = true;
-      panel.comp = (<ControlPanel />);
+      panel.comp = this.props.controlComponent;
     } else if (this.state.queueState.inQueue) {
       panel.comp = (<QueuedPanel placeInQueue={this.state.queueState.placeInQueue} />);
     } else if (this.props.loggedIn) { // logged in but haven't enqueued

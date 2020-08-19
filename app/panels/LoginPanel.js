@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import path from 'path';
 
 class LoginPanel extends Component {
+
+  constructor(props) {
+    super(props);
+    this.handleLoginGoogle = this.handleLoginGoogle.bind(this);
+  }
   
   handleLoginGoogle(event) {
     window.location.pathname = path.join(window.location.pathname, '/auth/google');
