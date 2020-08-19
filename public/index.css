@@ -17,20 +17,13 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-.header {
-  width: 100%;
-  margin-bottom: 5px;
-  display: flex;
-  flex-direction: row;
-}
-
 .footer{
   width: 100%;
   margin-bottom: 5px;
   display: flex;
 }
 
-.inner-header , .inner-footer {
+.inner-header, .inner-footer {
   display: flex;
   flex-direction: column;
   flex-grow: 6;
@@ -47,10 +40,6 @@ body {
 .inner-header .underline , .inner-footer .underline {
   background-color: #720012;
   height: 10px;
-}
-
-.inner-header .header-text {
-  align-self: center;
 }
 
 .vnc-wrapper {
