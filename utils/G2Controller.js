@@ -4,7 +4,8 @@ class G2Controller {
     this.iotClient = iotClient;
   }
 
-  sendResistance(data, cb) {
+  sendResistance(payload, cb) {
+    const data = getDataObject('res', payload);
     this.deviceMethod(data, cb);
   }
 
@@ -19,6 +20,20 @@ class G2Controller {
       }
     });
   }
+}
+
+/**
+ * gets the data payload in the format for Azure direct methods
+ * @param {string} methodName the method on the device that should be called
+ * @param {Object} payload the data to send the device
+ * @returns {Object} data payload to invoke direct method with
+ */
+function getDataObject(methodName, payload) {
+  return {
+    "methodName": methodName,
+    "responseTimeoutInSeconds": 60,
+    "payload": payload
+  };
 }
 
 module.exports = G2Controller;
