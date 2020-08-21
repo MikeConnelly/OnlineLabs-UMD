@@ -1,4 +1,4 @@
-# enee101online-webapp
+# OnlineLabs-UMD
 
 Website created with the goal of moving University of Maryland lab classes online. Currently set up to send motor control commmands to an ESP32 microprocessor over the internet via the Microsoft Azure IOT Hub, and return ultrasonic sensor data to the user.
 
