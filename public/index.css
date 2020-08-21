@@ -17,7 +17,6 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-<<<<<<< HEAD
 .header {
   width: 100%;
   margin-bottom: 5px;
@@ -25,21 +24,13 @@ body {
   flex-direction: row;
 }
 
-.footer {
-=======
 .footer{
->>>>>>> 116cdee4ae34a4f86dad9f347524319fa2fafecc
   width: 100%;
   margin-bottom: 5px;
   display: flex;
 }
 
-<<<<<<< HEAD
-.inner-header,
-.inner-footer {
-=======
 .inner-header, .inner-footer {
->>>>>>> 116cdee4ae34a4f86dad9f347524319fa2fafecc
   display: flex;
   flex-direction: column;
   flex-grow: 6;
@@ -294,7 +285,7 @@ span.buttonText {
 .activity2 .column-right {
   width: 33%;
 }
-<<<<<<< HEAD
+
 .example-box{
   height: 140px;
   width: 200px;
@@ -320,6 +311,12 @@ span.buttonText {
   transition: .3s all ease-in-out;
 }
 
+.box:hover {
+  color: white;
+  background-color: #720012;
+  box-shadow: none;
+}
+
 
 .boxContent {
   display: flex;
@@ -331,7 +328,7 @@ span.buttonText {
 }
 
 /* Link */
-a {
+.box-anchor {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -339,13 +336,6 @@ a {
   left: 0;
 }
 
-.box:hover {
-  color: white;
-  background-color: #720012;
-  box-shadow: none;
-}
-
-=======
 
 .photo-control {
   display: flex;
@@ -365,4 +355,3 @@ a {
 #resistance-submit {
   margin-left: 10px;
 }
->>>>>>> 116cdee4ae34a4f86dad9f347524319fa2fafecc

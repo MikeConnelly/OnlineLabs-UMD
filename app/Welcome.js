@@ -4,34 +4,30 @@ class Welcome extends Component {
 
     render() {
         return (
-            <div class="container">
-                <div class="box">
-                    <div class="boxContent">
-
-                        <h1 class="title">ENEE 101- Gizmo 1</h1>
-                        <p class="desc">Description </p>
+            <div className="container">
+                <div className="box">
+                    <div className="boxContent">
+                        <h1 className="title">ENEE 101- Gizmo 1</h1>
+                        <p className="desc">Description </p>
                     </div>
-                    <a href="#"></a>
+                    <a className="box-anchor" href="#"></a>
                 </div>
-                <div class="box">
-                    <div class="boxContent">
+                <div className="box">
+                    <div className="boxContent">
 
-                        <h1 class="title">ENEE 101- Gizmo 2</h1>
-                        <p class="desc">Description</p>
+                        <h1 className="title">ENEE 101- Gizmo 2</h1>
+                        <p className="desc">Description</p>
                     </div>
-                    <a href="#"></a>
+                    <a className="box-anchor" hrefName="#"></a>
                 </div>
-                <div class="box">
-                    <div class="boxContent">
-                        <h1 class="title">ENEE 205- </h1>
-                        <p class="desc">Description</p>
+                <div className="box">
+                    <div className="boxContent">
+                        <h1 className="title">ENEE 205- </h1>
+                        <p className="desc">Description</p>
                     </div>
-                    <a href="#"></a>
+                    <a className="box-anchor" href="#"></a>
                 </div>
             </div>
-
-
-
         );
     }
 }

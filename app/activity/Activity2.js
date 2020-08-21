@@ -23,9 +23,6 @@ class Activity2 extends Component {
                                         </ul>
                                         <div className="example-box">
                                             {/* <p>"{"{\"x\": 0, \"y\": 100},"}" */}
-                                            <p>&#91;
-                                                <br>&#123;&#34;x&#34;&#58;0 &#34;y&#34;&#58;100&#125;</br>
-                                            </p>
                                             {/* </p> */}
                                             
                                                {/* <br>[</br>  */}

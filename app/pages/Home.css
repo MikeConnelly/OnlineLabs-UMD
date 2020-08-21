@@ -5,21 +5,26 @@
 }
 
 .link-box {
-  background-color: grey;
+  color: black;
+  background-color: #AEAEAE;
   border-radius: 20px;
   margin: 30px;
   width: 600px;
   height: 150px;
+  box-shadow: 0px 0px 10px;
   text-align: center;
+  transition: .3s all ease-in-out;
 }
 
 .link-box:hover {
-  transform: scale(1.2);
-  transform-origin: center;
+  /*transform: scale(1.2);
+  transform-origin: center;*/
+  color: white;
+  background-color: #720012;
+  box-shadow: none;
 }
 
 .link-text {
-  color: rgb(153, 0, 0);
   font-size: x-large;
   padding-top: 10px;
 }
