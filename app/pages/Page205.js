@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Vnc from '../panels/Vnc';
 import DashboardContainer from '../DashboardContainer';
+import VideoContainer from '../VideoContainer';
 import Header from '../Header';
 import Footer from '../Footer';
 
@@ -20,7 +21,7 @@ class Page205 extends Component {
 
   render() {
     return (
-      <div className="205-page">
+      <div className="page-205">
         <Header text="ENEE205 - Openscope Controller" marginLeft="40%" />
         <DashboardContainer
           socket={this.props.socket}
@@ -28,6 +29,7 @@ class Page205 extends Component {
           setLoggedIn={this.setLoggedIn}
           controlComponent={<Vnc />}
         />
+        <VideoContainer url="http://129.2.94.100:6081/stream" />
         <Footer />
       </div>
     );

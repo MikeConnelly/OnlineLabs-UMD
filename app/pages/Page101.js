@@ -25,11 +25,11 @@ class Page101 extends Component {
 
   render() {
     return (
-      <div className="101-page">
+      <div className="page-101">
         <Header text="ENEE101 - Gizmo-1" marginLeft="43%" />
         <div className="graph-stream">
           <GraphWrapper socket={this.props.socket} />
-          <VideoContainer />
+          <VideoContainer url="http://129.2.94.100:6088/stream" />
         </div>
         <DashboardContainer
           socket={this.props.socket}

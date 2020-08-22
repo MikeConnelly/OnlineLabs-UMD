@@ -15,7 +15,7 @@ class VideoContainer extends Component {
         }}
       >
         <iframe
-          src="http://173.66.227.178:8080/stream"
+          src={this.props.url}
           style={{
             alignItems: 'stretch',
             justifyContent: 'center',

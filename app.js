@@ -293,7 +293,6 @@ io.on('connection', socket => {
 function broadcastSensorData(payload) {
   Object.keys(io.sockets.sockets).forEach(id => {
     const socket = io.sockets.connected[id]
-    console.log(`broadcasting data: ${JSON.stringify(payload)}`);
     socket.emit('sensorData', payload);
   });
 }
