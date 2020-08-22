@@ -140,7 +140,7 @@ class UserManager {
   getQueueState(user) {
     const placeInQueue = user ? this.getPlaceInQueue(user) : 0; // 0 if user not there
     const queueLength = this.getLength();
-    const currentUserName = this.currentUser ? this.currentUser.name : 'None'
+    const currentUserName = this.currentUser ? this.currentUser.name : 'None';
     const isCurrentUser = user ? this.isCurrentUser(user) : false;
     const inQueue = (placeInQueue > 0);
  
