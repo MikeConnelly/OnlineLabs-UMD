@@ -247,6 +247,16 @@ body {
   border: solid;
 }
 
+#umd-login {
+  background: white;
+  color: #444;
+  width: 190px;
+  height: 35px;
+  border-color: #ffffff;
+  border-radius: 5px;
+  border: solid;
+}
+
 span.buttonText {
   font-size: 14px;
   font-weight: bold;

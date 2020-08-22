@@ -14,8 +14,7 @@ var MongoStore = require('connect-mongo')(expressSession);
 var passport = require('passport');
 var passportSocketIo = require('passport.socketio');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-// var FacebookStrategy = require('passport-facebook').Strategy;
-// var LocalStrategy = require('passport-local').Strategy;
+var UMDCASStrategy = require('passport-umd-cas').Strategy;
 var Client = require('azure-iothub').Client;
 var EventHubReader = require('./scripts/event-hub-reader');
 var User = require('./models/User');
@@ -23,34 +22,18 @@ var MotorController = require('./utils/MotorController');
 var G2Controller = require('./utils/G2Controller');
 var UserManager = require('./utils/UserManager');
 var routes = require('./routes/routes');
-//var websockify = require('node-websockify');
-//websockify({ source: '127.0.0.1:8080', target: '192.168.1.24:5900' });
 
 dotenv.config();
-// const mode = process.env.MODE;
-// const sas = process.env.SAS;
-// const iotHubURL = process.env.URL;
 const mongo_connection = process.env.DBCONN;
 const auth_client_id = process.env.AUTHID;
 const auth_client_secret = process.env.AUTHSECRET;
 const cookieKey = process.env.COOKIEKEY;
 const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
-// const facebook_client_id = process.env.FACEBOOK_CLIENT_ID;
-// const facebook_client_secret = process.env.FACEBOOK_CLIENT_SECRET;
 const vConnectionString = process.env.VCONNECTIONSTRING;
 const port = process.env.PORT || 3000;
 
-// Used along with iotHubURL to manually send post requests to the device given an SAS key
-// Not used anymore in favor of the azure-iothub library
-/**
-const iotHubConfig = {
-  'headers': {
-    'Content-Type': 'Application/json',
-    'Authorization': sas
-  }
-}
-*/
+
 var client = Client.fromConnectionString(iotHubConnectionString);
 var g2Client = Client.fromConnectionString(vConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
@@ -70,6 +53,22 @@ mongoose.connection.once('open', () => {
   console.log('MongoDB connection error');
   process.exit(1);
 });
+
+// setup passport to use UMD-CAS Strategy
+passport.use(new UMDCASStrategy({ callbackURL: '/auth/umd/redirect'}, (profile, done) => {
+  User.findOne({ siteId: profile.uid }).then(user => {
+    if (user) {
+      done(user);
+    } else {
+      new User({
+        siteId: profile.uid,
+        name: profile.uid
+      }).save().then(newUser => {
+        done(newUser);
+      });
+    }
+  })
+}));
 
 // setup passport to use Google Strategy
 passport.use(
@@ -93,58 +92,23 @@ passport.use(
   })
 );
 
-// setup passport to use Facebook strategy
-// passport.use(
-//   new FacebookStrategy({
-//     clientID: facebook_client_id,
-//     clientSecret: facebook_client_secret,
-//     callbackURL: '/auth/facebook/redirect',
-//   }, (accessToken, refreshToken, profile, done) => {
-//     User.findOne({ siteId: profile.id }).then(currentUser => {
-//       if (currentUser) {
-//         done(null, currentUser);
-//       } else {
-//         new User({
-//           siteId: profile.id,
-//           name: profile.name
-//         }).save().then(newUser => {
-//           done(null, newUser);
-//         })
-//       }
-//     })
-//   })
-// );
-
-// setup passport for local strategy
-// doesn't work, but would be ideal for faking auth and
-// still injecting user data into sockets
-// passport.use(
-//   new LocalStrategy((username, password, done) => {
-//     console.log('passport auth function');
-//     User.findOne({ username: username }, (err, user) => {
-//       if (err) { return done(err); }
-//       if (user) {
-//         done(null, user);
-//       } else {
-//         new User({
-//           name: username
-//         }).save().then(newUser => {
-//           done(null, newUser);
-//         })
-//       }
-//     })
-//   }
-// ))
-
 // needed for passport authentication
-passport.serializeUser((user, done) => {
+/*passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
   User.findById(id).then(user => {
     done(null, user);
   });
+});*/
+
+passport.serializeUser((user, done) => {
+  done(null, user);
 });
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+})
 
 
 
@@ -179,33 +143,23 @@ app.use(passport.session());
 routes(app, manager, controller, g2Controller);
 
 // auth routes
-app.use('/:page/auth/google', (req, res, next) => {
-  req.session.returnTo = req.params.page;
-  next();
-});
+// app.use('/:page/auth/google', (req, res, next) => {
+//   req.session.returnTo = req.params.page;
+//   next();
+// });
 
 app.get('/:page/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
-  res.redirect(req.session.returnTo ? `/${req.session.returnTo}` : '/');
-  req.session.returnTo = null;
+  res.redirect('/');
+  // req.session.returnTo = null;
 });
 
-app.get('/:page/auth/facebook', (req, res) => {
-  req.session.returnTo = req.params.page;
-  passport.authenticate('facebook')
-});
+app.get('/:page/auth/umd', passport.authenticate('umd-cas'));
 
-app.get('/auth/facebook/redirect', passport.authenticate('facebook'), (req, res) => {
-  res.redirect(req.session.returnTo ? `/${req.session.returnTo}` : '/');
-  req.session.returnTo = null;
+app.get('/auth/umd/redirect', passport.authenticate('umd-cas'), (req, res) => {
+  res.redirect('/');
 });
-
-// app.post('/auth/login', passport.authenticate('local', { failureRedirect: '/failure' }), (req, res) => {
-//   console.log(`/auth/login user: ${req.user}`);
-//   manager.addUser(req.user);
-//   manager.updateAllClients();
-// });
 
 app.get('/auth/logout', (req, res) => {
   if (!req.user) { res.sendStatus(400); }
