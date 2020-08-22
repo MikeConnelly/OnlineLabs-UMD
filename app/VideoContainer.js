@@ -14,14 +14,18 @@ class VideoContainer extends Component {
           display: 'flex'
         }}
       >
-        <iframe
-          src={this.props.url}
-          style={{
-            alignItems: 'stretch',
-            justifyContent: 'center',
-            flexGrow: '1'
-          }}
-        ></iframe>
+        {window.location.protocol === 'https' ? (
+          <span>To see the video feed please change https to http in your address bar.</span>
+        ) : (
+          <iframe
+            src={this.props.url}
+            style={{
+              alignItems: 'stretch',
+              justifyContent: 'center',
+              flexGrow: '1'
+            }}
+          />
+        )}
       </div>
     );
   }
