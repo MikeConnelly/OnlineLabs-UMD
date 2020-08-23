@@ -5,11 +5,26 @@ import Logo from '../public/img/circle-logo.jpg';
 import './Header.css';
 
 class Header extends Component {
-  
+
+  constructor(props) {
+    super(props);
+    this.homeDisconnect = this.homeDisconnect.bind(this);
+  }
+
+  componentDidMount() {
+    const self = this;
+
+    window.onpopstate = () => {
+      self.homeDisconnect();
+    }
+  }
+
+  componentWillUnmount() {
+    window.onpopstate = () => {};
+  }
+
   homeDisconnect() {
-    axios.post('/api/finish', (req, res) => {
-      console.log('home');
-    });
+    axios.post(`/api/${this.props.project}/returnhome`);
   }
 
   render() {

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-class G2Control extends Component {
+//change class to G3
+class G3Control extends Component {
 
   constructor(props) {
     super(props);
@@ -13,7 +14,7 @@ class G2Control extends Component {
   }
 
   sendResistance() {
-    axios.post('/g2/resistance', { resistance: this.state.resistance })
+    axios.post('/g3/resistance', { resistance: this.state.resistance })
       .catch(err => {
         console.error(err);
       })
@@ -55,4 +56,4 @@ class G2Control extends Component {
   }
 }
 
-export default G2Control;
+export default G3Control;

@@ -1,4 +1,4 @@
-class G2Controller {
+class G3Controller {
 
   constructor(iotClient) {
     this.iotClient = iotClient;
@@ -10,7 +10,7 @@ class G2Controller {
   }
 
   deviceMethod(data, cb) {
-    this.iotClient.invokeDeviceMethod('esp', data, (err, result) => {
+    this.iotClient.invokeDeviceMethod('kangesp', data, (err, result) => {
       if (err && !(err instanceof SyntaxError)) {
         console.log('failed to invoke device method...');
         if (cb) { cb(err); }
@@ -36,4 +36,4 @@ function getDataObject(methodName, payload) {
   };
 }
 
-module.exports = G2Controller;
+module.exports = G3Controller;

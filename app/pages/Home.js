@@ -7,20 +7,20 @@ class Home extends Component {
     return (
       <div className="home-page">
         <h1>Choose a Project:</h1>
-        <Link to="/101" style={{ textDecoration: 'none' }}>
-          <div id="link-101" className="link-box">
+        <Link to="/g1" style={{ textDecoration: 'none' }}>
+          <div id="link-g1" className="link-box">
             <h2 className="link-text">Gizmo-1</h2>
             <h3 className="link-text">2D Motor Controller</h3>
           </div>
         </Link>
-        <Link to="/205" style={{ textDecoration: 'none' }}>
-          <div id="link-205" className="link-box">
+        <Link to="/g2" style={{ textDecoration: 'none' }}>
+          <div id="link-g2" className="link-box">
             <h2 className="link-text">Gizmo-2</h2>
             <h3 className="link-text">Openscope Circuit Analysis</h3>
           </div>
         </Link>
-        <Link to="/g2" style={{ textDecoration: 'none' }}>
-          <div id="link-g2" className="link-box">
+        <Link to="/g3" style={{ textDecoration: 'none' }}>
+          <div id="link-g3" className="link-box">
             <h2 className="link-text">Gizmo-3</h2>
             <h3 className="link-text">Photovoltaic Cell</h3>
           </div>
