@@ -37,6 +37,7 @@ const port = process.env.PORT || 3000;
 var client = Client.fromConnectionString(iotHubConnectionString);
 var g3Client = Client.fromConnectionString(vConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
+var g3EventHubReader = new EventHubReader(vConnectionString, eventHubConsumerGroup);
 var controller = new MotorController(client);
 var g3Controller = new G3Controller(g3Client);
 var manager = new UserManager(io, controller, 'g1');
@@ -179,29 +180,29 @@ app.get('/auth/logout', (req, res) => {
  * handle user disconnect
  * @param {SocketIO.Socket} socket socket of the client that disconnected
  */
-function handleDisconnect(socket) {
-  const user = socket.request.user;
-  const project = Boolean(user) ? user.project : null;
-  if (project) {
-    switch (project) {
-      case 'g1':
-        if (manager.isCurrentUser(user)) {
-          controller.resetMotorsAndClear(null);
-        }
-        manager.userDisconnected(user);
-        break;
-      case 'g2':
-        g2Manager.userDisconnected(user);
-        break;
-      case 'g3':
-        g3Manager.userDisconnected(user);
-        break;
-      default:
-        break;
-    }
-  }
-  socket.request.user.project = null;
-}
+// function handleDisconnect(socket) {
+//   const user = socket.request.user;
+//   const project = Boolean(user) ? user.project : null;
+//   if (project) {
+//     switch (project) {
+//       case 'g1':
+//         if (manager.isCurrentUser(user)) {
+//           controller.resetMotorsAndClear(null);
+//         }
+//         manager.userDisconnected(user);
+//         break;
+//       case 'g2':
+//         g2Manager.userDisconnected(user);
+//         break;
+//       case 'g3':
+//         g3Manager.userDisconnected(user);
+//         break;
+//       default:
+//         break;
+//     }
+//   }
+//   socket.request.user.project = null;
+// }
 
 /**
  * Optional success callback for passport-socket.io
@@ -236,7 +237,7 @@ io.on('connection', socket => {
     if (socket.request.user) {
       console.log('user disconnected: ' + socket.request.user.name);
       // use socket to dequeue user
-      handleDisconnect(socket);
+      // handleDisconnect(socket);
     }
   });
 });
@@ -244,15 +245,16 @@ io.on('connection', socket => {
 
 
 /**
- * Sends ultrasonic sensor data to all clients not in a project other than gizmo-1.
- * This is because any user than is not in another project could currently be looking at gizmo-1
+ * Sends ultrasonic sensor data to all clients not in a project other than the specified project.
+ * This is because any user than is not in another project could currently be looking at that sensor data.
  * @param {Object} payload the data to braodcast
+ * @param {String} project the project page to receive the sensor data
  */
-function broadcastSensorData(payload) {
+function broadcastSensorData(payload, project) {
   passportSocketIo.filterSocketsByUser(io, user => {
-    return (!Boolean(user.project) || user.project === 'g1');
+    return (!Boolean(user.project) || user.project === project);
   }).forEach(socket => {
-    socket.emit('sensorData', payload);
+    socket.emit(`${project}SensorData`, payload);
   });
   // Object.keys(io.sockets.sockets).forEach(id => {
   //   const socket = io.sockets.connected[id]
@@ -268,15 +270,28 @@ function broadcastSensorData(payload) {
       const time = now.format('h:mm:ss');
       const payload = {
         index: time,
-        IotData: message,
-        DeviceId: deviceId
+        iotData: message
       };
-      broadcastSensorData(payload);
+      broadcastSensorData(payload, 'g1');
     } catch (err) {
-      console.log(`${err}, ${JSON.stringify(message)}`);
+      console.error(err);
     }
   })
 })().catch();
+
+
+(async () => {
+  await g3EventHubReader.startReadMessage((message, date, deviceId) => {
+    try {
+      const payload = {
+        iotData: message
+      };
+      broadcastSensorData(payload, 'g3');
+    } catch (err) {
+      console.error(err);
+    }
+  })
+})
 
 
 // go

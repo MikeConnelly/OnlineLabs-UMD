@@ -31,7 +31,7 @@ class DashboardContainer extends Component {
     });
 
     this.props.socket.on(`${this.props.project}QueueState`, data => {
-      if (this.state_mounted) { this.setState({ queueState: data }); }
+      this.setState({ queueState: data });
     });
   }
 
@@ -40,6 +40,7 @@ class DashboardContainer extends Component {
   }
 
   handleEnqueue() {
+    console.log(this.props.project);
     // this.props.socket.emit('enqueue');
     axios.post(`/api/${this.props.project}/enqueue`).then(res => {
       console.log('enqueue received');

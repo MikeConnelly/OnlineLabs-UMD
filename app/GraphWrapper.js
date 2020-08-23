@@ -15,9 +15,9 @@ export class GraphWrapper extends Component {
   }
   
   componentDidMount() {
-    this.props.socket.on('sensorData', data => {
-      if (!data.index || !data.IotData.x_distance || !data.IotData.y_distance) { return; }
-      this.addData(data.index, data.IotData.x_distance, data.IotData.y_distance); // time: string, x: number, y: number
+    this.props.socket.on('g1SensorData', data => {
+      if (!data.index || !data.iotData.x_distance || !data.iotData.y_distance) { return; }
+      this.addData(data.index, data.iotData.x_distance, data.iotData.y_distance); // time: string, x: number, y: number
     });
   }
   

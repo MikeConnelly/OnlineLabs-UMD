@@ -351,23 +351,3 @@ span.buttonText {
   top: 0;
   left: 0;
 }
-
-
-.photo-control {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-color: #E0E0E0;
-  border-radius: 5px;
-  margin-top: 10px;
-  padding-bottom: 20px;
-}
-
-#resistance-label {
-  margin-right: 5px;
-}
-
-#resistance-submit {
-  margin-left: 10px;
-}

@@ -9,6 +9,16 @@ class G3Controller {
     this.deviceMethod(data, cb);
   }
 
+  sendBrightness(payload, cb) {
+    const data = getDataObject('brightness', payload);
+    this.deviceMethod(data, cb);
+  }
+
+  sendData(payload, cb) {
+    const data = getDataObject('data', payload);
+    this.deviceMethod(data, cb);
+  }
+
   deviceMethod(data, cb) {
     this.iotClient.invokeDeviceMethod('kangesp', data, (err, result) => {
       if (err && !(err instanceof SyntaxError)) {
