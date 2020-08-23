@@ -40,7 +40,6 @@ class DashboardContainer extends Component {
   }
 
   handleEnqueue() {
-    console.log(this.props.project);
     // this.props.socket.emit('enqueue');
     axios.post(`/api/${this.props.project}/enqueue`).then(res => {
       console.log('enqueue received');

@@ -342,7 +342,7 @@ function broadcastSensorData(payload, project) {
       console.error(err);
     }
   })
-})
+})().catch();
 
 
 // go

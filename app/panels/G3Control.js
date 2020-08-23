@@ -18,8 +18,7 @@ class G3Control extends Component {
 
   componentDidMount() {
     this.props.socket.on('g3SensorData', data => {
-      console.log(JSON.stringify(data));
-      this.setState({ currVoltage: parseFloat(data.iotData) });
+      this.setState({ currVoltage: parseFloat(data.iotData.voltage) });
     });
   }
 
