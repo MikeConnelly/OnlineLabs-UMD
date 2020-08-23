@@ -7,8 +7,8 @@ class G3Control extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      resistance: 2.1,
-      currVoltage: 0.0,
+      resistance: 4,
+      currVoltage: 0,
       sliderVal: "0"
     };
     this.setResistance = this.setResistance.bind(this);
@@ -18,12 +18,12 @@ class G3Control extends Component {
 
   componentDidMount() {
     this.props.socket.on('g3SensorData', data => {
-      this.setState({ currVoltage: parseFloat(data.iotData.voltage) });
+      this.setState({ currVoltage: parseInt(data.iotData.voltage) });
     });
   }
 
   setResistance(event) {
-    this.setState({ resistance: parseFloat(event.target.value) });
+    this.setState({ resistance: parseInt(event.target.value) });
   }
 
   setSliderVal(event) {
@@ -45,20 +45,20 @@ class G3Control extends Component {
         <form className="g3-form">
           <label htmlFor="resistance" id="resistance-label">Choose a resistance:</label>
           <select id="resistance" name="resistance" onChange={this.setResistance}>
-            <option value="2.1">2.1</option>
-            <option value="2.7">2.7</option>
-            <option value="3.3">3.3</option>
-            <option value="5.8">5.8</option>
-            <option value="6.6">6.6</option>
-            <option value="8.2">8.2</option>
-            <option value="10">10</option>
-            <option value="14">14</option>
-            <option value="19">19</option>
-            <option value="22">22</option>
-            <option value="35">35</option>
-            <option value="46">46</option>
-            <option value="145">145</option>
-            <option value="4000">4000</option>
+            <option value="4">3.9</option>
+            <option value="5">4.9</option>
+            <option value="8">7.6</option>
+            <option value="9">8.8</option>
+            <option value="10">9.8</option>
+            <option value="11">10.8</option>
+            <option value="15">14.8</option>
+            <option value="16">16.3</option>
+            <option value="20">20.4</option>
+            <option value="23">23.3</option>
+            <option value="36">36.2</option>
+            <option value="47">47.1</option>
+            <option value="144">143.7</option>
+            <option value="4000">3893</option>
           </select>
           <div className="slide-container">
             <label htmlFor="brightness">Brightness: {this.state.sliderVal}</label>

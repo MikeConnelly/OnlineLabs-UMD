@@ -203,7 +203,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
         res.sendStatus(400);
       } else {
         g3Controller.sendData({
-          resistance: parseFloat(req.body.resistance),
+          resistance: parseInt(req.body.resistance),
           brightness: parseInt(req.body.brightness)
         });
       }
