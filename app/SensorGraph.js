@@ -6,7 +6,7 @@ const chartOptions = {
       id: 'distance',
       type: 'linear',
       scaleLabel: {
-        labelString: 'Distance (Inches)',
+        labelString: 'Distance (mm)',
         display: true
       },
       position: 'right',

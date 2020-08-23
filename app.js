@@ -317,11 +317,16 @@ function broadcastSensorData(payload, project) {
 (async () => {
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {
+      const dataInMM =  {
+        messageId: message.messageId,
+        x_distance: (message.x_distance * 25.4),
+        y_distance: (message.y_distance * 25.4)
+      }
       const now = moment();
       const time = now.format('h:mm:ss');
       const payload = {
         index: time,
-        iotData: message
+        iotData: dataInMM
       };
       broadcastSensorData(payload, 'g1');
     } catch (err) {
