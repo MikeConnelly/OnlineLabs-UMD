@@ -30,7 +30,7 @@ class PageG3 extends Component {
           socket={this.props.socket}
           loggedIn={this.state.loggedIn}
           setLoggedIn={this.setLoggedIn}
-          controlComponent={<G3Control />}
+          controlComponent={<G3Control socket={this.props.socket} />}
           project="g3"
         />
         <Footer />

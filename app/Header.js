@@ -17,6 +17,10 @@ class Header extends Component {
     window.onpopstate = () => {
       self.homeDisconnect();
     }
+
+    window.addEventListener('beforeunload', event => {
+      axios.post(`/api/${self.props.project}/returnhome`);
+    });
   }
 
   componentWillUnmount() {

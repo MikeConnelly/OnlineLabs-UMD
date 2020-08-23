@@ -34,6 +34,7 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
     if(!req.user) {
       res.sendStatus(403);
     } else {
+      console.log('/api/g3/enqueue');
       req.user.project = 'g3';
       g3Manager.addUser(req.user);
     }
@@ -41,6 +42,9 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
 
   app.post('/api/g1/returnhome', (req, res) => {
     if (req.user) {
+      if (manager.isCurrentUser(req.user)) {
+        controller.resetMotorsAndClear(null);
+      }
       manager.userDisconnected(req.user);
       req.user.project = null;
     }
@@ -161,16 +165,19 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
   });
 
 
-  app.post('/g3/resistance', (req, res) => {
+  app.post('/g3/data', (req, res) => {
     if (!req.user || !g3Manager.isCurrentUser(req.user)) {
       res.sendStatus(403);
     } else {
-      console.log(JSON.stringify(req.body));
       g3Manager.refreshCurrentUserTimer();
-      if ((req.body.resistance == undefined) || (req.body.resistance == null) || isNaN(req.body.resistance)) {
+      if ((req.body.resistance == undefined) || (req.body.brightness == undefined) || isNaN(req.body.resistance) || isNaN(req.body.brightness)) {
         res.sendStatus(400);
       } else {
         g3Controller.sendResistance({ "resistance": parseFloat(req.body.resistance) }, err =>  res.sendStatus(200));
+        g3Controller.sendData({
+          resistance: parseFloat(req.body.resistance),
+          brightness: parseInt(req.body.brightness)
+        });
       }
     }
   });
