@@ -1,11 +1,14 @@
+var passportSocketIo = require('passport.socketio');
+
 /**
  * Handles the state of the queue and current user
  */
 class UserManager {
 
-  constructor(io, controller) {
+  constructor(io, controller, project) {
     this.io = io;
     this.controller = controller;
+    this.project = project;
     this.queue = [];
     this.currentUser = null;
     this.currentUserInactiveInterval = null;
@@ -112,7 +115,9 @@ class UserManager {
     this.minutesIdle++;
     if (this.minutesIdle >= 4) {
       this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
-      this.controller.resetMotorsAndClear();
+      if (this.controller && this.project === 'g1') {
+        this.controller.resetMotorsAndClear()
+      };
       this.refreshCurrentUserTimer();
       this.replaceCurrentUser();
     }
@@ -160,17 +165,22 @@ class UserManager {
   updateClient(socket) {
     const user = !socket.request.user.logged_in ? null : socket.request.user;
     const queueState = this.getQueueState(user);
-    socket.emit('queueState', queueState);
+    socket.emit(`${this.project}QueueState`, queueState);
   }
 
   /**
-   * send queue state to all clients
+   * send queue state to all clients that are not in other projects
    */
   updateAllClients() {
     const self = this;
-    Object.keys(this.io.sockets.sockets).forEach(id => {
-      self.updateClient(self.io.sockets.connected[id]);
-    });
+
+    passportSocketIo.filterSocketsByUser(this.io, user => {
+      return (!Boolean(user.project) || user.project === self.project);
+    }).forEach(socket => self.updateClient(socket));
+
+    // Object.keys(this.io.sockets.sockets).forEach(id => {
+    //   self.updateClient(self.io.sockets.connected[id]);
+    // });
   }
 }
 

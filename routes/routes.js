@@ -1,10 +1,6 @@
-module.exports = (app, manager, controller, g2Controller) => {
+module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) => {
 
-  app.get('/101', (req, res) => {
-    res.redirect('/');
-  });
-
-  app.get('/205', (req, res) => {
+  app.get('/g1', (req, res) => {
     res.redirect('/');
   });
 
@@ -12,23 +8,85 @@ module.exports = (app, manager, controller, g2Controller) => {
     res.redirect('/');
   });
 
-  // admin route to replace the current user with the next in the queue
-  app.get('/admin/kick/:pass', (req, res) => {
-    const pass = req.params.pass;
-    const admin_pass = process.env.ADMIN_PASS || null;
-    if (admin_pass && pass === admin_pass) {
-      manager.replaceCurrentUser();
-      res.sendStatus(200);
-    } else {
+  app.get('/g3', (req, res) => {
+    res.redirect('/');
+  });
+
+  app.post('/api/g1/enqueue', (req, res) => {
+    if (!req.user) {
       res.sendStatus(403);
+    } else {
+      req.user.project = 'g1';
+      manager.addUser(req.user); // also calls updateAllClients in manager
     }
   });
 
+  app.post('/api/g2/enqueue', (req, res) => {
+    if(!req.user) {
+      res.sendStatus(403);
+    } else {
+      req.user.project = 'g2';
+      g2Manager.addUser(req.user);
+    }
+  });
+
+  app.post('/api/g3/enqueue', (req, res) => {
+    if(!req.user) {
+      res.sendStatus(403);
+    } else {
+      req.user.project = 'g3';
+      g3Manager.addUser(req.user);
+    }
+  });
+
+  app.post('/api/g1/returnhome', (req, res) => {
+    if (req.user) {
+      manager.userDisconnected(req.user);
+      req.user.project = null;
+    }
+  });
+
+  app.post('/api/g2/returnhome', (req, res) => {
+    if (req.user) {
+      g2Manager.userDisconnected(req.user);
+      req.user.project = null;
+    }
+  });
+
+  app.post('/api/g3/returnhome', (req, res) => {
+    if (req.user) {
+      g3Manager.userDisconnected(req.user);
+      req.user.project = null;
+    }
+  });
+
+
+
   // Invoked on Dashboard component mount, sends the user the queue state and their login status
-  app.get('/api/info', (req, res) => {
+  app.get('/api/g1/info', (req, res) => {
     const user = req.user;
     const loggedIn = Boolean(user);
     const queueState = manager.getQueueState(user);
+    res.status(200).json({
+      'loggedIn': loggedIn,
+      'queueState': queueState
+    });
+  });
+
+  app.get('/api/g2/info', (req, res) => {
+    const user = req.user;
+    const loggedIn = Boolean(user);
+    const queueState = g2Manager.getQueueState(user);
+    res.status(200).json({
+      'loggedIn': loggedIn,
+      'queueState': queueState
+    });
+  });
+
+  app.get('/api/g3/info', (req, res) => {
+    const user = req.user;
+    const loggedIn = Boolean(user);
+    const queueState = g3Manager.getQueueState(user);
     res.status(200).json({
       'loggedIn': loggedIn,
       'queueState': queueState
@@ -97,25 +155,39 @@ module.exports = (app, manager, controller, g2Controller) => {
       res.sendStatus(403);
     } else {
       manager.replaceCurrentUser();
+      req.user.project = null;
       controller.resetMotorsAndClear(err => res.sendStatus(200));
     }
   });
 
 
-
-  app.post('/g2/resistance', (req, res) => {
-    if (!req.user || !manager.isCurrentUser(req.user)) {
+  app.post('/g3/resistance', (req, res) => {
+    if (!req.user || !g3Manager.isCurrentUser(req.user)) {
       res.sendStatus(403);
     } else {
       console.log(JSON.stringify(req.body));
-      manager.refreshCurrentUserTimer();
+      g3Manager.refreshCurrentUserTimer();
       if ((req.body.resistance == undefined) || (req.body.resistance == null) || isNaN(req.body.resistance)) {
         res.sendStatus(400);
       } else {
-        g2Controller.sendResistance({ "resistance": parseFloat(req.body.resistance) }, err =>  res.sendStatus(200));
+        g3Controller.sendResistance({ "resistance": parseFloat(req.body.resistance) }, err =>  res.sendStatus(200));
       }
     }
   });
+
+
+
+  // admin route to replace the current user with the next in the queue
+  // app.get('/admin/kick/:pass', (req, res) => {
+  //   const pass = req.params.pass;
+  //   const admin_pass = process.env.ADMIN_PASS || null;
+  //   if (admin_pass && pass === admin_pass) {
+  //     manager.replaceCurrentUser();
+  //     res.sendStatus(200);
+  //   } else {
+  //     res.sendStatus(403);
+  //   }
+  // });
 }
 
 /**

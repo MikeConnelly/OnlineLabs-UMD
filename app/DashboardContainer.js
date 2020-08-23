@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import LoginPanel from './panels/LoginPanel';
 import NotQueuedPanel from './panels/NotQueuedPanel';
-// import EnterQueuePanel from './panels/EnterQueuePanel';
 import QueuedPanel from './panels/QueuedPanel';
-// import ControlPanel from './panels/ControlPanel';
 
 class DashboardContainer extends Component {
   
@@ -17,28 +15,35 @@ class DashboardContainer extends Component {
         placeInQueue: 0,
         queueLength: 0,
         currentUserName: ''
-      }
+      },
+      _mounted: true
     };
     this.getPanel = this.getPanel.bind(this);
     this.handleEnqueue = this.handleEnqueue.bind(this);
   }
 
   componentDidMount() {
-    axios.get('/api/info').then(res => {
-      this.setState({ queueState: res.data.queueState });
-      this.props.setLoggedIn(res.data.loggedIn);
+    axios.get(`/api/${this.props.project}/info`).then(res => {
+      if (this.state._mounted) {
+        this.setState({ queueState: res.data.queueState });
+        this.props.setLoggedIn(res.data.loggedIn);
+      }
     });
 
-    this.props.socket.on('queueState', data => {
-      this.setState({ queueState: data });
+    this.props.socket.on(`${this.props.project}QueueState`, data => {
+      if (this.state_mounted) { this.setState({ queueState: data }); }
     });
   }
 
+  componentWillUnmount() {
+    this.setState({ _mounted: false });
+  }
+
   handleEnqueue() {
-    this.props.socket.emit('enqueue');
-    // axios.post('/api/enqueue').then(res => {
-    //   this.setState({ queueState: res.data });
-    // });
+    // this.props.socket.emit('enqueue');
+    axios.post(`/api/${this.props.project}/enqueue`).then(res => {
+      console.log('enqueue received');
+    });
   }
 
   /**
@@ -108,8 +113,5 @@ export default DashboardContainer;
  *   show place in queue
  * 
  * controls
- *   when user is current uesr
+ *   when user is current user
  */
-
-// this should be brought down to 3 screens when login and enqueue
-// are combined and we use local authentication

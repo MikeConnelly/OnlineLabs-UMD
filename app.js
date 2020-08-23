@@ -19,7 +19,7 @@ var Client = require('azure-iothub').Client;
 var EventHubReader = require('./scripts/event-hub-reader');
 var User = require('./models/User');
 var MotorController = require('./utils/MotorController');
-var G2Controller = require('./utils/G2Controller');
+var G3Controller = require('./utils/G3Controller');
 var UserManager = require('./utils/UserManager');
 var routes = require('./routes/routes');
 
@@ -35,11 +35,13 @@ const port = process.env.PORT || 3000;
 
 
 var client = Client.fromConnectionString(iotHubConnectionString);
-var g2Client = Client.fromConnectionString(vConnectionString);
+var g3Client = Client.fromConnectionString(vConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 var controller = new MotorController(client);
-var g2Controller = new G2Controller(g2Client);
-var manager = new UserManager(io, controller);
+var g3Controller = new G3Controller(g3Client);
+var manager = new UserManager(io, controller, 'g1');
+var g2Manager = new UserManager(io, controller, 'g2');
+var g3Manager = new UserManager(io, g3Controller, 'g3');
 
 
 // setup mongo connection
@@ -140,7 +142,7 @@ app.use(passport.session());
 
 
 
-routes(app, manager, controller, g2Controller);
+routes(app, manager, g2Manager, g3Manager, controller, g3Controller);
 
 // auth routes
 // app.use('/:page/auth/google', (req, res, next) => {
@@ -174,25 +176,31 @@ app.get('/auth/logout', (req, res) => {
 
 
 /**
- * handle user enqueue event
- * @param {SocketIO.Socket} socket socket of the client entering the queue
- */
-function handleEnqueue(socket) {
-  if (!socket.request.user.logged_in) { return; }
-  const user = socket.request.user;
-  manager.addUser(user);
-}
-
-/**
  * handle user disconnect
  * @param {SocketIO.Socket} socket socket of the client that disconnected
  */
 function handleDisconnect(socket) {
   const user = socket.request.user;
-  if (manager.isCurrentUser(user)) {
-    controller.resetMotorsAndClear(null);
+  const project = Boolean(user) ? user.project : null;
+  if (project) {
+    switch (project) {
+      case 'g1':
+        if (manager.isCurrentUser(user)) {
+          controller.resetMotorsAndClear(null);
+        }
+        manager.userDisconnected(user);
+        break;
+      case 'g2':
+        g2Manager.userDisconnected(user);
+        break;
+      case 'g3':
+        g3Manager.userDisconnected(user);
+        break;
+      default:
+        break;
+    }
   }
-  manager.userDisconnected(user);
+  socket.request.user.project = null;
 }
 
 /**
@@ -224,11 +232,6 @@ io.use(passportSocketIo.authorize({
 io.on('connection', socket => {
   console.log('new connection');
 
-  socket.on('enqueue', () => {
-    // enqueue user
-    handleEnqueue(socket);
-  });
-
   socket.on('disconnect', () => {
     if (socket.request.user) {
       console.log('user disconnected: ' + socket.request.user.name);
@@ -241,14 +244,20 @@ io.on('connection', socket => {
 
 
 /**
- * Sends ultrasonic sensor data to all clients
+ * Sends ultrasonic sensor data to all clients not in a project other than gizmo-1.
+ * This is because any user than is not in another project could currently be looking at gizmo-1
  * @param {Object} payload the data to braodcast
  */
 function broadcastSensorData(payload) {
-  Object.keys(io.sockets.sockets).forEach(id => {
-    const socket = io.sockets.connected[id]
+  passportSocketIo.filterSocketsByUser(io, user => {
+    return (!Boolean(user.project) || user.project === 'g1');
+  }).forEach(socket => {
     socket.emit('sensorData', payload);
   });
+  // Object.keys(io.sockets.sockets).forEach(id => {
+  //   const socket = io.sockets.connected[id]
+  //   socket.emit('sensorData', payload);
+  // });
 }
 
 // Reads device messages with ultrasonic sensor data and braodcasts it to all clients

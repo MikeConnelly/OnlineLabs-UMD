@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import Vnc from '../panels/Vnc';
+import DashboardContainer from '../DashboardContainer';
+import VideoContainer from '../VideoContainer';
 import Header from '../Header';
 import Footer from '../Footer';
-import DashboardContainer from '../DashboardContainer';
-import G2Control from '../panels/G2Control';
 
 class PageG2 extends Component {
   
@@ -13,21 +14,27 @@ class PageG2 extends Component {
     };
     this.setLoggedIn = this.setLoggedIn.bind(this);
   }
-
+  
   setLoggedIn(b) {
     this.setState({ loggedIn: b });
   }
 
   render() {
     return (
-      <div className="g2-page">
-        <Header text="Gizmo-2 - Photovoltaic Cell" marginLeft="41%" />
+      <div className="page-g2">
+        <Header
+          text="Gizmo-2 - Openscope Controller"
+          project="g2"
+          marginLeft="40%"
+        />
         <DashboardContainer
           socket={this.props.socket}
           loggedIn={this.state.loggedIn}
           setLoggedIn={this.setLoggedIn}
-          controlComponent={<G2Control />}
+          controlComponent={<Vnc />}
+          project="g2"
         />
+        <VideoContainer url="http://129.2.94.100:6081/stream" />
         <Footer />
       </div>
     );
