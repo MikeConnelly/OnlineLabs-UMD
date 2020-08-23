@@ -28,3 +28,7 @@
   font-size: x-large;
   padding-top: 10px;
 }
+
+#domain-warning {
+  background-color: red;
+}

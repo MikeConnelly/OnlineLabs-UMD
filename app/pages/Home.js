@@ -6,6 +6,12 @@ class Home extends Component {
   render() {
     return (
       <div className="home-page">
+        <div id="domain-warning">
+          <h3>
+            Note: this site is now available at <a href="http://onlinelabs.live">onlinelabs.live</a>.
+            This current site is still available as a backup, but using both simultaneously could lead to errors with the gizmos.
+          </h3>
+        </div>
         <h1>Choose a Project:</h1>
         <Link to="/g1" style={{ textDecoration: 'none' }}>
           <div id="link-g1" className="link-box">
