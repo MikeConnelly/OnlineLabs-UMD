@@ -25,6 +25,12 @@ class Home extends Component {
             <h3 className="link-text">Photovoltaic Cell</h3>
           </div>
         </Link>
+        <Link to="/g4" style={{ textDecoration: 'none' }}>
+          <div id="link-g4" className="link-box">
+            <h2 className="link-text">Gizmo-4</h2>
+            <h3 className="link-text">Over-The-Air Programming</h3>
+          </div>
+        </Link>
       </div>
     );
   }

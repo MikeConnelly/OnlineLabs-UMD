@@ -1,4 +1,4 @@
-module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) => {
+module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3Controller) => {
 
   app.get('/g1', (req, res) => {
     res.redirect('/');
@@ -9,6 +9,10 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
   });
 
   app.get('/g3', (req, res) => {
+    res.redirect('/');
+  });
+
+  app.get('/g4', (req, res) => {
     res.redirect('/');
   });
 
@@ -34,9 +38,17 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
     if(!req.user) {
       res.sendStatus(403);
     } else {
-      console.log('/api/g3/enqueue');
       req.user.project = 'g3';
       g3Manager.addUser(req.user);
+    }
+  });
+
+  app.post('/api/g4/enqueue', (req, res) => {
+    if(!req.user) {
+      res.sendStatus(403);
+    } else {
+      req.user.project = 'g4';
+      g4Manager.addUser(req.user);
     }
   });
 
@@ -60,6 +72,13 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
   app.post('/api/g3/returnhome', (req, res) => {
     if (req.user) {
       g3Manager.userDisconnected(req.user);
+      req.user.project = null;
+    }
+  });
+
+  app.post('/api/g4/returnhome', (req, res) => {
+    if (req.user) {
+      g4Manager.userDisconnected(req.user);
       req.user.project = null;
     }
   });
@@ -91,6 +110,16 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
     const user = req.user;
     const loggedIn = Boolean(user);
     const queueState = g3Manager.getQueueState(user);
+    res.status(200).json({
+      'loggedIn': loggedIn,
+      'queueState': queueState
+    });
+  });
+
+  app.get('/api/g4/info', (req, res) => {
+    const user = req.user;
+    const loggedIn = Boolean(user);
+    const queueState = g4Manager.getQueueState(user);
     res.status(200).json({
       'loggedIn': loggedIn,
       'queueState': queueState
