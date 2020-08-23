@@ -173,7 +173,6 @@ module.exports = (app, manager, g2Manager, g3Manager, controller, g3Controller) 
       if ((req.body.resistance == undefined) || (req.body.brightness == undefined) || isNaN(req.body.resistance) || isNaN(req.body.brightness)) {
         res.sendStatus(400);
       } else {
-        g3Controller.sendResistance({ "resistance": parseFloat(req.body.resistance) }, err =>  res.sendStatus(200));
         g3Controller.sendData({
           resistance: parseFloat(req.body.resistance),
           brightness: parseInt(req.body.brightness)

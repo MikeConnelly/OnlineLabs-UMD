@@ -234,6 +234,7 @@ body {
   border-color: white;
 }
 
+.json-input-act,
 #json-input,
 #results-input {
   width: 180px;

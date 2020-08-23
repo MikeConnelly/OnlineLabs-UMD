@@ -1,4 +1,14 @@
 import React, { Component } from 'react';
+const MShapeJsonEx = [
+    {"x": 0, "y": 100},
+    {"x": 75, "y": -75},
+    {"x": 75, "y": 75},
+    {"x": 0, "y": -100},
+    {"x": 0, "y": 100},
+    {"x": -75, "y": -75},
+    {"x": -75, "y": 75},
+    {"x": 0, "y": -100}
+  ];
 
 class Activity2 extends Component {
    
@@ -22,22 +32,13 @@ class Activity2 extends Component {
                                             <li>For example an 8-step “M” pattern:</li>
                                         </ul>
                                         <div className="example-box">
-                                            {/* <p>"{"{\"x\": 0, \"y\": 100},"}" */}
-                                            {/* </p> */}
-                                            
-                                               {/* <br>[</br>  */}
-                                               {/* <br>{{"x": 0, "y": 100}},</br> */}
-                                               
-                                                    {/* {{"x": 0, "y": 100}},
-                                                    {{"x": 75, "y": -75}},
-                                                    {{"x": 75, "y": 75}},
-                                                    {{"x": 0, "y": -100}},
-                                                    {{"x": 0, "y": 100}},
-                                                    {{"x": -75, "y": -75}},
-                                                    {{"x": -75, "y": 75}},
-                                                    {{"x": 0, "y": -100}} */}
-                                              {/* ] */}
-                                           
+                                            <textarea
+                                                className="json-input-act"
+                                                name="json-input-ex"
+                                                type="textarea"
+                                                autoComplete="off"
+                                                value={JSON.stringify(MShapeJsonEx)}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -46,7 +47,7 @@ class Activity2 extends Component {
                                     <p>Enter JSON: </p>
                                     <div className="json-form">
                                         <textarea
-                                            id="json-input"
+                                            className="json-input-act"
                                             name="json-input"
                                             type="textarea"
                                             autoComplete="off"
@@ -60,35 +61,21 @@ class Activity2 extends Component {
                                         the approximate range in the X and Y axis:</p>
                                     <div className="act2-results">
                                         <textarea
-                                            id="results-input"
+                                            className="json-input-act"
                                             name="results-input"
                                             type="textarea"
                                             autoComplete="off"
                                         />
                                     </div>
 
-                                    <input id="submit-form" type="submit" value="Submit" />
-                                </div>
+                                <input id="submit-form" type="submit" value="Submit" />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="column-right">
-                  <h3 id="instruction-header">RESULTS</h3>
-                  <p>Describe the pattern you generated and 
-                      the approximate range in the X and Y axis:</p>
-                  <div className="act2-results">
-                    <textarea
-                      id="results-input"
-                      name="results-input"
-                      type="textarea"
-                      autoComplete="off"
-                    />
-                  </div>
-                  <input id="submit-form" type="submit" value="Submit"/>
-                </div>
-              </div>
-    
+            </div>
+        </div>
+
     );
   }
 }
