@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import PageG1 from './pages/PageG1';
 import PageG2 from './pages/PageG2';
 import PageG3 from './pages/PageG3';
+import PageG4 from './pages/PageG4';
 
 import io from 'socket.io-client';
 const socket = io();
@@ -17,6 +18,7 @@ class App extends Component {
           <Route path="/g1" component={props => <PageG1 socket={socket} />} />
           <Route path="/g2" component={props => <PageG2 socket={socket} />} />
           <Route path="/g3" component={props => <PageG3 socket={socket} />} />
+          <Route path="/g4" component={props => <PageG4 socket={socket} />} />
         </Switch>
       </div>
     );

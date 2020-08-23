@@ -5,6 +5,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var moment = require('moment');
 var dotenv = require('dotenv');
+var fileUpload = require('express-fileupload');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var expressSession = require('express-session');
@@ -17,6 +18,7 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var UMDCASStrategy = require('passport-umd-cas').Strategy;
 var Client = require('azure-iothub').Client;
 var EventHubReader = require('./scripts/event-hub-reader');
+var { BlobServiceClient } = require('@azure/storage-blob');
 var User = require('./models/User');
 var MotorController = require('./utils/MotorController');
 var G3Controller = require('./utils/G3Controller');
@@ -31,6 +33,8 @@ const cookieKey = process.env.COOKIEKEY;
 const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
 const vConnectionString = process.env.VCONNECTIONSTRING;
+const storageConnectionString = process.env.BLOBCONNECTION;
+const blobContainerName = 'blob';
 const port = process.env.PORT || 3000;
 
 
@@ -38,11 +42,14 @@ var client = Client.fromConnectionString(iotHubConnectionString);
 var g3Client = Client.fromConnectionString(vConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 var g3EventHubReader = new EventHubReader(vConnectionString, eventHubConsumerGroup);
+var blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
+var containerClient = blobServiceClient.getContainerClient(blobContainerName);
 var controller = new MotorController(client);
 var g3Controller = new G3Controller(g3Client);
 var manager = new UserManager(io, controller, 'g1');
-var g2Manager = new UserManager(io, controller, 'g2');
+var g2Manager = new UserManager(io, null, 'g2');
 var g3Manager = new UserManager(io, g3Controller, 'g3');
+var g4Manager = new UserManager(io, null, 'g4');
 
 
 // setup mongo connection
@@ -115,6 +122,7 @@ passport.deserializeUser((user, done) => {
 
 
 
+app.use(fileUpload({ createParentPath: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
@@ -143,7 +151,7 @@ app.use(passport.session());
 
 
 
-routes(app, manager, g2Manager, g3Manager, controller, g3Controller);
+routes(app, manager, g2Manager, g3Manager, g4Manager, controller, g3Controller);
 
 // auth routes
 // app.use('/:page/auth/google', (req, res, next) => {
@@ -174,6 +182,49 @@ app.get('/auth/logout', (req, res) => {
     res.sendStatus(200);
   }
 });
+
+
+
+app.post('/api/g4/upload', async (req, res) => {
+  if (!req.user || !g4Manager.isCurrentUser(req.user)) {
+    res.sendStatus(403);
+  } else {
+    try {
+      if (!req.files) {
+        res.send({
+          status: false,
+          message: 'No file uploaded'
+        });
+      } else {
+        let file = req.files.update;
+        const staticFileName = 'device.bin';
+
+        filepath = path.join('./uploads/', staticFileName);
+        await file.mv(filepath);
+        const blockBlobClient = containerClient.getBlockBlobClient(staticFileName);
+        await blockBlobClient.uploadFile(filepath, { blockSize: file.size });
+
+        const data = {
+          'methodName': 'update',
+          'responseTimeoutInSeconds': 60,
+          'payload': {}
+        };
+        // g3 and g4 use the same iothub client but different device name
+        g3Client.invokeDeviceMethod('esp', data, (err, result) => {
+          if (err && !(err instanceof SyntaxError)) {
+            console.error(err);
+          } else {
+            console.log('successfully invoked device method');
+            res.sendStatus(200);
+          }
+        });
+      }
+    } catch (err) {
+      res.sendStatus(400);
+    }
+  }
+});
+
 
 
 /**
