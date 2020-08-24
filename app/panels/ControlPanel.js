@@ -214,6 +214,7 @@ class ControlPanel extends Component {
   render() {
     return (
       <div className="control-panel-and-graph-stream">
+        {window.location.protocol === 'https' ? <p className="proto-warn">NOTE: for video streams to work you must switch from https to http in your address bar</p> : <></>}
         <div className="graph-stream">
           <GraphWrapper socket={this.props.socket} />
           <VideoContainer url="http://129.2.94.100:6088/stream" />

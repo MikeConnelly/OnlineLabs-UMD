@@ -359,3 +359,8 @@ span.buttonText {
   top: 0;
   left: 0;
 }
+
+.proto-warn {
+  text-align: center;
+  font-size: larger;
+}

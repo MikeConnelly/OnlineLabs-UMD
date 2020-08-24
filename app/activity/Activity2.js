@@ -53,7 +53,7 @@ class Activity2 extends Component {
                                             autoComplete="off"
                                         />
                                     </div>
-                                    <input id="submit-form" type="submit" value="Submit" />
+                                    <input id="submit-form" type="button" value="Submit" />
                                 </div>
                                 <div className="column-right">
                                     <h3 id="instruction-header">RESULTS</h3>
@@ -68,7 +68,7 @@ class Activity2 extends Component {
                                         />
                                     </div>
 
-                                <input id="submit-form" type="submit" value="Submit" />
+                                <input id="submit-form" type="button" value="Submit" />
                             </div>
                         </div>
                     </div>

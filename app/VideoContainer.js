@@ -14,20 +14,16 @@ class VideoContainer extends Component {
           display: 'flex'
         }}
       >
-        {window.location.protocol === 'https' ? (
-          <span className="missing-video">To see the video feed please change https to http in your address bar.</span>
-        ) : (
-          <iframe
-            src={this.props.url}
-            style={{
-              width: '640px',
-              height: '480px',
-              alignItems: 'stretch',
-              justifyContent: 'center',
-              flexGrow: '1'
-            }}
-          />
-        )}
+        <iframe
+          src={this.props.url}
+          style={{
+            width: '640px',
+            height: '480px',
+            alignItems: 'stretch',
+            justifyContent: 'center',
+            flexGrow: '1'
+          }}
+        />
       </div>
     );
   }
