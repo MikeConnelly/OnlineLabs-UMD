@@ -45,7 +45,7 @@ var g3EventHubReader = new EventHubReader(vConnectionString, eventHubConsumerGro
 var blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
 var containerClient = blobServiceClient.getContainerClient(blobContainerName);
 var controller = new MotorController(client);
-var g3Controller = new G3Controller(g3Client);
+var g3Controller = new G3Controller(client);
 var manager = new UserManager(io, controller, 'g1');
 var g2Manager = new UserManager(io, null, 'g2');
 var g3Manager = new UserManager(io, g3Controller, 'g3');
@@ -317,18 +317,26 @@ function broadcastSensorData(payload, project) {
 (async () => {
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {
-      const dataInMM =  {
-        messageId: message.messageId,
-        x_distance: (message.x_distance * 25.4),
-        y_distance: (message.y_distance * 25.4)
+      console.log(`${deviceId}, ${JSON.stringify(message)}`);
+      if (deviceId === 'MyNodeESP32') {
+        const dataInMM =  {
+          messageId: message.messageId,
+          x_distance: (message.x_distance * 25.4),
+          y_distance: (message.y_distance * 25.4)
+        }
+        const now = moment();
+        const time = now.format('h:mm:ss');
+        const payload = {
+          index: time,
+          iotData: dataInMM
+        };
+        broadcastSensorData(payload, 'g1');
+      } else {
+        const payload = {
+          iotData: message
+        };
+        broadcastSensorData(payload, 'g3');
       }
-      const now = moment();
-      const time = now.format('h:mm:ss');
-      const payload = {
-        index: time,
-        iotData: dataInMM
-      };
-      broadcastSensorData(payload, 'g1');
     } catch (err) {
       console.error(err);
     }
@@ -353,4 +361,19 @@ function broadcastSensorData(payload, project) {
 // go
 http.listen(port, () => {
   console.log(`listening on port ${port}`);
+  // const data = {
+  //   'methodName': 'stop',
+  //   'responseTimeoutInSeconds': 60,
+  //   'payload': {}
+  // };
+  // g3Client.invokeDeviceMethod('kangesp', data, (err, result) => {
+  //   if (err && !(err instanceof SyntaxError)) {
+  //     // this gets called with a syntax error whenever invoking
+  //     // a device method, despite the device method actually working
+  //     // should look into this later but for now it can be ignored
+  //     console.log('failed to invoke device method...');
+  //   } else {
+  //     console.log('successfully invoked device method');
+  //   }
+  // });
 });

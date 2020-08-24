@@ -20,7 +20,7 @@ class G3Controller {
   }
 
   deviceMethod(data, cb) {
-    this.iotClient.invokeDeviceMethod('kangesp', data, (err, result) => {
+    this.iotClient.invokeDeviceMethod('MyNodeESP32-Solar', data, (err, result) => {
       if (err && !(err instanceof SyntaxError)) {
         console.log('failed to invoke device method...');
         if (cb) { cb(err); }
