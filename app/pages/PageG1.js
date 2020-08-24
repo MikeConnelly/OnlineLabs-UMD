@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 // import axios from 'axios';
-import GraphWrapper from '../GraphWrapper';
-import VideoContainer from '../VideoContainer';
 import DashboardContainer from '../DashboardContainer';
 import ControlPanel from '../panels/ControlPanel';
 import Header from '../Header';
@@ -31,15 +29,11 @@ class PageG1 extends Component {
           project="g1"
           marginLeft="40%"
         />
-        <div className="graph-stream">
-          <GraphWrapper socket={this.props.socket} />
-          <VideoContainer url="http://129.2.94.100:6088/stream" />
-        </div>
         <DashboardContainer
           socket={this.props.socket}
           loggedIn={this.state.loggedIn}
           setLoggedIn={this.setLoggedIn}
-          controlComponent={<ControlPanel />}
+          controlComponent={<ControlPanel socket={this.props.socket} />}
           project="g1"
         />
         <Activity1 />

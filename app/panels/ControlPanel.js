@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import CommandSequence from './CommandSequence';
+import GraphWrapper from '../GraphWrapper';
+import VideoContainer from '../VideoContainer';
 import './ControlPanel.css';
 const RESPONSE_TEXT_DELAY = 3000;
 const MShapeJson = [
@@ -211,75 +213,81 @@ class ControlPanel extends Component {
 
   render() {
     return (
-      <div className="control-panel-wrapper">
-        {/* <div className="control-panel"> */}
-        <div className="instructions">
-          <h3 id="instruction-header">INSTRUCTIONS</h3>
-          <ul>
-            <li>Input values to control motor movement in the x and y directions</li>
-            <li>Hit submit to send your command to the device</li>
-            <li>The + and - buttons allow you to send multiple points at once</li>
-            {/* <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li> */}
-          </ul>
+      <div className="control-panel-and-graph-stream">
+        <div className="graph-stream">
+          <GraphWrapper socket={this.props.socket} />
+          <VideoContainer url="http://129.2.94.100:6088/stream" />
         </div>
-        <div className="form-control">
-          <form id="control-form" onSubmit={this.handleSubmit}>
-            <h3> SET INPUT XY</h3>
-            <label id="json-cb-label" htmlFor="json-cb">use JSON</label>
-            <input
-              id="json-cb"
-              name="json-cb"
-              type="checkbox"
-              checked={this.state.useJSON}
-              onChange={event => this.setState({ useJSON: event.target.checked })}
-            />
-            {!this.state.useJSON ? this.getInputForm() : (
-              <div className="json-form">
-                <div className="template-row">
-                  <p>Fill With Template:</p>
-                  <input
-                    id="m-shape-template-button"
-                    type="button"
-                    value="M Shape"
-                    onClick={() => this.fillJsonWithTemplate('m')}
-                  />
-                  <input
-                    id="triangle-wave-template-button"
-                    type="button"
-                    value="Triangle Wave"
-                    onClick={() => this.fillJsonWithTemplate('triangle')}
+        <div className="control-panel-wrapper">
+          {/* <div className="control-panel"> */}
+          <div className="instructions">
+            <h3 id="instruction-header">INSTRUCTIONS</h3>
+            <ul>
+              <li>Input values to control motor movement in the x and y directions</li>
+              <li>Hit submit to send your command to the device</li>
+              <li>The + and - buttons allow you to send multiple points at once</li>
+              {/* <li>Click <a href="https://www.youtube.com/watch?v=cH9fpUHSJaE&feature=youtu.be">here</a> to view the Live Stream</li> */}
+            </ul>
+          </div>
+          <div className="form-control">
+            <form id="control-form" onSubmit={this.handleSubmit}>
+              <h3> SET INPUT XY</h3>
+              <label id="json-cb-label" htmlFor="json-cb">use JSON</label>
+              <input
+                id="json-cb"
+                name="json-cb"
+                type="checkbox"
+                checked={this.state.useJSON}
+                onChange={event => this.setState({ useJSON: event.target.checked })}
+              />
+              {!this.state.useJSON ? this.getInputForm() : (
+                <div className="json-form">
+                  <div className="template-row">
+                    <p>Fill With Template:</p>
+                    <input
+                      id="m-shape-template-button"
+                      type="button"
+                      value="M Shape"
+                      onClick={() => this.fillJsonWithTemplate('m')}
+                    />
+                    <input
+                      id="triangle-wave-template-button"
+                      type="button"
+                      value="Triangle Wave"
+                      onClick={() => this.fillJsonWithTemplate('triangle')}
+                    />
+                  </div>
+                  <textarea
+                    id="json-input"
+                    name="json-input"
+                    type="textarea"
+                    autoComplete="off"
+                    value={this.state.jsonInput}
+                    onChange={event => this.setState({ jsonInput: event.target.value })}
                   />
                 </div>
-                <textarea
-                  id="json-input"
-                  name="json-input"
-                  type="textarea"
-                  autoComplete="off"
-                  value={this.state.jsonInput}
-                  onChange={event => this.setState({ jsonInput: event.target.value })}
-                />
+              )}
+              <div className="button-col">
+                {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
+                <div className="bottomRowOfControls">
+                  <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
+                  <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
+                  <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
+                </div>
               </div>
-            )}
-            <div className="button-col">
-              {!this.state.useJSON ? <input id="add-point" type="button" value="+" onClick={this.handleAddPoint} /> : <></>}
-              <div className="bottomRowOfControls">
-                <input id="reset-position" type="button" value="Reset" disabled={!this.state.enableForm} onClick={this.handleResetPosition} />
-                <input id="submit-form" type="submit" value="Submit" disabled={!this.state.enableForm} />
-                <input id="finish" type="button" value="Finish" onClick={this.handleFinish} />
-              </div>
-            </div>
-            {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
-            {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
-            {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
-          </form>
+              {this.state.commandSuccess ? <p id="command-success">Command Sent!</p> : <></>}
+              {this.state.commandError ? <p id="command-error">Error sending command</p> : <></>}
+              {!this.state.validInput ? <p id="invalid-input">Invalid input</p> : <></>}
+            </form>
+          </div>
+          <CommandSequence
+            sequence={this.state.sequence}
+            clearSequence={this.handleClearSequence}
+            fillFormWithSequence={this.handleFillFormWithSequence}
+            autofillSequence={this.state.autofillSequence}
+            changeAutofillSequence={this.changeAutofillSequence}
+          />
         </div>
-        <CommandSequence
-          sequence={this.state.sequence}
-          clearSequence={this.handleClearSequence}
-          fillFormWithSequence={this.handleFillFormWithSequence}
-          autofillSequence={this.state.autofillSequence}
-          changeAutofillSequence={this.changeAutofillSequence}
-        />
       </div>
     );
   }

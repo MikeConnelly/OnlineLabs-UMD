@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
 import DashboardContainer from '../DashboardContainer';
-import VideoContainer from '../VideoContainer';
 import G3Control from '../panels/G3Control';
 
 class PageG3 extends Component {
@@ -27,7 +26,6 @@ class PageG3 extends Component {
           project="g3"
           marginLeft="41%"
         />
-        <VideoContainer url="http://129.2.94.100:6092/stream" />
         <DashboardContainer
           socket={this.props.socket}
           loggedIn={this.state.loggedIn}

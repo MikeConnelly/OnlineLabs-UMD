@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import VideoContainer from '../VideoContainer';
 import './G3Control.css';
 
 class G3Control extends Component {
@@ -42,6 +43,7 @@ class G3Control extends Component {
   render() {
     return (
       <div className="g3-control">
+        <VideoContainer url="http://129.2.94.100:6092/stream" />
         <form className="g3-form">
           <label htmlFor="resistance" id="resistance-label">Choose a resistance:</label>
           <select id="resistance" name="resistance" onChange={this.setResistance}>
@@ -83,7 +85,7 @@ class G3Control extends Component {
           />
         </form>
         <div className="voltage-display">
-          <p>Voltage: {this.state.currVoltage}</p>
+          <p>Voltage: {this.state.currVoltage}mV</p>
         </div>
       </div>
     );

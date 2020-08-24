@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Vnc from '../panels/Vnc';
 import DashboardContainer from '../DashboardContainer';
-import VideoContainer from '../VideoContainer';
 import Header from '../Header';
 import Footer from '../Footer';
 
@@ -34,7 +33,6 @@ class PageG2 extends Component {
           controlComponent={<Vnc />}
           project="g2"
         />
-        <VideoContainer url="http://129.2.94.100:6081/stream" />
         <Footer />
       </div>
     );

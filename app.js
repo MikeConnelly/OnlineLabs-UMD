@@ -39,9 +39,9 @@ const port = process.env.PORT || 3000;
 
 
 var client = Client.fromConnectionString(iotHubConnectionString);
-var g3Client = Client.fromConnectionString(vConnectionString);
+var g4Client = Client.fromConnectionString(vConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
-var g3EventHubReader = new EventHubReader(vConnectionString, eventHubConsumerGroup);
+// var g3EventHubReader = new EventHubReader(vConnectionString, eventHubConsumerGroup);
 var blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
 var containerClient = blobServiceClient.getContainerClient(blobContainerName);
 var controller = new MotorController(client);
@@ -210,7 +210,7 @@ app.post('/api/g4/upload', async (req, res) => {
           'payload': {}
         };
         // g3 and g4 use the same iothub client but different device name
-        g3Client.invokeDeviceMethod('esp', data, (err, result) => {
+        g4Client.invokeDeviceMethod('esp', data, (err, result) => {
           if (err && !(err instanceof SyntaxError)) {
             console.error(err);
           } else {
@@ -317,8 +317,8 @@ function broadcastSensorData(payload, project) {
 (async () => {
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {
-      console.log(`${deviceId}, ${JSON.stringify(message)}`);
-      if (deviceId === 'MyNodeESP32') {
+      // console.log(`${deviceId}, ${JSON.stringify(message)}`);
+      if (deviceId === 'MyNodeESP32') { // gizmo1 message
         const dataInMM =  {
           messageId: message.messageId,
           x_distance: (message.x_distance * 25.4),
@@ -331,7 +331,7 @@ function broadcastSensorData(payload, project) {
           iotData: dataInMM
         };
         broadcastSensorData(payload, 'g1');
-      } else {
+      } else { // gizmo3 message
         const payload = {
           iotData: message
         };
@@ -344,18 +344,18 @@ function broadcastSensorData(payload, project) {
 })().catch();
 
 
-(async () => {
-  await g3EventHubReader.startReadMessage((message, date, deviceId) => {
-    try {
-      const payload = {
-        iotData: message
-      };
-      broadcastSensorData(payload, 'g3');
-    } catch (err) {
-      console.error(err);
-    }
-  })
-})().catch();
+// (async () => {
+//   await g3EventHubReader.startReadMessage((message, date, deviceId) => {
+//     try {
+//       const payload = {
+//         iotData: message
+//       };
+//       broadcastSensorData(payload, 'g3');
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   })
+// })().catch();
 
 
 // go
@@ -366,7 +366,7 @@ http.listen(port, () => {
   //   'responseTimeoutInSeconds': 60,
   //   'payload': {}
   // };
-  // g3Client.invokeDeviceMethod('kangesp', data, (err, result) => {
+  // g4Client.invokeDeviceMethod('kangesp', data, (err, result) => {
   //   if (err && !(err instanceof SyntaxError)) {
   //     // this gets called with a syntax error whenever invoking
   //     // a device method, despite the device method actually working

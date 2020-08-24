@@ -1,6 +1,6 @@
 .g3-control {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #E0E0E0;
