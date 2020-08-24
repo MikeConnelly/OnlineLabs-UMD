@@ -38,6 +38,7 @@ class Activity2 extends Component {
                                                 type="textarea"
                                                 autoComplete="off"
                                                 value={JSON.stringify(MShapeJsonEx)}
+                                                readOnly
                                             />
                                         </div>
                                     </div>

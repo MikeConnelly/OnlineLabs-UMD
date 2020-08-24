@@ -43,7 +43,7 @@ class G3Control extends Component {
   render() {
     return (
       <div className="g3-control">
-        {window.location.protocol === 'https' ? <p className="proto-warn">NOTE: for video streams to work you must switch from https to http in your address bar</p> : <></>}
+        {window.location.protocol === 'https:' ? <p className="proto-warn">NOTE: for video streams to work you must switch from https to http in your address bar</p> : <></>}
         <VideoContainer url="http://129.2.94.100:6092/stream" />
         <form className="g3-form">
           <label htmlFor="resistance" id="resistance-label">Choose a resistance:</label>
