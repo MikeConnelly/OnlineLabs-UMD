@@ -4,13 +4,40 @@ import VideoContainer from '../VideoContainer';
 class Vnc extends Component {
   render() {
     return (
-      <div className="vnc-wrapper">
-        {window.location.protocol === 'https:' ? <p className="proto-warn">NOTE: for video streams to work you must switch from https to http in your address bar</p> : <></>}
-        <iframe src="http://129.2.94.100:6080/?password=enee205c" width={1024} height={768}></iframe>
-        <VideoContainer url="http://129.2.94.100:6081/stream" />
+      <div className="page2">
+        <div className="vnc-wrapper">
+          <iframe src="http://129.2.94.100:6080/?password=enee205c" width={1024} height={768}></iframe>
+        </div>
+
+        <div className="control-panel-wrapper">
+          {/* <div className="control-panel"> */}
+          <div className="instructions">
+            <h3 id="instruction-header">INSTRUCTIONS</h3>
+            <ul>
+              <li>Control wave function generator connected to AWG1 in circuit diagram with "Wavegen 1" tab</li>
+              <li>View OSC1 and OSC2 probes with "Scope 1" tab</li>
+              <li>Control analog outputs D1-D4 with "StaticIO" tab</li>
+              <li>Control DC power supply DC1 with "Supplies" tab</li>
+            </ul>
+          </div>
+          <div className="stream-schematic">
+            <div className="vnc-wrapper">
+              <VideoContainer url="http://129.2.94.100:6081/stream" />
+              {window.location.protocol === 'https:' ? <p className="proto-warn">NOTE: for video streams to work you must switch from https to http in your address bar</p> : <></>}
+
+            </div>
+          </div>
+          <div className="message-sequence">
+            <h3 id="cs-title">CIRCUIT DIAGRAM</h3>
+            <img id="image" src="Gizmo-2.png"></img>
+
+          </div>
+        </div>
       </div>
     );
   }
 }
 
 export default Vnc;
+
+

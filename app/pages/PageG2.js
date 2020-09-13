@@ -5,7 +5,7 @@ import Header from '../Header';
 import Footer from '../Footer';
 
 class PageG2 extends Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -13,7 +13,7 @@ class PageG2 extends Component {
     };
     this.setLoggedIn = this.setLoggedIn.bind(this);
   }
-  
+
   setLoggedIn(b) {
     this.setState({ loggedIn: b });
   }
@@ -26,13 +26,16 @@ class PageG2 extends Component {
           project="g2"
           marginLeft="40%"
         />
-        <DashboardContainer
-          socket={this.props.socket}
-          loggedIn={this.state.loggedIn}
-          setLoggedIn={this.setLoggedIn}
-          controlComponent={<Vnc />}
-          project="g2"
-        />
+        <div className = "page-g2-content">
+          <DashboardContainer
+            socket={this.props.socket}
+            loggedIn={this.state.loggedIn}
+            setLoggedIn={this.setLoggedIn}
+            controlComponent={<Vnc/>}
+            project="g2"
+          />
+        </div>
+
         <Footer />
       </div>
     );

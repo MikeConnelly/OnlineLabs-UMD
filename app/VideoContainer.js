@@ -18,7 +18,7 @@ class VideoContainer extends Component {
           src={this.props.url}
           style={{
             width: '640px',
-            height: '480px',
+            borderRadius: '12px',
             alignItems: 'stretch',
             justifyContent: 'center',
             flexGrow: '1'
