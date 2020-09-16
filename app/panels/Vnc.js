@@ -7,7 +7,7 @@ class Vnc extends Component {
     return (
       <div className="page2">
         <div className="vnc-wrapper">
-          <iframe src="http://129.2.94.100:6080/?password=enee205c" width={1024} height={768}></iframe>
+          <iframe src="http://129.2.94.100:6075/?password=enee205c" width={1024} height={768}></iframe>
         </div>
 
         <div className="control-panel-wrapper">
@@ -23,9 +23,8 @@ class Vnc extends Component {
           </div>
           <div className="stream-schematic">
             <div className="vnc-wrapper">
-              <VideoContainer url="http://129.2.94.100:6081/stream" />
+              <VideoContainer url="http://129.2.94.100:6074/stream" />
               {window.location.protocol === 'https:' ? <p className="proto-warn">NOTE: for video streams to work you must switch from https to http in your address bar</p> : <></>}
-
             </div>
           </div>
           <div className="message-sequence">
