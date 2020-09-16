@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import VideoContainer from '../VideoContainer';
+import diagram from '../../public/img/OnlineLabs_diagram.png';
 
 class Vnc extends Component {
   render() {
@@ -29,8 +30,7 @@ class Vnc extends Component {
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">CIRCUIT DIAGRAM</h3>
-            <img id="image" src="Gizmo-2.png"></img>
-
+            <img src={diagram} style={{ width: '95%' }}></img>
           </div>
         </div>
       </div>

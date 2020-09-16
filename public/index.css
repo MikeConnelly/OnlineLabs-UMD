@@ -293,11 +293,6 @@ body {
   border: #C4112E;
 }
 
-#image{
-  width:95%;
-  border: radius 5px;
-}
-
 span.buttonText {
   font-size: 14px;
   font-weight: bold;

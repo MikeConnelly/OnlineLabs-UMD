@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './G4Control.css';
+import g4s from '../../public/img/G4_schematic.png';
 
 export class G4Control extends Component {
 
@@ -66,6 +67,7 @@ export class G4Control extends Component {
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">SCHEMATIC</h3>
+            <img src={g4s} style={{ width: '95%' }}></img>
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">UPLOAD</h3>

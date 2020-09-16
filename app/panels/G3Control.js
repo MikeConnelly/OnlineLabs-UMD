@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import VideoContainer from '../VideoContainer';
 import './G3Control.css';
+import diagram from '../../public/img/OnlineLabs_diagram.png';
 
 class G3Control extends Component {
 
@@ -108,7 +109,7 @@ class G3Control extends Component {
 
           <div className="message-sequence">
             <h3 id="cs-title">SCHEMATIC</h3>
-            <img src="Gizmo-3.png" style="width: 95%"></img>
+            <img src={diagram} style={{width: '95%'}}></img>
           </div>
         </div>
       </div>
