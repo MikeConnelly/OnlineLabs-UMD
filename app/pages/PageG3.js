@@ -5,7 +5,7 @@ import DashboardContainer from '../DashboardContainer';
 import G3Control from '../panels/G3Control';
 
 class PageG3 extends Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,13 +26,16 @@ class PageG3 extends Component {
           project="g3"
           marginLeft="41%"
         />
-        <DashboardContainer
-          socket={this.props.socket}
-          loggedIn={this.state.loggedIn}
-          setLoggedIn={this.setLoggedIn}
-          controlComponent={<G3Control socket={this.props.socket} />}
-          project="g3"
-        />
+        <div className = "page-g3-content">
+          <DashboardContainer
+            socket={this.props.socket}
+            loggedIn={this.state.loggedIn}
+            setLoggedIn={this.setLoggedIn}
+            controlComponent={<G3Control socket={this.props.socket} />}
+            project="g3"
+          />
+        </div>
+
         <Footer />
       </div>
     );

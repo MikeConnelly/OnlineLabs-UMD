@@ -12,16 +12,34 @@
 .g3-form {
   margin-top: 20px;
 }
+#run-button{
+  color: white;
+  background-color: #C4112E;
+  border-radius: 7.5px;
+  width: 5%;
+}
+
+#resistance{
+  border-radius: 7.5px;
+  height: 35px;
+  color: black;
+  font-weight: bold;
+  border-style: solid;
+  border-color: white;
+}
 
 #resistance-label {
   margin-right: 5px;
 }
 
 #resistance-submit {
+  border-color: #C4112E;
   margin-left: 10px;
 }
 
+
 .voltage-display {
+  font-weight: bold;
   margin-left: 20px;
 }
 
