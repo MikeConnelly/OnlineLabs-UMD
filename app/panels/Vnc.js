@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import VideoContainer from '../VideoContainer';
-import diagram from '../../public/img/OnlineLabs_diagram.png';
+import g2img from '../../public/img/Gizmo-2.png';
 
 class Vnc extends Component {
   render() {
@@ -29,7 +29,7 @@ class Vnc extends Component {
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">CIRCUIT DIAGRAM</h3>
-            <img src={diagram} style={{ width: '95%' }}></img>
+            <img src={g2img} style={{ width: '95%', borderRadius: 5 }}></img>
           </div>
         </div>
       </div>

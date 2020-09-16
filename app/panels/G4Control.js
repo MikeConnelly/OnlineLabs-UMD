@@ -67,7 +67,7 @@ export class G4Control extends Component {
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">SCHEMATIC</h3>
-            <img src={g4s} style={{ width: '95%' }}></img>
+            <img src={g4s} style={{ width: '95%', borderRadius: 5  }}></img>
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">UPLOAD</h3>
