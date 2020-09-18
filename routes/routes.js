@@ -22,6 +22,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
     } else {
       req.user.project = 'g1';
       manager.addUser(req.user); // also calls updateAllClients in manager
+      res.sendStatus(200);
     }
   });
 
@@ -31,6 +32,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
     } else {
       req.user.project = 'g2';
       g2Manager.addUser(req.user);
+      res.sendStatus(200);
     }
   });
 
@@ -40,6 +42,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
     } else {
       req.user.project = 'g3';
       g3Manager.addUser(req.user);
+      res.sendStatus(200);
     }
   });
 
@@ -49,6 +52,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
     } else {
       req.user.project = 'g4';
       g4Manager.addUser(req.user);
+      res.sendStatus(200);
     }
   });
 
@@ -60,6 +64,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
       manager.userDisconnected(req.user);
       req.user.project = null;
     }
+    res.sendStatus(200);
   });
 
   app.post('/api/g2/returnhome', (req, res) => {
@@ -67,6 +72,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
       g2Manager.userDisconnected(req.user);
       req.user.project = null;
     }
+    res.sendStatus(200);
   });
 
   app.post('/api/g3/returnhome', (req, res) => {
@@ -74,6 +80,7 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
       g3Manager.userDisconnected(req.user);
       req.user.project = null;
     }
+    res.sendStatus(200);
   });
 
   app.post('/api/g4/returnhome', (req, res) => {
@@ -81,9 +88,26 @@ module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3C
       g4Manager.userDisconnected(req.user);
       req.user.project = null;
     }
+    res.sendStatus(200);
   });
 
 
+
+  app.get('/api/allinfo', (req, res) => {
+    const user = req.user;
+    const loggedIn = Boolean(user);
+    const qs1 = manager.getQueueState(user);
+    const qs2 = g2Manager.getQueueState(user);
+    const qs3 = g3Manager.getQueueState(user);
+    const qs4 = g4Manager.getQueueState(user);
+    res.status(200).json({
+      'loggedIn': loggedIn,
+      'queueState1': qs1,
+      'queueState2': qs2,
+      'queueState3': qs3,
+      'queueState4': qs4,
+    });
+  });
 
   // Invoked on Dashboard component mount, sends the user the queue state and their login status
   app.get('/api/g1/info', (req, res) => {

@@ -8,41 +8,24 @@ class DashboardContainer extends Component {
   
   constructor(props) {
     super(props);
-    this.state = {
-      queueState: {
-        inQueue: false,
-        isCurrentUser: false,
-        placeInQueue: 0,
-        queueLength: 0,
-        currentUserName: ''
-      },
-      _mounted: true
-    };
     this.getPanel = this.getPanel.bind(this);
     this.handleEnqueue = this.handleEnqueue.bind(this);
   }
 
   componentDidMount() {
     axios.get(`/api/${this.props.project}/info`).then(res => {
-      if (this.state._mounted) {
-        this.setState({ queueState: res.data.queueState });
-        this.props.setLoggedIn(res.data.loggedIn);
-      }
+      this.props.setStateValues(res.data.loggedIn, res.data.queueState);
     });
 
     this.props.socket.on(`${this.props.project}QueueState`, data => {
-      this.setState({ queueState: data });
+      this.props.setStateValues(this.props.loggedIn, data);
     });
-  }
-
-  componentWillUnmount() {
-    this.setState({ _mounted: false });
   }
 
   handleEnqueue() {
     // this.props.socket.emit('enqueue');
     axios.post(`/api/${this.props.project}/enqueue`).then(res => {
-      console.log('enqueue received');
+      console.log('queued');
     });
   }
 
@@ -55,11 +38,11 @@ class DashboardContainer extends Component {
       isControl: false,
       comp: null
     };
-    if (this.state.queueState.isCurrentUser) {
+    if (this.props.queueState.isCurrentUser) {
       panel.isControl = true;
       panel.comp = this.props.controlComponent;
-    } else if (this.state.queueState.inQueue) {
-      panel.comp = (<QueuedPanel placeInQueue={this.state.queueState.placeInQueue} />);
+    } else if (this.props.queueState.inQueue) {
+      panel.comp = (<QueuedPanel placeInQueue={this.props.queueState.placeInQueue} />);
     } else if (this.props.loggedIn) { // logged in but haven't enqueued
       panel.comp = (<NotQueuedPanel enqueue={this.handleEnqueue} />);
     } else { // login button
@@ -72,7 +55,7 @@ class DashboardContainer extends Component {
   }
 
   render() {
-    const { inQueue, isCurrentUser, placeInQueue, queueLength, currentUserName } = this.state.queueState;
+    const { inQueue, isCurrentUser, placeInQueue, queueLength, currentUserName } = this.props.queueState;
     const personWord = (queueLength === 1) ? 'person' : 'people';
     const { isControl, comp } = this.getPanel();
     // for design testing

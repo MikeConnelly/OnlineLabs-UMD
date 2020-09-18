@@ -12,13 +12,14 @@ class PageG1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false
+      loggedIn: this.props.loggedIn,
+      queueState: this.props.queueState
     };
-    this.setLoggedIn = this.setLoggedIn.bind(this);
+    this.setStateValues = this.setStateValues.bind(this);
   }
 
-  setLoggedIn(b) {
-    this.setState({ loggedIn: b });
+  setStateValues(li, qs) {
+    this.props.setStateValues(li, qs, 1);
   }
 
   render() {
@@ -32,7 +33,8 @@ class PageG1 extends Component {
         <DashboardContainer
           socket={this.props.socket}
           loggedIn={this.state.loggedIn}
-          setLoggedIn={this.setLoggedIn}
+          queueState={this.state.queueState}
+          setStateValues={this.setStateValues}
           controlComponent={<ControlPanel socket={this.props.socket} />}
           project="g1"
         />

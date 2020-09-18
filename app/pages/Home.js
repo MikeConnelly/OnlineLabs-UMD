@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import LoginPanel from '../panels/LoginPanel';
 import './Home.css';
 
 class Home extends Component {
   render() {
+    const { loggedIn } = this.props;
     return (
       <div className="home-page">
+        {loggedIn ? <></> : <LoginPanel />}
         <h1>Choose a Project:</h1>
         <Link to="/g1" style={{ textDecoration: 'none' }}>
           <div id="link-g1" className="link-box">
@@ -31,6 +34,13 @@ class Home extends Component {
             <h3 className="link-text">Over-The-Air Programming</h3>
           </div>
         </Link>
+        {loggedIn ? (
+          <div className="logout">
+            <button id="logout-button" onClick={this.props.handleLogout}>
+              <span className="buttonText">Logout</span>
+            </button>
+          </div>
+        ) : <></>}
       </div>
     );
   }
