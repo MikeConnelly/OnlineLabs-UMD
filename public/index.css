@@ -283,6 +283,16 @@ body {
   border: white;
 }
 
+.home-page #google-login {
+  background: rgb(204, 204, 204);
+  color: #444;
+  width: 190px;
+  height: 35px;
+  border-color: #fff;
+  border-radius: 5px;;
+  border: white;
+}
+
 #umd-login {
   margin-top: 10px;
   background: #C4112E;
@@ -291,6 +301,16 @@ body {
   height: 35px;
   border-radius: 5px;
   border: #C4112E;
+}
+
+#logout-button {
+  background: rgb(204, 204, 204);
+  color: #444;
+  width: 190px;
+  height: 35px;
+  border-color: #fff;
+  border-radius: 5px;;
+  border: white;
 }
 
 span.buttonText {

@@ -159,12 +159,16 @@ routes(app, manager, g2Manager, g3Manager, g4Manager, controller, g3Controller);
 //   next();
 // });
 
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+
 app.get('/:page/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
   res.redirect('/');
   // req.session.returnTo = null;
 });
+
+app.get('/auth/umd', passport.authenticate('umd-cas'));
 
 app.get('/:page/auth/umd', passport.authenticate('umd-cas'));
 
@@ -179,7 +183,7 @@ app.get('/auth/logout', (req, res) => {
     if (manager.isCurrentUser(user)) { controller.resetMotorsAndClear(null); }
     manager.userDisconnected(req.user);
     req.logout();
-    res.sendStatus(200);
+    res.redirect('/');  
   }
 });
 

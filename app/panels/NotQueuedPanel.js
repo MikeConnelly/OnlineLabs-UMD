@@ -4,7 +4,7 @@ class NotQueuedPanel extends Component {
   render() {
     return (
       <div className="not-queued-panel">
-      <button id = "queue-button" onClick={this.props.enqueue}>Enter Queue</button>
+        <button id="queue-button" onClick={this.props.enqueue}>Enter Queue</button>
       </div>
     );
   }
