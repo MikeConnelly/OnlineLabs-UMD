@@ -23,9 +23,9 @@ class PageG2 extends Component {
     return (
       <div className="page-g2">
         <Header
-          text="Gizmo-2 - Openscope Controller"
+          text="Gizmo-2 - Op-Amp Negative Feedback Circuits"
           project="g2"
-          marginLeft="40%"
+          marginLeft="37%"
         />
         <div className = "page-g2-content">
           <DashboardContainer

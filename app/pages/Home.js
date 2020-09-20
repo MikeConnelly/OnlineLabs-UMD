@@ -19,7 +19,7 @@ class Home extends Component {
         <Link to="/g2" style={{ textDecoration: 'none' }}>
           <div id="link-g2" className="link-box">
             <h2 className="link-text">Gizmo-2</h2>
-            <h3 className="link-text">Openscope Circuit Analysis</h3>
+            <h3 className="link-text">Op-Amp Negative Feedback Circuits</h3>
           </div>
         </Link>
         <Link to="/g3" style={{ textDecoration: 'none' }}>

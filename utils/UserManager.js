@@ -13,6 +13,7 @@ class UserManager {
     this.currentUser = null;
     this.currentUserInactiveInterval = null;
     this.minutesIdle = 0;
+    this.idleLimit = 15;
   }
 
   /**
@@ -113,7 +114,7 @@ class UserManager {
    */
   currentUserTimoutCheck() {
     this.minutesIdle++;
-    if (this.minutesIdle >= 4) {
+    if (this.minutesIdle >= this.idleLimit) {
       this.currentUserInactiveInterval = clearInterval(this.currentUserInactiveInterval);
       if (this.controller && this.project === 'g1') {
         this.controller.resetMotorsAndClear()

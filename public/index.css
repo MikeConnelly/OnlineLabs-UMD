@@ -418,3 +418,15 @@ span.buttonText {
 .page-g2-content, .page-g3-content{
   width: 95%;
 }
+
+.idle-timer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+#refresh-button {
+  margin-left: 15px;
+}
