@@ -3,6 +3,7 @@ import axios from 'axios';
 import LoginPanel from './panels/LoginPanel';
 import NotQueuedPanel from './panels/NotQueuedPanel';
 import QueuedPanel from './panels/QueuedPanel';
+import IdleTimer from './panels/IdleTimer';
 
 class DashboardContainer extends Component {
   
@@ -74,7 +75,12 @@ class DashboardContainer extends Component {
               {comp}
             </div>
           </div>
-        ) : comp}
+        ) : (
+          <div className="dashboard-container-in-control">
+            <IdleTimer project={this.props.project} />
+            {comp}
+          </div>
+        )}
       </div>
     );
   }

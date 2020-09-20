@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import VideoContainer from '../VideoContainer';
 import g2img from '../../public/img/Gizmo-2.png';
+import g2circuit from '../../public/img/g2Circuit2.jpg';
 
 class Vnc extends Component {
   render() {
@@ -15,11 +16,23 @@ class Vnc extends Component {
           <div className="instructions">
             <h3 id="instruction-header">INSTRUCTIONS</h3>
             <ul>
-              <li>Control wave function generator connected to AWG1 in circuit diagram with "Wavegen 1" tab</li>
-              <li>View OSC1 and OSC2 probes with "Scope 1" tab</li>
-              <li>Control analog outputs D1-D4 with "StaticIO" tab</li>
-              <li>Control DC power supply DC1 with "Supplies" tab</li>
+              <li>On Waveforms, use the StaticIO to set the relay switches. Remember that relays are ACTIVE LOW, e.g. SW ON = DIO 0. The active switches are lit up on the video, make sure that the image reflects your switch desired settings.</li>
+              <li>Here is a set of setting you can follow as QUICK START.  (You may need to adjust the time base and range of the scope.)</li>
+              <li>ALL unspecified switches are OFF.</li>
             </ul>
+            <ol>
+              <li>Unity Gain <b>Inverting</b> amplifier:  SW1=ON, SW2 = ON, SW10=ON, (W1 RUNNING) Suggested input signal: W1 sine 1V @ 5kHz</li>
+              <li>20dB Gain <b>Inverting</b> amplifier: SW1=ON, SW3 = ON, SW10=ON, (W1 RUNNING) Suggested input Signal: W1 sine 100mV @ 5kHz</li>
+              <li>2X Gain <b>Non-inverting</b> amplifier:  SW2 = ON, SW10=ON, SW11=ON, SW12=ON (W2 RUNNING) Suggested input signal: W1 sine 1V @ 5kHz</li>
+              <li>20dB Gain <b>Non-inverting</b> amplifier:  SW3 = ON, SW10=ON, SW11=ON, SW12=ON (W2 RUNNING) Suggested input signal: W1 sine 100mV @ 5kHz</li>
+              <li>Unity Gain <b>Differential</b> amplifier: SW1=ON, SW2 = ON, SW10=ON, , SW12=ON (W1&W2, RUNNING), SW11=toggles Ch1 between W1 and W2 Suggested input signal: W1 sine 100mV @ 2kHz; W2: triangular 100mV @ 100Hz</li>
+              <li>20dB <b>Differential</b> amplifier: SW1=ON, SW3 = ON, SW10=ON, , SW12=ON (W1&W2, RUNNING), SW11=toggles Ch1 between W1 and W2 Suggested input signal: W1 sine 50mV @ 2kHz; W2 triangular 100mV @ 100Hz</li>
+              <li><b>Integrator</b> (f3dB=15kHz):  SW1=ON, SW2 = ON, SW7=ON, (W1 RUNNING) (May need to offset Scope) Suggested input signal: W1 square 100mV @ 1kHz </li>
+              <li><b>Integrator</b> (f3dB=150kHz):  SW1=ON, SW3 = ON, SW7=ON, (W1 RUNNING) (May need to offset Scope)  Suggested input signal: W1 square 100mV @ 15kHz</li>
+              <li><b>Integrator</b> with resistive feedback Impedance: SW1=ON, SW3 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 15kHz</li>
+              <li>20dB <b>Integrator</b> @ 15kHz: SW1=ON, SW4 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 15kHz</li>
+              <li><b>Differentiator</b>: SW1=ON, SW6 = ON, SW9=ON Suggested input signal: W1 triangular 1V @ 15kHz</li>
+            </ol>
           </div>
           <div className="stream-schematic">
             <div className="vnc-wrapper">
@@ -29,6 +42,7 @@ class Vnc extends Component {
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">CIRCUIT DIAGRAM</h3>
+            <img src={g2circuit} style={{ width: '95%', borderRadius: 5, marginBottom: 20 }}></img>
             <img src={g2img} style={{ width: '95%', borderRadius: 5 }}></img>
           </div>
         </div>
