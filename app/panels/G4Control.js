@@ -68,16 +68,16 @@ export class G4Control extends Component {
             </ol>
           </div>
           <div className="message-sequence">
-            <h3 id="cs-title">SCHEMATIC</h3>
-            <img src={g4s} style={{ width: '95%', borderRadius: 5  }}></img>
-          </div>
-          <div className="message-sequence">
             <h3 id="cs-title">UPLOAD</h3>
 
             <input name="update" type="file" onChange={this.onFileChange} />
             <input id="run-button-gizmo4"
               type="button" onClick={this.onFileUpload} value="Upload"></input>
             {this.fileData()}
+          </div>
+          <div className="message-sequence">
+            <h3 id="cs-title">SCHEMATIC</h3>
+            <img src={g4s} style={{ width: '95%', borderRadius: 5  }}></img>
           </div>
         </div>
       </div>
