@@ -58,12 +58,14 @@ export class G4Control extends Component {
           {/* <div className="control-panel"> */}
           <div className="instructions">
             <h3 id="instruction-header">INSTRUCTIONS</h3>
-            <ul>
-              <li>Download template arduino (.ino) file from <a href="https://drive.google.com/file/d/1pDUesa7DChgK8R2RWaZKyouuP54PQOuN/view?usp=sharing">this link</a></li>
-              <li>Upload the Binary File and view changes in the live feed</li>
-              <li>Customize the template arduino (.ino) file and upload the customized Binary file</li>
-
-            </ul>
+            <ol>
+              <li>Download template arduino (.ino) file from: <a href="https://drive.google.com/file/d/1pDUesa7DChgK8R2RWaZKyouuP54PQOuN/view?usp=sharing">here</a></li>
+              <li>Edit arduino file with new Code. Start setup code at “START SETUP CODE HERE” andloop code at “START LOOP CODE HERE”</li>
+              <li>Check that the edited code compiles and saves. Then go to Sketch > Export CompiledBinary to generate a .bin file of your program.</li>
+              <li>To find the folder where the binary (.bin) file is saved, go to Sketch > Show SketchFolder.</li>
+              <li>Once in the Gizmo-4 website, upload the binary file to the website and press the upload button.</li>
+              <li>Please wait 2-5 minutes for the ota firmware update to properly take place.</li>
+            </ol>
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">SCHEMATIC</h3>
