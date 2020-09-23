@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './G4Control.css';
 import g4s from '../../public/img/G4_schematic.png';
+import VideoContainer from '../VideoContainer';
 
 export class G4Control extends Component {
 
@@ -67,13 +68,15 @@ export class G4Control extends Component {
               <li>Please wait 2-5 minutes for the ota firmware update to properly take place.</li>
             </ol>
           </div>
-          <div className="message-sequence">
-            <h3 id="cs-title">UPLOAD</h3>
-
-            <input name="update" type="file" onChange={this.onFileChange} />
-            <input id="run-button-gizmo4"
-              type="button" onClick={this.onFileUpload} value="Upload"></input>
-            {this.fileData()}
+          <div className="g4-middle-column">
+            {window.location.protocol === 'https:' ? <p className="proto-warn">NOTE: for video streams to work you must switch from https to http in your address bar</p> : <></>}
+            <VideoContainer url="http://129.2.94.100:6081/stream" />
+            <div className="g4-form">
+              <h3 id="cs-title">UPLOAD</h3>
+              <input name="update" type="file" onChange={this.onFileChange} />
+              <input id="run-button-gizmo4" type="button" onClick={this.onFileUpload} value="Upload" />
+              {this.fileData()}
+            </div>
           </div>
           <div className="message-sequence">
             <h3 id="cs-title">SCHEMATIC</h3>
@@ -81,7 +84,6 @@ export class G4Control extends Component {
           </div>
         </div>
       </div>
-
     );
   }
 }
