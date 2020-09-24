@@ -29,10 +29,10 @@ class Vnc extends Component {
               <li>Unity Gain <b>Differential</b> amplifier: SW1=ON, SW2 = ON, SW10=ON, , SW12=ON (W1&W2, RUNNING), SW11=toggles Ch1 between W1 and W2 Suggested input signal: W1 sine 100mV @ 2kHz; W2: triangular 100mV @ 100Hz</li>
               <li>20dB <b>Differential</b> amplifier: SW1=ON, SW3 = ON, SW10=ON, , SW12=ON (W1&W2, RUNNING), SW11=toggles Ch1 between W1 and W2 Suggested input signal: W1 sine 50mV @ 2kHz; W2 triangular 100mV @ 100Hz</li>
               <li><b>Integrator</b> (f3dB=15kHz):  SW1=ON, SW2 = ON, SW7=ON, (W1 RUNNING) (May need to offset Scope) Suggested input signal: W1 square 100mV @ 1kHz </li>
-              <li><b>Integrator</b> (f3dB=150kHz):  SW1=ON, SW3 = ON, SW7=ON, (W1 RUNNING) (May need to offset Scope)  Suggested input signal: W1 square 100mV @ 15kHz</li>
-              <li><b>Integrator</b> with resistive feedback Impedance: SW1=ON, SW3 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 15kHz</li>
-              <li>20dB <b>Integrator</b> @ 15kHz: SW1=ON, SW4 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 15kHz</li>
-              <li><b>Differentiator</b>: SW1=ON, SW6 = ON, SW9=ON Suggested input signal: W1 triangular 1V @ 15kHz</li>
+              <li><b>Integrator</b> (f3dB=150kHz):  SW1=ON, SW3 = ON, SW7=ON, (W1 RUNNING) (May need to offset Scope)  Suggested input signal: W1 square 100mV @ 20kHz or 50kHz</li>
+              <li><b>Integrator</b> with resistive feedback Impedance: SW1=ON, SW3 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 20kHz or 50kHz</li>
+              <li>20dB <b>Integrator</b> @ 15kHz: SW1=ON, SW4 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 20kHz or 50kHz</li>
+              <li><b>Differentiator</b>: SW1=ON, SW6 = ON, SW9=ON Suggested input signal: W1 triangular 1V @ 20kHz or 50kHz</li>
             </ol>
           </div>
           <div className="stream-schematic">
