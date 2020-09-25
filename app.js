@@ -214,7 +214,7 @@ app.post('/api/g4/upload', async (req, res) => {
           'payload': {}
         };
         // g3 and g4 use the same iothub client but different device name
-        g4Client.invokeDeviceMethod('esp4', data, (err, result) => {
+        g4Client.invokeDeviceMethod('esp', data, (err, result) => {
           if (err && !(err instanceof SyntaxError)) {
             console.error(err);
           } else {
