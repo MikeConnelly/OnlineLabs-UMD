@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import VideoContainer from '../VideoContainer';
 import './G3Control.css';
-import g3img from '../../public/img/Gizmo-3.png';
+import g3img from '../../public/img/g3Circuit.png';
 
 class G3Control extends Component {
 
