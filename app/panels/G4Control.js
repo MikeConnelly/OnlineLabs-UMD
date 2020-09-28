@@ -60,7 +60,7 @@ export class G4Control extends Component {
           <div className="instructions">
             <h3 id="instruction-header">INSTRUCTIONS</h3>
             <ol>
-              <li>Download template arduino (.ino) file from: <a href="https://drive.google.com/file/d/1pDUesa7DChgK8R2RWaZKyouuP54PQOuN/view?usp=sharing">here</a></li>
+              <li>Download template arduino (.ino) file from: <a href="https://drive.google.com/drive/folders/1OUMTOmIDhHvlD65Tx0hKRym4bgZU2h9A">here</a></li>
               <li>Edit arduino file with new Code. Start setup code at “START SETUP CODE HERE” andloop code at “START LOOP CODE HERE”</li>
               <li>Check that the edited code compiles and saves. Then go to Sketch > Export CompiledBinary to generate a .bin file of your program.</li>
               <li>To find the folder where the binary (.bin) file is saved, go to Sketch > Show SketchFolder.</li>
