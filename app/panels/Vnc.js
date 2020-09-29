@@ -22,17 +22,19 @@ class Vnc extends Component {
               <li>ALL unspecified switches are OFF.</li>
             </ul>
             <ol>
-              <li>Unity Gain <b>Inverting</b> amplifier:  SW1=ON, SW2 = ON, SW10=ON, (W1 RUNNING) Suggested input signal: W1 sine 1V @ 5kHz</li>
-              <li>20dB Gain <b>Inverting</b> amplifier: SW1=ON, SW3 = ON, SW10=ON, (W1 RUNNING) Suggested input Signal: W1 sine 100mV @ 5kHz</li>
-              <li>2X Gain <b>Non-inverting</b> amplifier:  SW2 = ON, SW10=ON, SW11=ON, SW12=ON (W2 RUNNING) Suggested input signal: W1 sine 1V @ 5kHz</li>
-              <li>20dB Gain <b>Non-inverting</b> amplifier:  SW3 = ON, SW10=ON, SW11=ON, SW12=ON (W2 RUNNING) Suggested input signal: W1 sine 100mV @ 5kHz</li>
-              <li>Unity Gain <b>Differential</b> amplifier: SW1=ON, SW2 = ON, SW10=ON, , SW12=ON (W1&W2, RUNNING), SW11=toggles Ch1 between W1 and W2 Suggested input signal: W1 sine 100mV @ 2kHz; W2: triangular 100mV @ 100Hz</li>
-              <li>20dB <b>Differential</b> amplifier: SW1=ON, SW3 = ON, SW10=ON, , SW12=ON (W1&W2, RUNNING), SW11=toggles Ch1 between W1 and W2 Suggested input signal: W1 sine 50mV @ 2kHz; W2 triangular 100mV @ 100Hz</li>
-              <li><b>Integrator</b> (f3dB=15kHz):  SW1=ON, SW2 = ON, SW7=ON, (W1 RUNNING) (May need to offset Scope) Suggested input signal: W1 square 100mV @ 1kHz </li>
-              <li><b>Integrator</b> (f3dB=150kHz):  SW1=ON, SW3 = ON, SW7=ON, (W1 RUNNING) (May need to offset Scope)  Suggested input signal: W1 square 100mV @ 20kHz or 50kHz</li>
-              <li><b>Integrator</b> with resistive feedback Impedance: SW1=ON, SW3 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 20kHz or 50kHz</li>
-              <li>20dB <b>Integrator</b> @ 15kHz: SW1=ON, SW4 = ON, SW7=ON, SW10=ON (W1 RUNNING) (No offset on Scope needed) Suggested input signal: W1 square 100mV @ 20kHz or 50kHz</li>
-              <li><b>Differentiator</b>: SW1=ON, SW6 = ON, SW9=ON Suggested input signal: W1 triangular 1V @ 20kHz or 50kHz</li>
+              <li>Unity Gain <b>Inverting</b> amplifier: <b>SW1=ON, SW2=ON, SW10=ON</b>, Suggested input signal: W1 sine 1V @ 5kHz (SCOPE tbase=100us/div; trigger=Ch1; Ch1=1V/div & Ch2=1V/div, offset=0)</li>
+              <li><b>20dB</b> Gain <b>Inverting</b> amplifier: <b>SW1=ON, SW3=ON, SW10=ON</b>, Suggested input Signal: W1 sine 100mV @ 5kHz (SCOPE tbase=10us/div; trigger=Ch1; Ch1=100mV/div & Ch2=1V/div, offset=0)</li>
+              <li><b>6dB</b> Gain <b>Non-inverting</b> amplifier: <b>SW2=ON, SW10=ON, SW11=ON, SW12=ON</b>, Suggested input signal: W2 sine 1V @ 5kHz (SCOPE tbase=10us/div; trigger=Ch1; Ch1=1V/div & Ch2=1V/div, offset=0)</li>
+              <li><b>20dB</b> Gain <b>Non-inverting</b> amplifier: <b>SW3=ON, SW10=ON, SW11=ON, SW12=ON</b>, Suggested input signal: W2 sine 100mV @ 5kHz (SCOPE tbase=200us/div; trigger=Ch1; Ch1=100mV/div & Ch2=500mV/div, offset=0)</li>
+              <li><b>0dB Differential</b> amplifier: <b>SW1=ON, SW2=ON, SW10=ON, SW12=ON</b>, (W1&W2 RUNNING), SW11=toggles Ch1 between W1 and W2; Suggested input signal: W1 sine 100mV @ 2kHz; W2: triangular 100mV @ 100Hz (SCOPE tbase=10us/div; trigger=Ch1; Ch1=100mV/div & Ch2=1V/div, offset=0)</li>
+              <li><b>20dB Differential</b> amplifier: <b>SW1=ON, SW3=ON, SW10=ON, SW12=ON</b>, (W1&W2, RUNNING), SW11=toggles Ch1 between W1 and W2; Suggested input signal: W1 sine 50mV @ 2kHz; W2 triangular 100mV @ 100Hz (SCOPE tbase=2ms/div; trigger=Ch1; Ch1=100mV/div & Ch2=1V/div, offset=0)</li>
+              <li><b>Negative Integrator</b> (f3dB=15kHz): <b>SW1=ON, SW2=ON, SW7=ON</b>, (W1 RUNNING) (May need to offset Scope) Suggested input signal: W1 square 100mV @ 1kHz (SCOPE tbase=1ms/div; trigger=Ch1, Ch1=100mV/div & Ch2=1V/div, offset=0)</li>
+              <li><b>Negative Integrator</b> (f3dB=150kHz): <b>SW1=ON, SW3=ON, SW7=ON</b>, (W1 RUNNING) (May need to offset Scope) Suggested input signal: W1 square 100mV @ 20kHz (SCOPE tbase=20us/div; trigger=Ch1; Ch1=100mV/div & Ch2=1V/div, offset=varies)</li>
+              <li><b>Negative Integrator</b> with resistive feedback Impedance: <b>SW1=ON, SW3=ON, SW7=ON, SW10=ON</b>, (W1 RUNNING) Suggested input signal: W1 square 100mV @ 100kHz (SCOPE tbase=5us/div; trigger=Ch1; Ch1=100mV/div & Ch2=200mV/div, offset=0)</li>
+              <li><b>20dB Negative Integrator</b> @ 15kHz: <b>SW1=ON, SW4=ON, SW7=ON, SW10=ON</b>, Suggested input signal: W1 square 100mV @ 50kHz (SCOPE tbase=10us/div; trigger=Ch1; Ch1=100mV/div & Ch2=1V/div, offset=0)</li>
+              <li><b>Negative Differentiator</b>: <b>SW1=ON, SW6=ON, SW9=ON</b>, Suggested input signal: W1 triangular 1V @ 20kHz (SCOPE tbase=20us/div; trigger=Ch1; Ch1=500mV/div & Ch2=10mV/div, offset=0)</li>
+              <li><b>Positive Integrator: SW3=ON, SW7=ON, SW11=ON, SW12=ON</b>, (Suggested input signal: W2 square 100mV @ 50kHz (SCOPE tbase=20us/div; trigger=Ch1; Ch1=100mV/div & Ch2=1V/div, offset=varies)</li>
+              <li><b>Positive Differentiator: SW1=ON, SW6=ON, SW9=ON</b>, Suggested input signal: W2 triangular 1V @ 2kHz ((SCOPE tbase=200us/div; trigger=Ch1; Ch1=1V/div & Ch2=1V/div, offset=0)</li>
             </ol>
           </div>
           <div className="stream-schematic">
