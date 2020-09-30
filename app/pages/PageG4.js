@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DashboardContainer from '../DashboardContainer';
 import Header from '../Header';
 import Footer from '../Footer';
-import G4Control from '../panels/G4Control';
+import G4Control from '../panels/g4/G4Control';
 
 export class PageG4 extends Component {
   

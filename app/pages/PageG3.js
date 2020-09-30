@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
 import DashboardContainer from '../DashboardContainer';
-import G3Control from '../panels/G3Control';
+import G3Control from '../panels/g3/G3Control';
 
 class PageG3 extends Component {
 

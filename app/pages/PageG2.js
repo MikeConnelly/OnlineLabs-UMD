@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Vnc from '../panels/Vnc';
+import Vnc from '../panels/g2/Vnc';
 import DashboardContainer from '../DashboardContainer';
 import Header from '../Header';
 import Footer from '../Footer';

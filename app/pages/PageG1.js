@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 // import axios from 'axios';
 import DashboardContainer from '../DashboardContainer';
-import ControlPanel from '../panels/ControlPanel';
+import ControlPanel from '../panels/g1/ControlPanel';
 import Header from '../Header';
 import Footer from '../Footer';
-import Activity1 from '../activity/Activity1';
-import Activity2 from '../activity/Activity2';
+import Activity1 from '../panels/g1/activity/Activity1';
+import Activity2 from '../panels/g1/activity/Activity2';
 
 class PageG1 extends Component {
 

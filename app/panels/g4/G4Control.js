@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './G4Control.css';
-import g4s from '../../public/img/G4_schematic.png';
+import g4s from '../../../public/img/G4_schematic.png';
 import VideoContainer from '../VideoContainer';
 
 export class G4Control extends Component {

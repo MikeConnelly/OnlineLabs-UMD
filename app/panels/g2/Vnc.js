@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import VideoContainer from '../VideoContainer';
-import g2circuit from '../../public/img/g2Circuit2.jpg';
+import g2circuit from '../../../public/img/g2Circuit2.jpg';
 
 class Vnc extends Component {
   render() {

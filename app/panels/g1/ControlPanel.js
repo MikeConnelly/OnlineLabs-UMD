@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import CommandSequence from './CommandSequence';
-import GraphWrapper from '../GraphWrapper';
+import GraphWrapper from './GraphWrapper';
 import VideoContainer from '../VideoContainer';
 import './ControlPanel.css';
 const RESPONSE_TEXT_DELAY = 3000;
