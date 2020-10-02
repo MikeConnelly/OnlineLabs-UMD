@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import VideoContainer from '../VideoContainer';
-import g2circuit from '../../../public/img/g2Circuit2.jpg';
+import g2circuit from '../../../public/img/g2Circuit.png';
 
 class Vnc extends Component {
   render() {
@@ -17,7 +17,7 @@ class Vnc extends Component {
             <ul>
               <li>This assumes that you are familiar with the Waveforms application.</li>
               <li>Make sure that the power supplies are set to +/- 5V and enabled.</li>
-              <li>On Waveforms, use the StaticIO to set the relay switches. Remember that relays are ACTIVE LOW, e.g. SW ON = DIO 0. The active switches are lit up on the video, make sure that the image reflects your switch desired settings.</li>
+              <li>On Waveforms, use the StaticIO to set the relay switches. Remember that relays are ACTIVE LOW, e.g. SW ON = DIO <b>LOW</b>. SW0 toggles the output between DC and AC coupling. The active switches are lit up on the video, make sure that the image reflects your switch desired settings.</li>
               <li>Here is a set of setting you can follow as QUICK START.  (You may need to adjust the time base and range of the scope.)</li>
               <li>ALL unspecified switches are OFF.</li>
             </ul>
@@ -54,5 +54,3 @@ class Vnc extends Component {
 }
 
 export default Vnc;
-
-
