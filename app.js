@@ -41,7 +41,6 @@ const port = process.env.PORT || 3000;
 var client = Client.fromConnectionString(iotHubConnectionString);
 var g4Client = Client.fromConnectionString(vConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
-// var g3EventHubReader = new EventHubReader(vConnectionString, eventHubConsumerGroup);
 var blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
 var containerClient = blobServiceClient.getContainerClient(blobContainerName);
 var controller = new MotorController(client);
@@ -50,6 +49,8 @@ var manager = new UserManager(io, controller, 'g1');
 var g2Manager = new UserManager(io, null, 'g2');
 var g3Manager = new UserManager(io, g3Controller, 'g3');
 var g4Manager = new UserManager(io, null, 'g4');
+
+let connectionCount = 0;
 
 
 // setup mongo connection
@@ -287,12 +288,16 @@ io.use(passportSocketIo.authorize({
 // where socket connections and events are handled
 io.on('connection', socket => {
   console.log('new connection');
+  connectionCount++;
+  if (connectionCount === 1) { startAllMessages(); }
 
   socket.on('disconnect', () => {
     if (socket.request.user) {
       console.log('user disconnected: ' + socket.request.user.name);
       // use socket to dequeue user
       // handleDisconnect(socket);
+      connectionCount--;
+      if (connectionCount === 0) { stopAllMessages(); }
     }
   });
 });
@@ -348,36 +353,43 @@ function broadcastSensorData(payload, project) {
 })().catch();
 
 
-// (async () => {
-//   await g3EventHubReader.startReadMessage((message, date, deviceId) => {
-//     try {
-//       const payload = {
-//         iotData: message
-//       };
-//       broadcastSensorData(payload, 'g3');
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   })
-// })().catch();
+/**
+ * stops all messages from gizmo-1 and gizmo-3 devices
+ */
+function stopAllMessages() {
+  data = {
+    "methodName": "stop",
+    "responseTimeoutInSeconds": 60,
+    "payload": {}
+  };
+  client.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
+    console.log('g1 messages stopped');
+  });
+  client.invokeDeviceMethod('MyNodeESP32-Solar', data, (err, result) => {
+    console.log('g3 messages stopped');
+  });
+}
+
+/**
+ * starts all messages from gizmo-1 and gizmo-3 devices
+ */
+function startAllMessages() {
+  data = {
+    "methodName": "start",
+    "responseTimeoutInSeconds": 60,
+    "payload": {}
+  };
+  client.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
+    console.log('g1 messages started');
+  });
+  client.invokeDeviceMethod('MyNodeESP32-Solar', data, (err, result) => {
+    console.log('g3 messages started');
+  });
+}
 
 
-// go
+// start listening and stop all incoming device messages by default
 http.listen(port, () => {
   console.log(`listening on port ${port}`);
-  // const data = {
-  //   'methodName': 'stop',
-  //   'responseTimeoutInSeconds': 60,
-  //   'payload': {}
-  // };
-  // g4Client.invokeDeviceMethod('kangesp', data, (err, result) => {
-  //   if (err && !(err instanceof SyntaxError)) {
-  //     // this gets called with a syntax error whenever invoking
-  //     // a device method, despite the device method actually working
-  //     // should look into this later but for now it can be ignored
-  //     console.log('failed to invoke device method...');
-  //   } else {
-  //     console.log('successfully invoked device method');
-  //   }
-  // });
+  stopAllMessages();
 });
