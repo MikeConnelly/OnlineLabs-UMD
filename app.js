@@ -357,7 +357,7 @@ function broadcastSensorData(payload, project) {
  * stops all messages from gizmo-1 and gizmo-3 devices
  */
 function stopAllMessages() {
-  data = {
+  const data = {
     "methodName": "stop",
     "responseTimeoutInSeconds": 60,
     "payload": {}
@@ -374,7 +374,7 @@ function stopAllMessages() {
  * starts all messages from gizmo-1 and gizmo-3 devices
  */
 function startAllMessages() {
-  data = {
+  const data = {
     "methodName": "start",
     "responseTimeoutInSeconds": 60,
     "payload": {}
