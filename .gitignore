@@ -66,3 +66,5 @@ dist
 build
 .DS_Store
 /uploads
+download-db.js
+old-user-db.json
