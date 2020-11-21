@@ -25,6 +25,62 @@ const TriangleWaveJson = [
   {"x": -100, "y": 100},
   {"x": -100, "y": -100}
 ];
+const UpDownRaster = [
+  {"x":0,		"y":100},
+  {"x":20,		"y":0},
+  {"x":-100,	"y":0},
+  {"x":20,		"y":0},
+  {"x":0,		"y":200},
+  {"x":20,		"y":0},
+  {"x":-200,	"y":0},
+  {"x":20,		"y":0},
+  {"x":0,		"y":300},
+  {"x":20,		"y":0},
+  {"x":-300,	"y":0},
+  {"x":20,		"y":0},
+  {"x":0,		"y":400},
+  {"x":-120,	"y":0},
+  {"x":50,		"y":0},
+  {"x":0,		"y":25},
+  {"x":50,		"y":0},
+  {"x":0,		"y":-25},
+  {"x":50,		"y":0},
+  {"x":0,		"y":75},
+  {"x":50,		"y":0},
+  {"x":0,		"y":-75},
+  {"x":50,		"y":0},
+  {"x":0,		"y":100},
+  {"x":50,		"y":0},
+  {"x":0,		"y":-100},
+  {"x":-700,"y":0}
+];
+const Football = [
+  {"x":0,	"y":400},
+  {"x":-10,"y":10},
+  {"x":0,	"y":10},
+  {"x":-10,"y":10},
+  {"x":0,	"y":10},
+  {"x":-10,"y":10},
+  {"x":0,	"y":10},
+  {"x":10,	"y":10},
+  {"x":0,	"y":10},
+  {"x":10,	"y":10},
+  {"x":0,	"y":10},
+  {"x":10,	"y":10},
+  {"x":0,	"y":10},
+  {"x":-10,"y":10},
+  {"x":0,	"y":-10},
+  {"x":-10,"y":10},
+  {"x":0,	"y":-10},
+  {"x":-10,"y":10},
+  {"x":0,	"y":-10},
+  {"x":-10,"y":-10},
+  {"x":0,	"y":-10},
+  {"x":-10,"y":-10},
+  {"x":0,	"y":-10},
+  {"x":-10,"y":-10},
+  {"x":0,	"y":-10}
+];
 
 class ControlPanel extends Component {
 
@@ -206,8 +262,12 @@ class ControlPanel extends Component {
   fillJsonWithTemplate(template) {
     if (template === 'm') {
       this.setState({ jsonInput: JSON.stringify(MShapeJson) });
-    } else {
+    } else if (template == 'triangle') {
       this.setState({ jsonInput: JSON.stringify(TriangleWaveJson) });
+    } else if (template == 'updown') {
+      this.setState({ jsonInput: JSON.stringify(UpDownRaster) });
+    } else if (template == 'football') {
+      this.setState({ jsonInput: JSON.stringify(Football) });
     }
   }
 
@@ -256,6 +316,18 @@ class ControlPanel extends Component {
                       type="button"
                       value="Triangle Wave"
                       onClick={() => this.fillJsonWithTemplate('triangle')}
+                    />
+                    <input
+                      id="updown-template-button"
+                      type="button"
+                      value="Up/Down Raster"
+                      onClick={() => this.fillJsonWithTemplate('updown')}
+                    />
+                    <input
+                      id="football-template-button"
+                      type="button"
+                      value="Football"
+                      onClick={() => this.fillJsonWithTemplate('football')}
                     />
                   </div>
                   <textarea

@@ -154,7 +154,7 @@
   align-items: center;
 }
 
-#m-shape-template-button, #triangle-wave-template-button {
+#m-shape-template-button, #triangle-wave-template-button, #updown-template-button, #football-template-button {
   width: fit-content;
   margin: 5px;
 }
