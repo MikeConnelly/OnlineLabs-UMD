@@ -41,17 +41,17 @@ const UpDownRaster = [
   {"x":400,	"y":0},
   {"x":0,		"y":-120},
   {"x":50,	"y":0},
-  {"x":25,	"y":0},
-  {"x":0,		"y":50},
-  {"x":-25,	"y":0},
-  {"x":0,		"y":50},
-  {"x":75,	"y":0},
-  {"x":0,		"y":50},
-  {"x":-75,	"y":0},
-  {"x":0,		"y":50},
-  {"x":100,	"y":0},
-  {"x":0,		"y":50},
-  {"x":-100,"y":0},
+  {"x":0,		"y":100},
+  {"x":50,	"y":0},
+  {"x":0,		"y":-100},
+  {"x":50,	"y":0},
+  {"x":0,		"y":100},
+  {"x":50,	"y":0},
+  {"x":0,		"y":-100},
+  {"x":50,	"y":0},
+  {"x":0,		"y":100},
+  {"x":50,  "y":0},
+  {"x":0,   "y":-100},
   {"x":-700,"y":0}
 ];
 const Football = [
@@ -80,6 +80,60 @@ const Football = [
   {"x":0,		"y":-10},
   {"x":-10,	"y":-10},
   {"x":0,		"y":-10}
+];
+const Circle = [
+  {"x":160, "y":55},
+  {"x":0, "y":6},
+  {"x":-1, "y":6},
+  {"x":-2, "y":6},
+  {"x":-3, "y":6},
+  {"x":-3, "y":5},
+  {"x":-4, "y":5},
+  {"x":-5, "y":4},
+  {"x":-5, "y":4},
+  {"x":-6, "y":3},
+  {"x":-6, "y":2},
+  {"x":-6, "y":2},
+  {"x":-6, "y":1},
+  {"x":-6, "y":0},
+  {"x":-6, "y":-1},
+  {"x":-6, "y":-2},
+  {"x":-6, "y":-2},
+  {"x":-6, "y":-3},
+  {"x":-5, "y":-4},
+  {"x":-5, "y":-4},
+  {"x":-4, "y":-5},
+  {"x":-3, "y":-5},
+  {"x":-3, "y":-6},
+  {"x":-2, "y":-6},
+  {"x":-1, "y":-6},
+  {"x":0, "y":-6},
+  {"x":0, "y":-6},
+  {"x":1, "y":-6},
+  {"x":2, "y":-6},
+  {"x":3, "y":-6},
+  {"x":3, "y":-5},
+  {"x":4, "y":-5},
+  {"x":5, "y":-4},
+  {"x":5, "y":-4},
+  {"x":6, "y":-3},
+  {"x":6, "y":-2},
+  {"x":6, "y":-2},
+  {"x":6, "y":-1},
+  {"x":6, "y":0},
+  {"x":6, "y":1},
+  {"x":6, "y":2},
+  {"x":6, "y":2},
+  {"x":6, "y":3},
+  {"x":5, "y":4},
+  {"x":5, "y":4},
+  {"x":4, "y":5},
+  {"x":3, "y":5},
+  {"x":3, "y":6},
+  {"x":2, "y":6},
+  {"x":1, "y":6},
+  {"x":0, "y":6},
+  {"x":-160,"y":-55}
 ];
 
 class ControlPanel extends Component {
@@ -268,6 +322,8 @@ class ControlPanel extends Component {
       this.setState({ jsonInput: JSON.stringify(UpDownRaster) });
     } else if (template == 'football') {
       this.setState({ jsonInput: JSON.stringify(Football) });
+    } else if (template == 'circle') {
+      this.setState({ jsonInput: JSON.stringify(Circle) });
     }
   }
 
@@ -328,6 +384,12 @@ class ControlPanel extends Component {
                       type="button"
                       value="Football"
                       onClick={() => this.fillJsonWithTemplate('football')}
+                    />
+                    <input
+                      id="circle-template-button"
+                      type="button"
+                      value="Circle"
+                      onClick={() => this.fillJsonWithTemplate('circle')}
                     />
                   </div>
                   <textarea

@@ -154,7 +154,11 @@
   align-items: center;
 }
 
-#m-shape-template-button, #triangle-wave-template-button, #updown-template-button, #football-template-button {
+#m-shape-template-button,
+#triangle-wave-template-button,
+#updown-template-button,
+#football-template-button,
+#circle-template-button {
   width: fit-content;
   margin: 5px;
 }
