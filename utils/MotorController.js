@@ -56,7 +56,7 @@ class MotorController {
    * Device name should be MyNodeESP32 for Kang's esp or MyNodeDevice for Mike's AZ3166
    */
   deviceMethod(data, cb) {
-    this.iotClient.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
+    this.iotClient.invokeDeviceMethod('gizmo1', data, (err, result) => {
       if (err && !(err instanceof SyntaxError)) {
         // this gets called with a syntax error whenever invoking
         // a device method, despite the device method actually working

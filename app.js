@@ -32,14 +32,13 @@ const auth_client_secret = process.env.AUTHSECRET;
 const cookieKey = process.env.COOKIEKEY;
 const iotHubConnectionString = process.env.CONNECTIONSTRING;
 const eventHubConsumerGroup = process.env.CONSUMERGROUP;
-const vConnectionString = process.env.VCONNECTIONSTRING;
 const storageConnectionString = process.env.BLOBCONNECTION;
 const blobContainerName = 'blob';
 const port = process.env.PORT || 3000;
 
 
 var client = Client.fromConnectionString(iotHubConnectionString);
-var g4Client = Client.fromConnectionString(vConnectionString);
+//var g4Client = Client.fromConnectionString(iotHubConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 var blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
 var containerClient = blobServiceClient.getContainerClient(blobContainerName);
@@ -215,7 +214,7 @@ app.post('/api/g4/upload', async (req, res) => {
           'payload': {}
         };
         // g3 and g4 use the same iothub client but different device name
-        g4Client.invokeDeviceMethod('esp', data, (err, result) => {
+        client.invokeDeviceMethod('gizmo4', data, (err, result) => {
           if (err && !(err instanceof SyntaxError)) {
             console.error(err);
           } else {
@@ -327,7 +326,7 @@ function broadcastSensorData(payload, project) {
   await eventHubReader.startReadMessage((message, date, deviceId) => {
     try {
       // console.log(`${deviceId}, ${JSON.stringify(message)}`);
-      if (deviceId === 'MyNodeESP32') { // gizmo1 message
+      if (deviceId === 'gizmo1') { // gizmo1 message
         const dataInMM =  {
           messageId: message.messageId,
           x_distance: (message.x_distance * 25.4),
@@ -362,10 +361,10 @@ function stopAllMessages() {
     "responseTimeoutInSeconds": 60,
     "payload": {}
   };
-  client.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
+  client.invokeDeviceMethod('gizmo1', data, (err, result) => {
     console.log('g1 messages stopped');
   });
-  client.invokeDeviceMethod('MyNodeESP32-Solar', data, (err, result) => {
+  client.invokeDeviceMethod('gizmo3', data, (err, result) => {
     console.log('g3 messages stopped');
   });
 }
@@ -379,10 +378,10 @@ function startAllMessages() {
     "responseTimeoutInSeconds": 60,
     "payload": {}
   };
-  client.invokeDeviceMethod('MyNodeESP32', data, (err, result) => {
+  client.invokeDeviceMethod('gizmo1', data, (err, result) => {
     console.log('g1 messages started');
   });
-  client.invokeDeviceMethod('MyNodeESP32-Solar', data, (err, result) => {
+  client.invokeDeviceMethod('gizmo3', data, (err, result) => {
     console.log('g3 messages started');
   });
 }
