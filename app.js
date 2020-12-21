@@ -392,9 +392,3 @@ http.listen(port, () => {
   console.log(`listening on port ${port}`);
   stopAllMessages();
 });
-
-/*
-VCONNECTIONSTRING=HostName=enee101.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=dA0+Nj6+xbm10XbZJvif0cp3fOdAYcqkRTEC4+ESJSA=
-BLOBCONNECTION_OLD=DefaultEndpointsProtocol=https;AccountName=g4ota;AccountKey=dRghb3+931u5mIpTnYlFzhMnHQTHfk7Y/tZ3U98OKJQmk+htWUn9ZQMobqMVuKPcRTREy8VwdP+T/NHnVxmvQQ==;EndpointSuffix=core.windows.net
-DBCONN_OLD=mongodb://olabs-db:GzCwamStQnkDysd8yyjIkL6LzWCoQEu3Kz5Svwpg12zXIwdOkVa0g8sKoXg58KXYT99UzetAe98UHEGIys8s8w==@olabs-db.mongo.cosmos.azure.com:10255/?ssl=true&appName=@olabs-db@
-*/
