@@ -1,16 +1,26 @@
 const g1Routes = require('./g1Routes');
 const g2Routes = require('./g2Routes');
 
-module.exports = (app, manager, g2Manager, g3Manager, g4Manager, controller, g3Controller) => {
+module.exports = (admin_pass, app, manager, g2Manager, g3Manager, g4Manager, controller, g3Controller) => {
 
-  g1Routes(app, manager, controller);
-  g2Routes(app, g2Manager);
+  g1Routes(admin_pass, app, manager, controller);
+  g2Routes(admin_pass, app, g2Manager);
 
   app.get('/g3', (req, res) => {
     res.redirect('/');
   });
 
   app.get('/g4', (req, res) => {
+    res.redirect('/');
+  });
+
+  app.get(`/g3/admin/kick/${admin_pass}`, (req, res) => {
+    g3Manager.clearQueue();
+    res.redirect('/');
+  });
+
+  app.get(`/g4/admin/kick/${admin_pass}`, (req, res) => {
+    g4Manager.clearQueue();
     res.redirect('/');
   });
 

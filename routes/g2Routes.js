@@ -1,6 +1,11 @@
-module.exports = (app, g2Manager) => {
+module.exports = (admin_pass, app, g2Manager) => {
 
   app.get('/g2', (req, res) => {
+    res.redirect('/');
+  });
+  
+  app.get(`/g2/admin/kick/${admin_pass}`, (req, res) => {
+    g2Manager.clearQueue();
     res.redirect('/');
   });
 

@@ -26,6 +26,7 @@ var UserManager = require('./utils/UserManager');
 var routes = require('./routes/routes');
 
 dotenv.config();
+const admin_pass = process.env.ADMIN_PASS;
 const mongo_connection = process.env.DBCONN;
 const auth_client_id = process.env.AUTHID;
 const auth_client_secret = process.env.AUTHSECRET;
@@ -38,7 +39,6 @@ const port = process.env.PORT || 3000;
 
 
 var client = Client.fromConnectionString(iotHubConnectionString);
-//var g4Client = Client.fromConnectionString(iotHubConnectionString);
 var eventHubReader = new EventHubReader(iotHubConnectionString, eventHubConsumerGroup);
 var blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
 var containerClient = blobServiceClient.getContainerClient(blobContainerName);
@@ -151,7 +151,7 @@ app.use(passport.session());
 
 
 
-routes(app, manager, g2Manager, g3Manager, g4Manager, controller, g3Controller);
+routes(admin_pass, app, manager, g2Manager, g3Manager, g4Manager, controller, g3Controller);
 
 // auth routes
 // app.use('/:page/auth/google', (req, res, next) => {
@@ -392,3 +392,9 @@ http.listen(port, () => {
   console.log(`listening on port ${port}`);
   stopAllMessages();
 });
+
+/*
+VCONNECTIONSTRING=HostName=enee101.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=dA0+Nj6+xbm10XbZJvif0cp3fOdAYcqkRTEC4+ESJSA=
+BLOBCONNECTION_OLD=DefaultEndpointsProtocol=https;AccountName=g4ota;AccountKey=dRghb3+931u5mIpTnYlFzhMnHQTHfk7Y/tZ3U98OKJQmk+htWUn9ZQMobqMVuKPcRTREy8VwdP+T/NHnVxmvQQ==;EndpointSuffix=core.windows.net
+DBCONN_OLD=mongodb://olabs-db:GzCwamStQnkDysd8yyjIkL6LzWCoQEu3Kz5Svwpg12zXIwdOkVa0g8sKoXg58KXYT99UzetAe98UHEGIys8s8w==@olabs-db.mongo.cosmos.azure.com:10255/?ssl=true&appName=@olabs-db@
+*/

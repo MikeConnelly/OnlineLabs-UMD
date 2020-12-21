@@ -1,6 +1,11 @@
-module.exports = (app, manager, controller) => {
+module.exports = (admin_pass, app, manager, controller) => {
   
   app.get('/g1', (req, res) => {
+    res.redirect('/');
+  });
+  
+  app.get(`/g1/admin/kick/${admin_pass}`, (req, res) => {
+    manager.clearQueue();
     res.redirect('/');
   });
 

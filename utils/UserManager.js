@@ -103,6 +103,15 @@ class UserManager {
   }
 
   /**
+   * Removes current user and clears the queue
+   */
+  clearQueue() {
+    this.queue = [];
+    this.replaceCurrentUser();
+    this.updateAllClients();
+  }
+
+  /**
    * Called from current user api routes to refresh inactivity timer
    */
   refreshCurrentUserTimer() {
