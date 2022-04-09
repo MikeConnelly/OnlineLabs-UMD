@@ -32,7 +32,7 @@
     "express": "~4.16.1",
     "express-fileupload": "^1.2.0",
     "express-session": "^1.17.1",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.9.22",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
